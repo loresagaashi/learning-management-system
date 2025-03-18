@@ -18,7 +18,7 @@ public class Feedback extends BaseEntity {
    // private Student student;
     
     @ManyToOne
-@JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_feedback_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
+    @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_feedback_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
     private Course course;
     
     private int rating;
