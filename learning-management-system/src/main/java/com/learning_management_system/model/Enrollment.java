@@ -1,8 +1,8 @@
 package com.learning_management_system.model;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
+import com.learning_management_system.enums.EnrollmentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
