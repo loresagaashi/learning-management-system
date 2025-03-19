@@ -1,4 +1,4 @@
-package com.learning_management_system.model;
+package com.learning_management_system.enums;
 
 public enum DayOfWeek {
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY;  }
