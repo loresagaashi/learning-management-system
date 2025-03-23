@@ -10,6 +10,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class Student extends UserAccount {
-    private String fullName;
     private LocalDate enrollmentDate;
 }

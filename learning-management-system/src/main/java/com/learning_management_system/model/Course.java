@@ -14,9 +14,8 @@ public class Course extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
     
-    //mas implementimit te profesorit
-    // @ManyToOne
-    // @JoinColumn(name = "professor_id", nullable = true, foreignKey = @ForeignKey(name = "fk_course_professor", foreignKeyDefinition = "FOREIGN KEY (professor_id) REFERENCES Professor(id) ON DELETE RESTRICT"))
-    // private Professor professor;
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = true, foreignKey = @ForeignKey(name = "fk_course_professor", foreignKeyDefinition = "FOREIGN KEY (professor_id) REFERENCES Professor(id) ON DELETE RESTRICT"))
+    private Professor professor;
 }
 

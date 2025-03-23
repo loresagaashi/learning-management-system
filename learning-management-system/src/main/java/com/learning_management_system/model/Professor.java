@@ -1,6 +1,7 @@
 package com.learning_management_system.model;
 
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,6 +9,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class Professor extends UserAccount {
-    private String fullName;
+    @NotEmpty
     private String department;
 }

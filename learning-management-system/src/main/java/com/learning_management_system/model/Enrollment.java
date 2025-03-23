@@ -14,11 +14,9 @@ public class Enrollment extends BaseEntity {
     // @EmbeddedId
     // private EnrollmentId enrollmentId;
     
-//     @ManyToOne
-//     @MapsId("studentId")
-// @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_enrollment_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
-
-//     private Student student;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_enrollment_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
+    private Student student;
     
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_enrollment_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))

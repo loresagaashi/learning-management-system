@@ -1,7 +1,6 @@
 package com.learning_management_system.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +20,7 @@ public class Report extends BaseAuditEntity{
     @Column(name = "performance")
     private String performance;
 
-    //TODO  Studentin
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "student_id")
-//    private Student student;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_report_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
+    private Student student;
 }
