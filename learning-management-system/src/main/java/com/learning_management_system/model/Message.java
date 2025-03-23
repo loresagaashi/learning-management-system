@@ -15,13 +15,13 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Message extends BaseEntity {
     
-    // @ManyToOne
-    // @JoinColumn(name = "sender_id", nullable = true, foreignKey = @ForeignKey(name = "fk_message_sender", foreignKeyDefinition = "FOREIGN KEY (sender_id) REFERENCES User(id) ON DELETE RESTRICT"))
-    // private User sender;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_message_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
+    private Student student;
     
-    // @ManyToOne
-    // @JoinColumn(name = "receiver_id", nullable = true, foreignKey = @ForeignKey(name = "fk_message_receiver", foreignKeyDefinition = "FOREIGN KEY (receiver_id) REFERENCES User(id) ON DELETE RESTRICT"))
-    // private User receiver;
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = true, foreignKey = @ForeignKey(name = "fk_message_professor", foreignKeyDefinition = "FOREIGN KEY (professor_id) REFERENCES Professor(id) ON DELETE RESTRICT"))
+    private Professor professor;
     
     @Column(columnDefinition = "TEXT")
     private String content;
