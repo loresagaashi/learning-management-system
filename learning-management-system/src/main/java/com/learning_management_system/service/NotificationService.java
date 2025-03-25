@@ -6,7 +6,7 @@ import com.learning_management_system.model.Notification;
 import com.learning_management_system.repository.NotificationRepository;
 
 @Service
-public class NotificationService extends BasicServiceOperations<NotificationRepository, Notification>{
+public class NotificationService extends BasicMongoServiceOperations<NotificationRepository, Notification>{
 
     public NotificationService(NotificationRepository repository){
         super(repository);

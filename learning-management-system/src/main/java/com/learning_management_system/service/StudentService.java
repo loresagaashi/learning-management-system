@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 
 import com.learning_management_system.exception.EntityValidationException;
 import com.learning_management_system.exception.ExceptionPayload;
-import com.learning_management_system.model.Professor;
+// import com.learning_management_system.model.Professor;
 import com.learning_management_system.model.Student;
-import com.learning_management_system.repository.ProfessorRepository;
+// import com.learning_management_system.repository.ProfessorRepository;
 import com.learning_management_system.repository.StudentRepository;
 
 import jakarta.persistence.EntityNotFoundException;

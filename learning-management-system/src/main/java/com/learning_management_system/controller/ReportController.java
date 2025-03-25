@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/report")
-public class ReportController extends BasicControllerOperations<ReportService, Report>{
+public class ReportController extends BasicMongoControllerOperations<ReportService, Report>{
 
     public ReportController(ReportService service){
         super(service);

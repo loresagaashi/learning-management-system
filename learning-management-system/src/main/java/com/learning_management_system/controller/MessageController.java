@@ -8,7 +8,7 @@ import com.learning_management_system.service.MessageService;
 
 @RestController
 @RequestMapping("/message")
-public class MessageController extends BasicControllerOperations<MessageService,Message>{
+public class MessageController extends BasicMongoControllerOperations<MessageService,Message>{
 
     public MessageController(MessageService service){
         super(service);
