@@ -8,7 +8,7 @@ import com.learning_management_system.service.NotificationService;
 
 @RestController
 @RequestMapping("/notification")
-public class NotificationController extends BasicControllerOperations<NotificationService,Notification>{
+public class NotificationController extends BasicMongoControllerOperations<NotificationService,Notification>{
 
     public NotificationController(NotificationService service){
         super(service);

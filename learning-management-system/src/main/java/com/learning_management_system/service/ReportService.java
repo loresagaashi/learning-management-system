@@ -5,7 +5,7 @@ import com.learning_management_system.repository.ReportRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReportService extends BasicServiceOperations<ReportRepository, Report>{
+public class ReportService extends BasicMongoServiceOperations<ReportRepository, Report>{
 
     public ReportService(ReportRepository repository){
         super(repository);
