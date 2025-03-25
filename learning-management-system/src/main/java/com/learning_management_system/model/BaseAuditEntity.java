@@ -19,7 +19,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @ToString
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseAuditEntity extends BaseEntity {
+public abstract class BaseAuditEntity {
 
     @OneToOne(fetch = LAZY)
     @JoinColumn
