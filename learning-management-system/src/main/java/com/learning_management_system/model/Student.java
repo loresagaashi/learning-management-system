@@ -19,4 +19,9 @@ public class Student extends UserAccount {
     @Enumerated(EnumType.STRING) 
     @Column(nullable = false)
     private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "city_id", nullable = true, foreignKey = @ForeignKey(name = "fk_student_city", foreignKeyDefinition = "FOREIGN KEY (city_id) REFERENCES City(id) ON DELETE RESTRICT"))
+    private City city;
+
 }
