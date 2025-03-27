@@ -57,7 +57,7 @@ public class ProfessorService extends BasicServiceOperations<ProfessorRepository
                         .message("Wrong email")
                         .build())
                 );
-        if (!professor.getPassword().equals(password)) {
+        if (!professor.getPassword().matches(password)) {
             throw new EntityValidationException(ExceptionPayload.builder()
                     .code("WrongPassword")
                     .fieldName("password")

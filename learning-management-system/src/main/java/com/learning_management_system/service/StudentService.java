@@ -1,5 +1,6 @@
 package com.learning_management_system.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,7 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
       );
     }
   }
+    private final BCryptPasswordEncoder passwordEncoder1 = new BCryptPasswordEncoder();
 
     public Student login(String email, String password) {
         Student student = this.repository.findByEmail(email)
@@ -59,7 +61,7 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
                         .message("Wrong email")
                         .build())
                 );
-        if (!student.getPassword().equals(password)) {
+        if (!passwordEncoder1.matches(password, student.getPassword())) {
             throw new EntityValidationException(ExceptionPayload.builder()
                     .code("WrongPassword")
                     .fieldName("password")
