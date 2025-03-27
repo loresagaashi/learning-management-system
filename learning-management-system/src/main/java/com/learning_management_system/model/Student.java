@@ -2,8 +2,7 @@ package com.learning_management_system.model;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,4 +15,8 @@ public class Student extends UserAccount {
     private Long studentId; // Numeric student ID
 
     private LocalDate enrollmentDate;
+
+    @Enumerated(EnumType.STRING) 
+    @Column(nullable = false)
+    private Status status;
 }
