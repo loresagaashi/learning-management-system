@@ -1,5 +1,6 @@
 package com.learning_management_system.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -30,6 +31,7 @@ public class AdminService extends BasicServiceOperations<AdminRepository, Admin>
 
         return super.save(entity);
     }
+    private final BCryptPasswordEncoder passwordEncoder1 = new BCryptPasswordEncoder();
 
     public Admin login(String email, String password) {
         Admin admin = this.repository.findByEmail(email)
@@ -40,7 +42,7 @@ public class AdminService extends BasicServiceOperations<AdminRepository, Admin>
                         .message("Wrong email")
                         .build())
                 );
-        if (!admin.getPassword().equals(password)) {
+        if (!passwordEncoder1.matches(password, admin.getPassword())) {
             throw new EntityValidationException(ExceptionPayload.builder()
                     .code("WrongPassword")
                     .fieldName("password")
