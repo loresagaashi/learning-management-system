@@ -1,28 +1,26 @@
 package com.learning_management_system.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "logs")
-public class Log extends BaseAuditEntity{
+@Document(collection = "logs")
+public class Log {
 
-    @Column(name = "action")
-    private String action;
+    @Id
+    private String id;
 
-    @Column(name = "message",columnDefinition = "TEXT")
     private String message;
 
-    //TODO  userin
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @DocumentReference(lazy = true)
+    private Student student;
+
+    @DocumentReference(lazy = true)
+    private Professor professor;
 
 }

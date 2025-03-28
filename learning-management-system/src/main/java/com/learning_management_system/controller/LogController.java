@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/log")
-public class LogController extends BasicControllerOperations<LogService, Log> {
+public class LogController extends BasicMongoControllerOperations<LogService, Log> {
 
     public LogController(LogService service) {
         super(service);

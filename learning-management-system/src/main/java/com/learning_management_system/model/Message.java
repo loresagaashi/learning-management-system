@@ -1,31 +1,28 @@
 package com.learning_management_system.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.annotation.Id;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+@Getter
+@Setter
+@Document(collection = "messages")
+public class Message {
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@Entity
-public class Message extends BaseEntity {
-    
-    // @ManyToOne
-    // @JoinColumn(name = "sender_id", nullable = true, foreignKey = @ForeignKey(name = "fk_message_sender", foreignKeyDefinition = "FOREIGN KEY (sender_id) REFERENCES User(id) ON DELETE RESTRICT"))
-    // private User sender;
-    
-    // @ManyToOne
-    // @JoinColumn(name = "receiver_id", nullable = true, foreignKey = @ForeignKey(name = "fk_message_receiver", foreignKeyDefinition = "FOREIGN KEY (receiver_id) REFERENCES User(id) ON DELETE RESTRICT"))
-    // private User receiver;
-    
-    @Column(columnDefinition = "TEXT")
+    @Id
+    private String id;
+
+    @DocumentReference(lazy = true)
+    private Student student;
+
+    @DocumentReference(lazy = true)
+    private Professor professor;
+
     private String content;
-    
+
     private LocalDate sentDate;
 }
-
