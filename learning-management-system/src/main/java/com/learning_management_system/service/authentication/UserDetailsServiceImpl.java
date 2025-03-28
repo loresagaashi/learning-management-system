@@ -1,14 +1,17 @@
 package com.learning_management_system.service.authentication;
 
+import com.learning_management_system.data.UserView;
+import com.learning_management_system.exception.NotFoundApiException;
 import com.learning_management_system.model.Admin;
 import com.learning_management_system.model.Professor;
 import com.learning_management_system.model.Student;
 import com.learning_management_system.model.UserAccount;
-import com.learning_management_system.repository.AdminRepository;
-import com.learning_management_system.repository.ProfessorRepository;
-import com.learning_management_system.repository.StudentRepository;
-
+import com.learning_management_system.repository.*;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@Log4j2
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -24,6 +28,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private StudentRepository studentRepository;
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     @Override
     public UserAccount loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -71,5 +77,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // If no user is found, throw an exception
         throw new UsernameNotFoundException("User not found with id : " + id);
     }
+    public UserView myProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        String methodName = "getUser";
+        log.info("{} -> Get User by Id", methodName);
+
+        Optional<UserAccountProjection> optionalUser = userAccountRepository.findByEmail(userDetails.getUsername());
+
+        if (optionalUser.isPresent()) {
+            UserAccountProjection user = optionalUser.get();
+            return new UserView(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getPhoneNumber(),
+                    user.getBirthDate()
+            );
+        } else {
+            throw new NotFoundApiException(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }

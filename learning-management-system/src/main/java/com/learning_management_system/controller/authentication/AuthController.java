@@ -1,4 +1,5 @@
 package com.learning_management_system.controller.authentication;
+import com.learning_management_system.data.UserView;
 import com.learning_management_system.model.UserAccount;
 import com.learning_management_system.payload.JwtAuthenticationResponse;
 import com.learning_management_system.payload.LoginPayload;
@@ -6,7 +7,12 @@ import com.learning_management_system.payload.RefreshTokenPayload;
 import com.learning_management_system.repository.AdminRepository;
 import com.learning_management_system.security.jwt.JwtTokenProvider;
 import com.learning_management_system.service.authentication.UserDetailsServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -15,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 // import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
+@Log4j2
 public class AuthController {
 
     @Autowired
@@ -77,6 +85,20 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
+    }
+
+    @Operation(summary = "Get my profile", description = "Returns the profile details of the authenticated user")
+    @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = UserView.class)))
+    @GetMapping("/me")
+    public ResponseEntity<UserView> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        String methodName = "getMyProfile";
+
+        log.info("{} -> Get My Profile", methodName);
+        UserView userView = userDetailsServiceImpl.myProfile(userDetails);
+
+        log.info("{} -> Get user, response status: 200", methodName);
+
+        return ResponseEntity.status(HttpStatus.OK).body(userView);
     }
 
 }
