@@ -38,12 +38,12 @@ const customTheme = {
   },
   palette: {
     primary: {
-      main: "#DB0007",
+      main: "#007BFF", // Blue
       mainGradient:
-        "linear-gradient(90deg, rgba(191,16,0,1) 0%, rgba(209,9,9,1) 28%, rgba(227,99,35,1) 58%, rgba(255,250,37,1) 100%)",
+        "linear-gradient(90deg, rgba(0, 91, 187, 1) 0%, rgba(0, 123, 255, 1) 28%, rgba(91, 192, 222, 1) 58%, rgba(255, 255, 255, 1) 100%)",
     },
     secondary: {
-      main: "#FFBC0D",
+      main: "#FFFFFF", // White
     },
     text: {
       dark: "#121212",
@@ -51,6 +51,7 @@ const customTheme = {
     type: "light",
   },
   toolbarHeight: 50,
+  
 };
 
 setQueryDefaults();

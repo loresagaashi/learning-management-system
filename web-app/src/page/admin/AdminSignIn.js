@@ -150,14 +150,7 @@ export default function AdminSignIn({ onSuccess, hideSignUpLink, isLoading }) {
         <Grid container>
           {!hideSignUpLink && (
             <Grid item>
-              <Link
-                href="#"
-                variant="body2"
-                to="/sign-up"
-                component={RouterLink}
-              >
-                Don't have an account? Sign Up
-              </Link>
+             
             </Grid>
           )}
         </Grid>
