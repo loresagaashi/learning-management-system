@@ -3,16 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@stomp/stompjs": "^7.1.0",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "11.10.4",
+    "@material-table/core": "^4.3.27",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@material-ui/pickers": "^3.3.10",
+    "@mui/x-charts": "6.19.8",
+    "@mui/x-data-grid-generator": "^7.3.0",
+    "@mui/x-data-grid-pro": "^7.3.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.8.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1",
-    "sockjs-client": "^1.6.1",
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
+    "bootstrap": "^5.3.3",
+    "clsx": "^2.1.0",
+    "cors": "^2.8.5",
+    "date-fns": "^2.28.0",
+    "express": "^4.19.2",
+    "js-joda": "^1.11.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-material-ui-carousel": "^2.3.11",
+    "react-query": "^3.34.8",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "5.0.0",
+    "react-swipeable-views": "^0.14.0",
+    "simplebar-react": "^2.3.7",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -38,5 +57,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "3.2.5"
   }
 }
