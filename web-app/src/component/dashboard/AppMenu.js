@@ -103,7 +103,7 @@ export default function AppMenu({}) {
   function handleLogOut() {
     setUser(null)
     localStorage.removeItem('user')
-    navigate("/client/home", { replace: true });
+    navigate("/admin/sign-in", { replace: true });
   }
 
   return (
