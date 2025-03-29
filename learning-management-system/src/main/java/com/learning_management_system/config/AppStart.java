@@ -19,7 +19,7 @@ public class AppStart {
         Admin user = new Admin();
         user.setFirstName("Admin");
         user.setLastName("Admin");
-        user.setEmail("admin@gmail.com");
+        user.setEmail("admin@ubt-uni.net");
         user.setPassword("admin");
         user.setBirthDate(LocalDate.of(2004, 5, 17));
         user.setPhoneNumber("123456789");
