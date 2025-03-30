@@ -6,29 +6,35 @@ import AdminSignIn from "../page/admin/AdminSignIn";
 // import ClientSignUp from "../page/client/ClientSignUp";
 import PrivateRoute from "../component/PrivateRoute";
 import AdminLayout from "../page/admin/AdminLayout";
+import SignInChoicePage from "../page/SignInChoicePage";
+import StudentSignIn from "../page/student/StudentSignIn";
+import ProfessorSignIn from "../page/professor/ProfessorSignIn";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
 
 const AppRoutes = [
-  // Client routes
-  // <Route
-  //   key={1}
-  //   path="/"
-  //   exact
-  //   element={<Navigate replace to={"/client/home"} />}
-  // />,
-
   <Route
     key={1}
     path="/"
     exact
-    element={<Navigate replace to="/admin/sign-in" />}
+    element={<Navigate replace to={"/choice/sign-in"} />}
   />,
+
+  <Route
+    key={1}
+    path="/choice/sign-in"
+    exact
+    element={<SignInChoicePage />}
+  />,
+
   // <Route key={2} path="/client/home" element={<ClientLayout />} />,
   // Admin routes
   <Route key={11} path="/admin/*" element={<PrivateRoute element={AdminLayout}/>} />,
   // // Other routes
   <Route key={11} path="/admin/sign-in" element={<AdminSignIn />} />,
+  <Route key={11} path="/choice/sign-in" element={<SignInChoicePage />} />,
+  <Route key={11} path="/student/sign-in" element={<StudentSignIn />} />,
+  <Route key={11} path="/professor/sign-in" element={<ProfessorSignIn />} />,
   // <Route key={11} path="/client/sign-in" element={<ClientSignIn />} />,
   // <Route key={11} path="/client/sign-up" element={<ClientSignUp />} />,
   // <Route key={11} path="/client/profile" element={<ClientProfile />} />,
