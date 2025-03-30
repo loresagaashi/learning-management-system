@@ -1,23 +1,17 @@
 import React, { useState } from "react";
-import Avatar from "@material-ui/core/Avatar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import ValidTextField from "../../component/common/ValidTextField";
 import { UserService } from "../../service/UserService";
 import useUser from "../../hooks/useUser";
 import { QueryKeys } from "../../service/QueryKeys";
 import LoadingButton from "../../component/LoadingButton";
-import MuiAlert from "@material-ui/lab/Alert";
-import { Snackbar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     maxWidth: "400px",
     width: "100%",
-    background: "linear-gradient(130deg, rgb(199, 222, 241) 20%,rgb(217, 236, 251) 50%, rgb(199, 222, 241) 80%)",
+    background:
+      "linear-gradient(130deg, rgb(199, 222, 241) 20%,rgb(217, 236, 251) 50%, rgb(199, 222, 241) 80%)",
   },
   form: {
     width: "100%",
@@ -63,7 +58,11 @@ const useStyles = makeStyles((theme) => ({
 
 const userService = new UserService();
 
-export default function AdminSignIn({ onSuccess, hideSignUpLink, isLoading }) {
+export default function StudentSignIn({
+  onSuccess,
+  hideSignUpLink,
+  isLoading,
+}) {
   const classes = useStyles();
   const { user, setUser } = useUser();
   const navigate = useNavigate();
@@ -73,24 +72,23 @@ export default function AdminSignIn({ onSuccess, hideSignUpLink, isLoading }) {
   });
   const [errorMessage, setErrorMessage] = useState(false);
 
-  // useMutation when we need to use it for example when clicking a button
   const {
     mutate,
     isLoading: signInLoading,
     error,
   } = useMutation(
     QueryKeys.USER_BY_EMAIL(userAccount.email),
-    (user) => userService.adminLogIn(user),
+    (user) => userService.login(user),
     {
       onSuccess: (data) => {
-        if(data?.user?.type === 'Admin') {
+        if (data?.user?.type === "Student") {
           setUser(data);
-          !!onSuccess ? onSuccess(data) : navigate("/admin/dashboard");
+          !!onSuccess ? onSuccess(data) : navigate("/student/page");
         } else {
           setErrorMessage(true);
         }
       },
-    },
+    }
   );
 
   function handleLogin() {
@@ -103,12 +101,8 @@ export default function AdminSignIn({ onSuccess, hideSignUpLink, isLoading }) {
     }
   }
 
-  const handleSnackbarClose = () => {
-    setErrorMessage(false);
-  };
-
-  if(user) {
-    navigate('/admin/dashboard',  { replace: true })
+  if (user) {
+    navigate("/student/page", { replace: true });
   }
 
   return (
@@ -170,4 +164,4 @@ export default function AdminSignIn({ onSuccess, hideSignUpLink, isLoading }) {
       </Container>
     </div>
   );
-}  
+}
