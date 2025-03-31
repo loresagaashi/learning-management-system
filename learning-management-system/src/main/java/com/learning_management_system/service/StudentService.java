@@ -1,5 +1,6 @@
 package com.learning_management_system.service;
 
+import com.learning_management_system.data.student.StudentSearchDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,18 @@ import com.learning_management_system.repository.StudentRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
+
 @Service
 public class StudentService extends BasicServiceOperations<StudentRepository, Student> {
 
      private final PasswordEncoder passwordEncoder;
+     private final StudentRepository studentRepository;
 
-    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder) {
+    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository) {
         super(repository);
         this.passwordEncoder = passwordEncoder;
+        this.studentRepository = studentRepository;
     }
     @Override
   public Student save(Student entity) {
@@ -71,6 +76,10 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
         }
 
         return student;
+    }
+
+    public List<StudentSearchDTO> getStudents(String search) {
+        return studentRepository.searchStudents(search);
     }
     
 }
