@@ -1,5 +1,5 @@
 package com.learning_management_system.controller.authentication;
-import com.learning_management_system.data.UserView;
+import com.learning_management_system.data.user.UserView;
 import com.learning_management_system.model.UserAccount;
 import com.learning_management_system.payload.JwtAuthenticationResponse;
 import com.learning_management_system.payload.LoginPayload;

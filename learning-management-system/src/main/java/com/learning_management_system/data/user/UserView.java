@@ -1,4 +1,4 @@
-package com.learning_management_system.data;
+package com.learning_management_system.data.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
