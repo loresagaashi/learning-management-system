@@ -14,12 +14,10 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
-import ListAltIcon from '@material-ui/icons/ListAlt';
-
-// New imports for icons
 import SchoolIcon from '@material-ui/icons/School';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import EventIcon from '@material-ui/icons/Event';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 
 const appMenuItems = [
   {
@@ -34,18 +32,23 @@ const appMenuItems = [
   },
   {
     name: "Courses",
-    Icon: SchoolIcon,  // Updated to SchoolIcon
+    Icon: SchoolIcon,
     link: "/admin/courses",
   },
   {
     name: "Materials",
-    Icon: LibraryBooksIcon,  // Updated to LibraryBooksIcon
+    Icon: LibraryBooksIcon,
     link: "/admin/materials",
   },
   {
     name: "Lectures",
-    Icon: EventIcon,  // Updated to EventIcon
+    Icon: EventIcon,
     link: "/admin/lectures",
+  },
+  {
+    name: "Assignments",
+    Icon: AssignmentIcon,
+    link: "/admin/assignment",
   },
 ];
 

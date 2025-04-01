@@ -5,24 +5,22 @@ import {
   TextFieldTableCell,
 } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
+import { useQuery } from "react-query";
+import { AssignmentService } from "../../../service/AssignmentService";
+import { CourseService } from "../../../service/CourseService";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import LockIcon from "@material-ui/icons/Lock";
-// import { StudentService } from "../../../service/StudentService";
-import { CourseService } from "../../../service/CourseService";
-import { LectureService } from "../../../service/LectureService";
-import { useQuery } from "react-query";
 
-const lectureService = new LectureService();
-
+const assignmentService = new AssignmentService();
 const courseService = new CourseService();
 
-export default function LecturesView({}) {
+export default function AssignmentView() {
   const errorRef = useRef();
 
   const { data: allCourses } = useQuery(QueryKeys.COURSE, () =>
     courseService.findAll()
   );
+
   const columns = [
     {
       title: "Id",
@@ -32,7 +30,7 @@ export default function LecturesView({}) {
     {
       title: "Course",
       field: "course",
-      render: (rowData) => rowData.course?.name,
+      render: (rowData) => rowData.course?.name || "N/A",
       editComponent: (props) =>
         SelectTableCell(
           props,
@@ -42,9 +40,19 @@ export default function LecturesView({}) {
         ),
     },
     {
-      title: "Lecture Date",
+      title: "Title",
+      field: "title",
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Description",
+      field: "description",
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Due Date",
+      field: "dueDate",
       type: "date",
-      field: "lectureDate",
       editComponent: (props) => (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
@@ -57,19 +65,14 @@ export default function LecturesView({}) {
         </MuiPickersUtilsProvider>
       ),
     },
-    {
-      title: "Topic",
-      field: "topic",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
-    },
   ];
 
   return (
     <CustomMaterialTable
-      title="Manage Lectures"
+      title="Manage Assignments"
       columns={columns}
-      service={lectureService}
-      queryKey={QueryKeys.LECTURE}
+      service={assignmentService}
+      queryKey={QueryKeys.ASSIGNMENT}
       errorRef={errorRef}
     />
   );

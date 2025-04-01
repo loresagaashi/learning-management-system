@@ -3,5 +3,6 @@ export const QueryKeys = {
   COURSE: "COURSE",
   LECTURE: "LECTURE",
   MATERIAL: "MATERIAL",
+  ASSIGNMENT: "ASSIGNMENT",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };
