@@ -1,4 +1,5 @@
 package com.learning_management_system.security.jwt;
+
 import com.learning_management_system.model.UserAccount;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
@@ -27,12 +29,17 @@ public class JwtTokenProvider {
     @Value("${app.jwtRefreshExpirationInMs}")
     private int refreshTokenExpirationInMs;
 
+    public String getJwtSecret() {
+        return jwtSecret;
+    }
+
     public String generateToken(Authentication authentication) {
 
         UserAccount userPrincipal = (UserAccount) authentication.getPrincipal();
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        log.info("JWT Expiration in Ms: {}", jwtExpirationInMs);
 
         return Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
@@ -88,5 +95,26 @@ public class JwtTokenProvider {
             log.error("JWT claims string is empty.");
         }
         return false;
+    }
+
+    public Long getExpirationTimeFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration().getTime(); // This gives expiration time in milliseconds
+    }
+
+    public String getFormattedExpirationTimeFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+        Date expirationDate = claims.getExpiration();
+
+        // Format the expiration date into a readable format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(expirationDate);
+        // System.out.println("Raw expiration date" + expirationDate);
     }
 }

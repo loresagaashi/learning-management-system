@@ -14,7 +14,7 @@ public class Lecture extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_lecture_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
     private Course course;
-
+    private String name;
     private LocalDate lectureDate;
     private String topic;
 }

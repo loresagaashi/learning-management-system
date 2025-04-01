@@ -1,5 +1,7 @@
 package com.learning_management_system.service;
 
+import com.learning_management_system.data.student.StudentSearchDTO;
+import jakarta.mail.MessagingException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,27 +15,47 @@ import com.learning_management_system.repository.StudentRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.io.IOException;
+import java.util.List;
+
 @Service
 public class StudentService extends BasicServiceOperations<StudentRepository, Student> {
 
      private final PasswordEncoder passwordEncoder;
+     private final StudentRepository studentRepository;
+     private final EmailService emailService;
 
-    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder) {
+    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService) {
         super(repository);
         this.passwordEncoder = passwordEncoder;
+        this.studentRepository = studentRepository;
+        this.emailService = emailService;
     }
     @Override
-  public Student save(Student entity) {
-    if (entity.getId() == null) {
-       entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-    } else {
-        Student user = repository.findById(entity.getId())
-          .orElseThrow(() -> new EntityNotFoundException("No entity found with id: " + entity.getId()));
-      entity.setPassword(user.getPassword());
-    }
+    public Student save(Student entity) {
+        boolean isNew = (entity.getId() == null);
 
-    return super.save(entity);
-  }
+        if (isNew) {
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        } else {
+            Student user = repository.findById(entity.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("No entity found with id: " + entity.getId()));
+            entity.setPassword(user.getPassword());
+        }
+
+        Student savedStudent = super.save(entity);
+
+        // Send welcome email only for new students
+        if (isNew) {
+            try {
+                emailService.sendWelcomeEmailToStudent(savedStudent.getId());
+            } catch (MessagingException | IOException e) {
+                throw new RuntimeException("Failed to send welcome email", e);
+            }
+        }
+
+        return savedStudent;
+    }
 
   @Override
   protected void validateEntity(Student entity) throws EntityValidationException {
@@ -71,6 +93,10 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
         }
 
         return student;
+    }
+
+    public List<StudentSearchDTO> getStudents(String search) {
+        return studentRepository.searchStudents(search);
     }
     
 }

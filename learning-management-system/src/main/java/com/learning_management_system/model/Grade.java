@@ -20,6 +20,6 @@ public class Grade extends BaseEntity {
    @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_grade_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
    private Student student;
     
-   private Double grade;
+   private Integer grade;
 
 }

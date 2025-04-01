@@ -1,6 +1,6 @@
 package com.learning_management_system.service.authentication;
 
-import com.learning_management_system.data.UserView;
+import com.learning_management_system.data.user.UserView;
 import com.learning_management_system.exception.NotFoundApiException;
 import com.learning_management_system.model.Admin;
 import com.learning_management_system.model.Professor;

@@ -1,5 +1,6 @@
 package com.learning_management_system.controller.authentication;
-import com.learning_management_system.data.UserView;
+
+import com.learning_management_system.data.user.UserView;
 import com.learning_management_system.model.UserAccount;
 import com.learning_management_system.payload.JwtAuthenticationResponse;
 import com.learning_management_system.payload.LoginPayload;
@@ -13,8 +14,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,11 +27,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-// import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
-// import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,29 +46,31 @@ public class AuthController {
     AdminRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
     JwtTokenProvider tokenProvider;
+
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginPayload loginRequest) {
-
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
+                            loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            // Generate JWT token
             String jwt = tokenProvider.generateToken(authentication);
-            String refreshedToken = tokenProvider.generateRefreshToken(authentication);
-            return ResponseEntity.ok(new JwtAuthenticationResponse((UserAccount) authentication.getPrincipal(), jwt, refreshedToken));
+            String refreshToken = tokenProvider.generateRefreshToken(authentication);
+
+            // Get formatted expiration time from JWT
+            String expirationTime = tokenProvider.getFormattedExpirationTimeFromToken(jwt);
+
+            // Return JWT with formatted expiration time
+            return ResponseEntity.ok(new JwtAuthenticationResponse((UserAccount) authentication.getPrincipal(), jwt,
+                    refreshToken, expirationTime));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
@@ -73,15 +79,19 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenPayload refreshTokenPayload) {
         String refreshToken = refreshTokenPayload.getRefreshToken();
-        if(tokenProvider.validateToken(refreshToken)) {
+        if (tokenProvider.validateToken(refreshToken)) {
             String username = tokenProvider.getUserFromToken(refreshToken);
             UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                    userDetails.getAuthorities());
             String newAccessToken = tokenProvider.generateToken(authentication);
 
-            return ResponseEntity.ok(new JwtAuthenticationResponse((UserAccount) userDetails, newAccessToken, refreshToken));
+            // Extract expiration time from new access token and format it
+            String expirationTime = tokenProvider.getFormattedExpirationTimeFromToken(newAccessToken);
 
+            return ResponseEntity.ok(new JwtAuthenticationResponse((UserAccount) userDetails, newAccessToken,
+                    refreshToken, expirationTime));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
@@ -100,5 +110,9 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK).body(userView);
     }
-
+    // private String formatExpirationTime(long expirationTimeInMs) {
+    // Date expirationDate = new Date(expirationTimeInMs);
+    // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // return dateFormat.format(expirationDate); // Format to a readable date string
+    // }
 }
