@@ -8,5 +8,6 @@ export const QueryKeys = {
   GRADE: "GRADE",
   REPORT: "REPORT",
   LOG: "LOG",
+  PAYMENT: "PAYMENT",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };
