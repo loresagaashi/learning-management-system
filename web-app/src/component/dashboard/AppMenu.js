@@ -18,6 +18,7 @@ import SchoolIcon from '@material-ui/icons/School';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import EventIcon from '@material-ui/icons/Event';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 const appMenuItems = [
   {
@@ -49,6 +50,11 @@ const appMenuItems = [
     name: "Assignments",
     Icon: AssignmentIcon,
     link: "/admin/assignment",
+  },
+  {
+    name: "Submissions",
+    Icon: InsertDriveFileIcon,
+    link: "/admin/submission",
   },
 ];
 

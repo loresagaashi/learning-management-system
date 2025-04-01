@@ -4,5 +4,6 @@ export const QueryKeys = {
   LECTURE: "LECTURE",
   MATERIAL: "MATERIAL",
   ASSIGNMENT: "ASSIGNMENT",
+  SUBMISSION: "SUBMISSION",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };

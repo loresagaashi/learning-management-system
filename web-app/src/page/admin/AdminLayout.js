@@ -28,6 +28,7 @@ import CoursesView from "./courses/CoursesView";
 import MaterialsView from "./materials/MaterialsView";
 import LecturesView from "./lectures/LecturesView";
 import AssignmentView from "./assignments/AssignmentView";
+import SubmissionView from "./submissions/SubmissionView";
 
 const drawerWidth = 240;
 
@@ -190,7 +191,8 @@ export default function AdminLayout({}) {
             <Route path="/materials" element={<MaterialsView/>}/>
             <Route path="/lectures" element={<LecturesView/>}/>
             <Route path="/assignment" element={<AssignmentView/>}/>
-           
+            <Route path="/submission" element={<SubmissionView/>}/>
+
           </Routes>
         }
       </main>
