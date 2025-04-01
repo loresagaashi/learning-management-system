@@ -1,5 +1,5 @@
 import "./App.css";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 import { queryClient, setQueryDefaults } from "./service/QueryClient";
 import { QueryClientProvider } from "react-query";
@@ -15,14 +15,13 @@ const customTheme = {
   overrides: {
     MuiTableRow: {
       head: {
-        background:
-          "linear-gradient(90deg, rgba(191,16,0,1) 0%, rgba(209,9,9,1) 28%, rgba(227,99,35,1) 58%, rgba(255,250,37,1) 100%)",
+          background: "#007BFF",
         color: "white",
       },
     },
     MuiTableSortLabel: {
       root: {
-        color: "yellow",
+        color: "white",
         fontSize: "1.2em",
         "&:hover": {
           color: "#424242 !important",
@@ -58,7 +57,6 @@ setQueryDefaults();
 
 function App() {
   const [theme, setTheme] = useState(customTheme);
-
   return (
     <AuthProvider>
       <CartProvider>
