@@ -2,6 +2,7 @@ package com.learning_management_system.service;
 
 import com.learning_management_system.data.professor.ProfessorSearchDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
+import jakarta.mail.MessagingException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.learning_management_system.repository.ProfessorRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -19,26 +21,42 @@ public class ProfessorService extends BasicServiceOperations<ProfessorRepository
 
    private final PasswordEncoder passwordEncoder;
    private final ProfessorRepository professorRepository;
+   private final EmailService emailService;
 
-    public ProfessorService(ProfessorRepository repository, PasswordEncoder passwordEncoder, ProfessorRepository professorRepository) {
+    public ProfessorService(ProfessorRepository repository, PasswordEncoder passwordEncoder, ProfessorRepository professorRepository, EmailService emailService) {
         super(repository);
         this.passwordEncoder = passwordEncoder;
         this.professorRepository = professorRepository;
+        this.emailService = emailService;
     }
     @Override
-  public Professor save(Professor entity) {
-    if (entity.getId() == null) {
-       entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-    } else {
-        Professor user = repository.findById(entity.getId())
-          .orElseThrow(() -> new EntityNotFoundException("No entity found with id: " + entity.getId()));
-      entity.setPassword(user.getPassword());
+    public Professor save(Professor entity) {
+        boolean isNew = (entity.getId() == null);
+
+        if (isNew) {
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        } else {
+            Professor user = repository.findById(entity.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("No entity found with id: " + entity.getId()));
+            entity.setPassword(user.getPassword());
+        }
+
+        Professor savedProfessor = super.save(entity);
+
+        // Send welcome email only for new professors
+        if (isNew) {
+            try {
+               emailService.sendWelcomeEmailToProfessor(savedProfessor.getId());
+            } catch (MessagingException | IOException e) {
+                throw new RuntimeException("Failed to send welcome email", e);
+            }
+        }
+
+        return savedProfessor;
     }
 
-    return super.save(entity);
-  }
 
-  @Override
+    @Override
   protected void validateEntity(Professor entity) throws EntityValidationException {
 
     Professor existingProfessor= repository.findByEmail(entity.getEmail()).orElse(null);
