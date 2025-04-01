@@ -21,6 +21,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import DescriptionIcon from '@material-ui/icons/Description';
+import ListAltIcon from "@material-ui/icons/ListAlt";
 
 const appMenuItems = [
   {
@@ -67,6 +68,11 @@ const appMenuItems = [
     name: "Reports",
     Icon: DescriptionIcon,
     link: "/admin/report",
+  },
+  {
+    name: "Logs",
+    Icon: ListAltIcon,
+    link: "/admin/log",
   },
 ];
 
