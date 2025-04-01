@@ -11,6 +11,10 @@ import { GradeService } from "./GradeService";
 import { ReportService } from "./ReportService";
 import { LogService } from "./LogService";
 import { PaymentService } from "./PaymentService";
+import { OrientationService } from "./OrientationService";
+import { ScheduleService } from "./ScheduleService";
+import { FeedbackService } from "./FeedbackService";
+import { EnrollmentService } from "./EnrollmentService";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +40,10 @@ export const setQueryDefaults = () => {
   const reportService = new ReportService();
   const logService = new LogService();
   const paymentService = new PaymentService();
+  const orientationService = new OrientationService();
+  const scheduleService = new ScheduleService();
+  const feedbackService = new FeedbackService();
+  const enrollmentService = new EnrollmentService();
 
   queryClient.setQueryDefaults(QueryKeys.ADMINS, {
     queryFn: () => adminsService.findAll(),
@@ -69,5 +77,17 @@ export const setQueryDefaults = () => {
   });
   queryClient.setQueryDefaults(QueryKeys.PAYMENT, {
     queryFn: () => paymentService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.ORIENTATION, {
+    queryFn: () => orientationService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.SCHEDULE, {
+    queryFn: () => scheduleService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.FEEDBACK, {
+    queryFn: () => feedbackService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.ENROLLMENT, {
+    queryFn: () => enrollmentService.findAll(),
   });
 };
