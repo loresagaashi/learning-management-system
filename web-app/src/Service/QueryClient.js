@@ -10,6 +10,7 @@ import { SubmissionService } from "./SubmissionService";
 import { GradeService } from "./GradeService";
 import { ReportService } from "./ReportService";
 import { LogService } from "./LogService";
+import { PaymentService } from "./PaymentService";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ export const setQueryDefaults = () => {
   const gradeService = new GradeService();
   const reportService = new ReportService();
   const logService = new LogService();
+  const paymentService = new PaymentService();
 
   queryClient.setQueryDefaults(QueryKeys.ADMINS, {
     queryFn: () => adminsService.findAll(),
@@ -64,5 +66,8 @@ export const setQueryDefaults = () => {
   });
   queryClient.setQueryDefaults(QueryKeys.LOG, {
     queryFn: () => logService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.PAYMENT, {
+    queryFn: () => paymentService.findAll(),
   });
 };
