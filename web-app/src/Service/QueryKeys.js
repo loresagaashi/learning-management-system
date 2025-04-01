@@ -6,5 +6,6 @@ export const QueryKeys = {
   ASSIGNMENT: "ASSIGNMENT",
   SUBMISSION: "SUBMISSION",
   GRADE: "GRADE",
+  REPORT: "REPORT",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };

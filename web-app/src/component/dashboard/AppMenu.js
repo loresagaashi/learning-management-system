@@ -19,9 +19,8 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import EventIcon from '@material-ui/icons/Event';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import CheckIcon from '@material-ui/icons/Check';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import DescriptionIcon from '@material-ui/icons/Description';
 
 const appMenuItems = [
   {
@@ -63,6 +62,11 @@ const appMenuItems = [
     name: "Grades",
     Icon: InsertDriveFileIcon,
     link: "/admin/grade",
+  },
+  {
+    name: "Reports",
+    Icon: DescriptionIcon,
+    link: "/admin/report",
   },
 ];
 
