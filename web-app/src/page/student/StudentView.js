@@ -15,51 +15,57 @@ export default function StudentView({}) {
 
   const columns = [
     {
-        title: "Id",
-        field: "id",
-        editComponent: (props) => TextFieldTableCell(props, errorRef),
-      },
+      title: "ID",
+      field: "id",
+      editable: "never",
+    },
     {
-      title: "Name",
-      field: "name",
+      title: "First Name",
+      field: "firstName",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-        title: "Enrollment Date",
-        field: "enrollmentDate",
-        type: "date",
-        editComponent: (props) => (
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DatePicker
-              value={props.value}
-              onChange={(date) => props.onChange(date)}
-              format="yyyy-MM-dd"
-              inputVariant="outlined"
-              fullWidth
-            />
-          </MuiPickersUtilsProvider>
-        ),
-      },
-      {
-        title: "City",
-        field: "city.id",
-        editComponent: (props) => (
-          <SelectTableCell
-            {...props}
-            // service={cityService}
-            queryKey={QueryKeys.CITY}
-            optionLabel="name" 
-            optionValue="id"
+      title: "Last Name",
+      field: "lastName",
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Email",
+      field: "email",
+      editable: "never", 
+    },
+    {
+      title: "Password",
+      field: "password",
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Birth Date",
+      field: "birthDate",
+      type: "date",
+      editComponent: (props) => (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DatePicker
+            value={props.value || null}
+            onChange={(date) => props.onChange(date)}
+            format="yyyy-MM-dd"
+            inputVariant="outlined"
+            fullWidth
           />
-        ),
-      },
-    //   {
-    //     title: "Status",
-    //     field: "status",
-    //     editComponent: (props) => (
-    //       <SelectTableCell {...props} options={StatusEnum} />
-    //     ),
-    //   },
+        </MuiPickersUtilsProvider>
+      ),
+    },
+    {
+      title: "Phone Number",
+      field: "phoneNumber",
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Status",
+      field: "status",
+      // editable: "never",
+      defaultValue: "Student",
+    },
   ];
 
   return (
