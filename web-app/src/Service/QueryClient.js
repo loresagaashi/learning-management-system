@@ -1,7 +1,7 @@
 import { QueryClient } from "react-query";
 import { QueryKeys } from "./QueryKeys";
 import { AdminService } from "./AdminService";
-// import { StudentService } from "./StudentService";
+import { StudentService } from "./StudentService";
 import { CourseService } from "./CourseService";
 import { LectureService } from "./LectureService";
 import { MaterialService } from "./MaterialService";
@@ -26,7 +26,7 @@ export const queryClient = new QueryClient({
 
 export const setQueryDefaults = () => {
   const adminsService = new AdminService();
-  // const studentsService = new StudentService();
+  const studentsService = new StudentService();
   const courseService = new CourseService();
   const lectureService = new LectureService();
   const materialService = new MaterialService();
@@ -40,9 +40,9 @@ export const setQueryDefaults = () => {
   queryClient.setQueryDefaults(QueryKeys.ADMINS, {
     queryFn: () => adminsService.findAll(),
   });
-  // queryClient.setQueryDefaults(QueryKeys.STUDENTS, {
-  //   queryFn: () => studentsService.findAll(),
-  // });
+  queryClient.setQueryDefaults(QueryKeys.STUDENTS, {
+    queryFn: () => studentsService.findAll(),
+  });
   queryClient.setQueryDefaults(QueryKeys.COURSE, {
     queryFn: () => courseService.findAll(),
   });

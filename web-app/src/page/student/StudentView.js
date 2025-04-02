@@ -40,6 +40,26 @@ export default function StudentView({}) {
           </MuiPickersUtilsProvider>
         ),
       },
+      {
+        title: "City",
+        field: "city.id",
+        editComponent: (props) => (
+          <SelectTableCell
+            {...props}
+            // service={cityService}
+            queryKey={QueryKeys.CITY}
+            optionLabel="name" 
+            optionValue="id"
+          />
+        ),
+      },
+    //   {
+    //     title: "Status",
+    //     field: "status",
+    //     editComponent: (props) => (
+    //       <SelectTableCell {...props} options={StatusEnum} />
+    //     ),
+    //   },
   ];
 
   return (
