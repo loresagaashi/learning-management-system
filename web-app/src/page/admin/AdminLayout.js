@@ -32,6 +32,11 @@ import LogView from "./logs/LogView";
 import PaymentView from "./payments/PaymentView";
 import StudentView from "./students/StudentView";
 import ProfessorView from "./professors/ProfessorView";
+import OrientationView from "./orientations/OrientationView";
+import ScheduleView from "./schedules/ScheduleView";
+import EnrollmentView from "./enrollments/EnrollmentView";
+import FeedbackView from "./feedbacks/FeedbackView";
+import AdminView from "./admins/AdminView";
 
 const drawerWidth = 240;
 
@@ -189,6 +194,7 @@ export default function AdminLayout({}) {
         {user?.user?.type === 'Admin' &&
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard/>}/>
+            <Route path="/admins" element={<AdminView/>}/>
             <Route path="/students" element={<StudentView/>}/>
             <Route path="/professor" element={<ProfessorView/>}/>
             <Route path="/courses" element={<CoursesView/>}/>
@@ -200,6 +206,10 @@ export default function AdminLayout({}) {
             <Route path="/report" element={<ReportView/>}/>
             <Route path="/log" element={<LogView/>}/>
             <Route path="/payments" element={<PaymentView/>}/>
+            <Route path="/orientations" element={<OrientationView/>}/>
+            <Route path="/schedules" element={<ScheduleView/>}/>
+            <Route path="/enrollment" element={<EnrollmentView/>}/>
+            <Route path="/feedbacks" element={<FeedbackView/>}/>
 
           </Routes>
         }
