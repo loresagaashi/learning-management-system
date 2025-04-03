@@ -2,8 +2,8 @@ import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTabl
 import { useRef } from "react";
 import { TextFieldTableCell } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
-import { CityService } from "../../../service/CityService";
 import { useQuery } from "react-query";
+import { CityService } from "../../../service/CityService";
 
 const cityService = new CityService();
 
@@ -14,12 +14,24 @@ export default function CityView({}) {
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Name",
       field: "name",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

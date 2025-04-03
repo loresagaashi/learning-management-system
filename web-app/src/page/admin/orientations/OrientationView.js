@@ -15,6 +15,7 @@ const courseService = new CourseService();
 export default function OrientationView({}) {
   const errorRef = useRef();
 
+  // Fetching all courses
   const { data: allCourses } = useQuery(QueryKeys.COURSE, () =>
     courseService.findAll()
   );
@@ -23,7 +24,7 @@ export default function OrientationView({}) {
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Name",
@@ -38,10 +39,22 @@ export default function OrientationView({}) {
         SelectTableCell(
           props,
           errorRef,
-          allCourses?.map((x) => ({ value: x, label: x.name })) || [],
-          "id",
+          allCourses?.map((x) => ({ value: x.id, label: x.name })) || [],
+          "value", // Key for selection
           true // Allows multiple selection
         ),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

@@ -27,6 +27,11 @@ export default function LecturesView({}) {
     {
       title: "Id",
       field: "id",
+      editable: "never",
+    },
+    {
+      title: "Name",
+      field: "name",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
@@ -61,6 +66,18 @@ export default function LecturesView({}) {
       title: "Topic",
       field: "topic",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

@@ -35,18 +35,18 @@ export default function ScheduleView({}) {
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Student",
       field: "student",
-      render: (rowData) => rowData.student?.name,
+      render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allStudents?.map((x) => ({ value: x, label: x.name })) || [],
-          "id"
+          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
         ),
     },
     {
@@ -59,6 +59,18 @@ export default function ScheduleView({}) {
           errorRef,
           allCourses?.map((x) => ({ value: x, label: x.name })) || [],
           "id"
+        ),
+    },
+    {
+      title: "Professor",
+      field: "professor",
+      render: (rowData) => rowData.professor ? `${rowData.professor.firstName} ${rowData.professor.lastName}` : '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allProfessors?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
         ),
     },
     {
@@ -91,16 +103,16 @@ export default function ScheduleView({}) {
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-      title: "Professor",
-      field: "professor",
-      render: (rowData) => rowData.professor?.name,
-      editComponent: (props) =>
-        SelectTableCell(
-          props,
-          errorRef,
-          allProfessors?.map((x) => ({ value: x, label: x.name })) || [],
-          "id"
-        ),
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

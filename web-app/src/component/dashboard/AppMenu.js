@@ -23,11 +23,13 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import DescriptionIcon from '@material-ui/icons/Description';
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import PaymentIcon from '@material-ui/icons/Payment';
-import ExploreIcon from "@material-ui/icons/Explore"; 
+import LocationCityIcon from '@material-ui/icons/LocationCity';
 import EventAvailableIcon from "@material-ui/icons/EventAvailable";
 import HowToRegIcon from "@material-ui/icons/HowToReg";
 import StarIcon from "@material-ui/icons/Star";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 
 const appMenuItems = [
   {
@@ -37,8 +39,8 @@ const appMenuItems = [
   },
   {
     name: "Admins",
-    Icon: PersonIcon,
-    link: "/admin/admins",
+    Icon: PersonOutlineIcon,
+    link: "/admin/admin",
   },
   {
     name:"Students",
@@ -47,7 +49,7 @@ const appMenuItems = [
   },
   {
     name:"Professors",
-    Icon: PersonIcon,
+    Icon: AccountBoxIcon,
     link: "/admin/professor",
   },
   {
@@ -114,6 +116,11 @@ const appMenuItems = [
     name: "Feedbacks",
     Icon: StarIcon,
     link: "/admin/feedbacks",
+  },
+  {
+    name: "Cities",
+    Icon: LocationCityIcon,
+    link: "/admin/cities",
   },  
 ];
 

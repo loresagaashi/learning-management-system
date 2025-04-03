@@ -5,19 +5,18 @@ import {
   TextFieldTableCell,
 } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
-// import { useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { ReportService } from "../../../service/ReportService";
-// import { StudentService } from "../../../service/StudentService";
+import { StudentService } from "../../../service/StudentService";
 
 const reportService = new ReportService();
-// const studentService = new StudentService();
-
+const studentService = new StudentService
 export default function ReportView() {
   const errorRef = useRef();
 
-//   const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
-//     studentService.findAll()
-//   );
+  const { data: allStudents } = useQuery(QueryKeys.STUDENTS, () =>
+    studentService.findAll()
+  );
 
   const columns = [
     {
@@ -36,18 +35,30 @@ export default function ReportView() {
       field: "performance",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
-   //  {
-   //    title: "Student",
-   //    field: "student",
-   //    render: (rowData) => rowData.student?.fullName || "N/A",
-   //    editComponent: (props) =>
-   //      SelectTableCell(
-   //        props,
-   //        errorRef,
-   //        allStudents?.map((x) => ({ value: x, label: x.fullName })) || [],
-   //        "id"
-   //      ),
-   //  },
+    {
+      title: "Student",
+      field: "student",
+      render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
+        ),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
+    },
   ];
 
   return (

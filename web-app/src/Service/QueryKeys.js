@@ -1,5 +1,6 @@
 export const QueryKeys = {
   STUDENTS: "STUDENTS",
+  ADMIN: "ADMIN",
   COURSE: "COURSE",
   LECTURE: "LECTURE",
   MATERIAL: "MATERIAL",
