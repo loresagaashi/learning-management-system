@@ -23,7 +23,7 @@ import {
   useTheme,
 } from "@material-ui/core";
 import AdminDashboard from "./dashboard/AdminDashboard";
-// import StudentsView from "./students/StudentsView";
+import StudentsView from "./students/StudentsView";
 import CoursesView from "./courses/CoursesView";
 import MaterialsView from "./materials/MaterialsView";
 import LecturesView from "./lectures/LecturesView";
@@ -190,7 +190,7 @@ export default function AdminLayout({}) {
         {user?.user?.type === 'Admin' &&
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard/>}/>
-            {/* <Route path="/students" element={<StudentsView/>}/> */}
+            <Route path="/students" element={<StudentsView/>}/>
             <Route path="/courses" element={<CoursesView/>}/>
             <Route path="/materials" element={<MaterialsView/>}/>
             <Route path="/lectures" element={<LecturesView/>}/>
