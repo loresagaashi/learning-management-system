@@ -14,5 +14,6 @@ export const QueryKeys = {
   FEEDBACK: "FEEDBACK",
   ENROLLMENT: "ENROLLMENT",
   PROFESSOR: "PROFESSOR",
+  CITY: "CITY",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };
