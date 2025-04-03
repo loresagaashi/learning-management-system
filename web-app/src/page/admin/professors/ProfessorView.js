@@ -4,13 +4,11 @@ import { SelectTableCell, TextFieldTableCell } from "../../../component/TableCel
 import { QueryKeys } from "../../../service/QueryKeys";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import LockIcon from "@material-ui/icons/Lock";
-import { StudentService } from "../../../service/StudentService";
+import { ProfessorService } from "../../../service/ProfessorService";
 
+const professorService = new ProfessorService();
 
-const studentService = new StudentService();
-
-export default function StudentView({}) {
+export default function ProfessorView({}) {
   const errorRef = useRef();
 
   const columns = [
@@ -64,16 +62,16 @@ export default function StudentView({}) {
       title: "Status",
       field: "status",
       // editable: "never",
-      defaultValue: "Student",
+      defaultValue: "Professor",
     },
   ];
 
   return (
     <CustomMaterialTable
-      title="Manage Students"
+      title="Manage Professors"
       columns={columns}
-      service={studentService}
-      queryKey={QueryKeys.COURSE}
+      service={professorService}
+      queryKey={QueryKeys.PROFESSOR}
       errorRef={errorRef}
     />
   );

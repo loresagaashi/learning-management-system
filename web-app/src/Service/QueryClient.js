@@ -15,6 +15,7 @@ import { OrientationService } from "./OrientationService";
 import { ScheduleService } from "./ScheduleService";
 import { FeedbackService } from "./FeedbackService";
 import { EnrollmentService } from "./EnrollmentService";
+import { ProfessorService } from "./ProfessorService";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,7 @@ export const queryClient = new QueryClient({
 export const setQueryDefaults = () => {
   const adminsService = new AdminService();
   const studentsService = new StudentService();
+  const professorService = new ProfessorService();
   const courseService = new CourseService();
   const lectureService = new LectureService();
   const materialService = new MaterialService();
@@ -50,6 +52,9 @@ export const setQueryDefaults = () => {
   });
   queryClient.setQueryDefaults(QueryKeys.STUDENTS, {
     queryFn: () => studentsService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.PROFESSOR, {
+    queryFn: () => professorService.findAll(),
   });
   queryClient.setQueryDefaults(QueryKeys.COURSE, {
     queryFn: () => courseService.findAll(),

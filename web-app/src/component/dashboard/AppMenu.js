@@ -31,9 +31,14 @@ const appMenuItems = [
     link: "/admin/dashboard",
   },
   {
-    name:" Students ",
+    name:"Students",
     Icon: PersonIcon,
     link: "/admin/students",
+  },
+  {
+    name:"Professors",
+    Icon: PersonIcon,
+    link: "/admin/professor",
   },
   {
     name: "Courses",
