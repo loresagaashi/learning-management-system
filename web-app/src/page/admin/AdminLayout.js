@@ -37,6 +37,7 @@ import ScheduleView from "./schedules/ScheduleView";
 import EnrollmentView from "./enrollments/EnrollmentView";
 import FeedbackView from "./feedbacks/FeedbackView";
 import AdminView from "./admins/AdminView";
+import CityView from "../cities/CityView";
 
 const drawerWidth = 240;
 
@@ -210,6 +211,7 @@ export default function AdminLayout({}) {
             <Route path="/schedules" element={<ScheduleView/>}/>
             <Route path="/enrollment" element={<EnrollmentView/>}/>
             <Route path="/feedbacks" element={<FeedbackView/>}/>
+            <Route path="/cities" element={<CityView/>}/>
 
           </Routes>
         }
