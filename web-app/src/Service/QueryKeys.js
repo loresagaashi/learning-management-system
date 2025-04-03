@@ -13,5 +13,6 @@ export const QueryKeys = {
   SCHEDULE: "SCHEDULE",
   FEEDBACK: "FEEDBACK",
   ENROLLMENT: "ENROLLMENT",
+  PROFESSOR: "PROFESSOR",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };

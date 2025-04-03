@@ -14,16 +14,13 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
 import AppMenu from "../../component/dashboard/AppMenu";
 import { Route, Routes, useLocation } from "react-router-dom";
-
 import useUser from "../../hooks/useUser";
-
 import DarkModeIcon from '@material-ui/icons/Brightness4';
 import LightModeIcon from '@material-ui/icons/Brightness7';
 import {
   useTheme,
 } from "@material-ui/core";
 import AdminDashboard from "./dashboard/AdminDashboard";
-import StudentsView from "./students/StudentsView";
 import CoursesView from "./courses/CoursesView";
 import MaterialsView from "./materials/MaterialsView";
 import LecturesView from "./lectures/LecturesView";
@@ -33,6 +30,8 @@ import GradeView from "./grades/GradeView";
 import ReportView from "./reports/ReportView";
 import LogView from "./logs/LogView";
 import PaymentView from "./payments/PaymentView";
+import StudentView from "./students/StudentView";
+import ProfessorView from "./professors/ProfessorView";
 
 const drawerWidth = 240;
 
@@ -190,7 +189,8 @@ export default function AdminLayout({}) {
         {user?.user?.type === 'Admin' &&
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard/>}/>
-            <Route path="/students" element={<StudentsView/>}/>
+            <Route path="/students" element={<StudentView/>}/>
+            <Route path="/professor" element={<ProfessorView/>}/>
             <Route path="/courses" element={<CoursesView/>}/>
             <Route path="/materials" element={<MaterialsView/>}/>
             <Route path="/lectures" element={<LecturesView/>}/>
