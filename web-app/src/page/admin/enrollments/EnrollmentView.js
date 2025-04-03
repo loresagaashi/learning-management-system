@@ -29,18 +29,18 @@ export default function EnrollmentView({}) {
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Student",
       field: "student",
-      render: (rowData) => rowData.student?.name,
+      render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allStudents?.map((x) => ({ value: x, label: x.name })) || [],
-          "id"
+          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
         ),
     },
     {
@@ -66,10 +66,22 @@ export default function EnrollmentView({}) {
       field: "status",
       editComponent: (props) =>
         SelectTableCell(props, errorRef, [
-          { value: "PENDING", label: "Pending" },
-          { value: "APPROVED", label: "Approved" },
-          { value: "REJECTED", label: "Rejected" },
+          { value: "ACTIVE", label: "Active" },
+          { value: "COMPLETED", label: "Completed" },
+          { value: "DROPPED", label: "Dropped" },
         ]),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

@@ -5,6 +5,8 @@ import { QueryKeys } from "../../../service/QueryKeys";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { AdminService } from "../../../service/AdminService";
+import { Lock } from "@material-ui/icons"; 
+import PasswordEditComponent from "../../../component/PasswordEditComponent";
 
 const adminService = new AdminService();
 
@@ -35,8 +37,14 @@ export default function AdminView() {
     {
       title: "Password",
       field: "password",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
-    },
+      render: () => (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Lock />
+          <span style={{ marginLeft: 5 }}>••••••••</span>
+        </div>
+      ),
+      editComponent: (props) => <PasswordEditComponent {...props} />,
+    }, 
     {
       title: "Birth Date",
       field: "birthDate",
@@ -63,6 +71,18 @@ export default function AdminView() {
       field: "type",
       editable: "never",
       defaultValue: "Admin",
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

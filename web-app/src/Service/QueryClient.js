@@ -49,7 +49,7 @@ export const setQueryDefaults = () => {
   const enrollmentService = new EnrollmentService();
   const cityService = new CityService();
 
-  queryClient.setQueryDefaults(QueryKeys.ADMINS, {
+  queryClient.setQueryDefaults(QueryKeys.ADMIN, {
     queryFn: () => adminsService.findAll(),
   });
   queryClient.setQueryDefaults(QueryKeys.STUDENTS, {

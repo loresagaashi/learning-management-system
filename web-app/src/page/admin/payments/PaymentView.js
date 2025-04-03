@@ -7,35 +7,35 @@ import {
 import { QueryKeys } from "../../../service/QueryKeys";
 import { useQuery } from "react-query";
 import { PaymentService } from "../../../service/PaymentService";
-// import { StudentService } from "../../../service/StudentService";
+import { StudentService } from "../../../service/StudentService";
 
 const paymentService = new PaymentService();
-// const studentService = new StudentService();
+const studentService = new StudentService();
 
 export default function PaymentView({}) {
   const errorRef = useRef();
 
-//   const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
-//     studentService.findAll()
-//   );
+  const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
+    studentService.findAll()
+  );
 
   const columns = [
     {
       title: "ID",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Student",
       field: "student",
-      // render: (rowData) => rowData.student?.fullName,
-      // editComponent: (props) =>
-      //   SelectTableCell(
-      //     props,
-      //     errorRef,
-      //     allStudents?.map((x) => ({ value: x, label: x.fullName })) || [],
-      //     "id"
-      //   ),
+      render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
+        ),
     },
     {
       title: "Amount",
@@ -70,6 +70,18 @@ export default function PaymentView({}) {
           { value: "PENDING", label: "Pending" },
           { value: "FAILED", label: "Failed" },
         ]),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 
