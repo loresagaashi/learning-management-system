@@ -23,12 +23,22 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import DescriptionIcon from '@material-ui/icons/Description';
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import PaymentIcon from '@material-ui/icons/Payment';
+import ExploreIcon from "@material-ui/icons/Explore"; 
+import EventAvailableIcon from "@material-ui/icons/EventAvailable";
+import HowToRegIcon from "@material-ui/icons/HowToReg";
+import StarIcon from "@material-ui/icons/Star";
+import MenuBookIcon from "@material-ui/icons/MenuBook";
 
 const appMenuItems = [
   {
     name: "Dashboard",
     Icon: DashboardIcon,
     link: "/admin/dashboard",
+  },
+  {
+    name: "Admins",
+    Icon: PersonIcon,
+    link: "/admin/admins",
   },
   {
     name:"Students",
@@ -85,6 +95,26 @@ const appMenuItems = [
     Icon: PaymentIcon,
     link: "/admin/payments",
   },
+  {
+    name: "Orientations",
+    Icon: MenuBookIcon,
+    link: "/admin/orientations",
+  },
+  {
+    name: "Schedules",
+    Icon: EventAvailableIcon,
+    link: "/admin/schedules",
+  },
+  {
+    name: "Enrollments",
+    Icon: HowToRegIcon,
+    link: "/admin/enrollment",
+  },
+  {
+    name: "Feedbacks",
+    Icon: StarIcon,
+    link: "/admin/feedbacks",
+  },  
 ];
 
 
