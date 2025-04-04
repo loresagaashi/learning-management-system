@@ -8,9 +8,11 @@ import { QueryKeys } from "../../../service/QueryKeys";
 import { useQuery } from "react-query";
 import { ReportService } from "../../../service/ReportService";
 import { StudentService } from "../../../service/StudentService";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const reportService = new ReportService();
-const studentService = new StudentService
+const studentService = new StudentService();
 export default function ReportView() {
   const errorRef = useRef();
 
@@ -26,9 +28,19 @@ export default function ReportView() {
     },
     {
       title: "Report Date",
-      field: "reportDate",
       type: "date",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      field: "reportDate",
+      editComponent: (props) => (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DatePicker
+            value={props.value}
+            onChange={(date) => props.onChange(date)}
+            format="yyyy-MM-dd"
+            inputVariant="outlined"
+            fullWidth
+          />
+        </MuiPickersUtilsProvider>
+      ),
     },
     {
       title: "Performance",

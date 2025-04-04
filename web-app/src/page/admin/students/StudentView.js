@@ -1,7 +1,7 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
 import { useQuery } from "react-query";
-import { SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
+import { EnumSelectTableCell, NumberFieldTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -29,7 +29,7 @@ export default function StudentView({}) {
     {
       title: "Student ID",
       field: "studentId",
-      editable: "never",
+      editComponent: (props) => NumberFieldTableCell(props, errorRef),
     },
     {
       title: "First Name",
@@ -44,7 +44,7 @@ export default function StudentView({}) {
     {
       title: "Email",
       field: "email",
-      editable: "never", 
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
       title: "Password",
@@ -93,6 +93,7 @@ export default function StudentView({}) {
     {
       title: "Enrollment Date",
       field: "enrollmentDate",
+      type:"date",
       editComponent: (props) => (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <DatePicker
@@ -109,10 +110,10 @@ export default function StudentView({}) {
       title: "Status",
       field: "status",
       editComponent: (props) =>
-        SelectTableCell(props, errorRef, [
-          { value: 'ACTIVE', label: 'Active' },
-          { value: 'INACTIVE', label: 'Inactive' },
-          { value: 'GRADUATED', label: 'Graduated' },
+        EnumSelectTableCell(props, errorRef, [
+          { value: "ACTIVE", label: "Active" },
+          { value: "INACTIVE", label: "Inactive" },
+          { value: "GRADUATED", label: "Graduated" },
         ]),
     },
     {

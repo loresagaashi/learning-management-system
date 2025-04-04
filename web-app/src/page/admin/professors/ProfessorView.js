@@ -44,7 +44,8 @@ export default function ProfessorView({}) {
     {
       title: "Email",
       field: "email",
-      editable: "never", 
+      // editable: "never", 
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
       title: "Password",
@@ -76,14 +77,14 @@ export default function ProfessorView({}) {
     {
       title: "City",
       field: "city",
-      render: (rowData) => rowData.city?.name,
-      editComponent: (props) =>
-        SelectTableCell(
-          props,
-          errorRef,
-          allCities?.map((x) => ({ value: x, label: x.name })) || [],
-          "id",
-      ),
+       render: (rowData) => rowData.city?.name || '',
+            editComponent: (props) =>
+              SelectTableCell(
+                props,
+                errorRef,
+                allCities?.map((x) => ({ value: x, label: x.name })) || [],
+                "id",
+              ),
     },
     {
       title: "Phone Number",
