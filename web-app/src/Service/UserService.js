@@ -13,6 +13,20 @@ export class UserService extends BaseService {
       throw { message: error }
       }
   }
+  async studentLogIn(body){
+    try {
+      return await axiosInstance.post('/auth/login', body);
+    } catch (error) {
+      throw { message: error }
+      }
+  }
+  async professorLogIn(body){
+    try {
+      return await axiosInstance.post('/auth/login', body);
+    } catch (error) {
+      throw { message: error }
+      }
+  }
   async clientLogIn(body){
     try {
       return await axiosInstance.post('/auth/login', body);

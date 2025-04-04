@@ -78,7 +78,7 @@ export default function ProfessorSignIn({
     error,
   } = useMutation(
     QueryKeys.USER_BY_EMAIL(userAccount.email),
-    (user) => userService.login(user),
+    (user) => userService.professorLogIn(user),
     {
       onSuccess: (data) => {
         if (data?.user?.type === "Professor") {
