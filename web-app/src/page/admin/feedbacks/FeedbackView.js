@@ -1,6 +1,7 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
 import {
+  NumberFieldTableCell,
   SelectTableCell,
   TextFieldTableCell,
 } from "../../../component/TableCells";
@@ -9,15 +10,18 @@ import { FeedbackService } from "../../../service/FeedbackService";
 import { StudentService } from "../../../service/StudentService";
 import { CourseService } from "../../../service/CourseService";
 import { useQuery } from "react-query";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from '@date-io/date-fns';
 
 const feedbackService = new FeedbackService();
 const studentService = new StudentService();
 const courseService = new CourseService();
+const initialTime = new Date(); 
 
 export default function FeedbackView({}) {
   const errorRef = useRef();
 
-  const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
+  const { data: allStudents } = useQuery(QueryKeys.STUDENTS, () =>
     studentService.findAll()
   );
 
@@ -58,8 +62,7 @@ export default function FeedbackView({}) {
     {
       title: "Rating",
       field: "rating",
-      type: "numeric",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editComponent: (props) => NumberFieldTableCell(props, errorRef),
     },
     {
       title: "Comment",
@@ -67,10 +70,20 @@ export default function FeedbackView({}) {
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-      title: "Timestamp",
-      field: "timestamp",
-      type: "datetime",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      title: 'Timestamp',
+      field: 'createdAt',
+      initialEditValue: initialTime, editComponent: props => (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                    {...props}
+                    inputVariant="outlined"
+                    format="yyyy-MM-dd HH:mm" 
+                    showTodayButton
+                    autoOk
+                    error={Boolean(props.helperText)}
+                />
+            </MuiPickersUtilsProvider>
+    )
     },
     {
       title: "Created On",

@@ -21,7 +21,7 @@ export default function GradeView({}) {
     assignmentService.findAll()
   );
 
-  const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
+  const { data: allStudents } = useQuery(QueryKeys.STUDENTS, () =>
     studentService.findAll()
   );
 

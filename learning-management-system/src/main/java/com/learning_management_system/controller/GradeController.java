@@ -7,7 +7,7 @@ import com.learning_management_system.model.Grade;
 import com.learning_management_system.service.GradeService;
 
 @RestController
-@RequestMapping("/grade")
+@RequestMapping("/grades")
 public class GradeController extends BasicControllerOperations<GradeService, Grade> {
 
    public GradeController(GradeService service) {

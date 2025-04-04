@@ -7,7 +7,7 @@ import com.learning_management_system.model.Enrollment;
 import com.learning_management_system.service.EnrollmentService;
 
 @RestController
-@RequestMapping("/enrollment")
+@RequestMapping("/enrollments")
 public class EnrollmentController extends BasicControllerOperations<EnrollmentService, Enrollment> {
 
     public EnrollmentController(EnrollmentService service){

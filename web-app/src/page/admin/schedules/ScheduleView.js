@@ -1,6 +1,7 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
-import {
+import TimePickers, {
+  EnumSelectTableCell,
   SelectTableCell,
   TextFieldTableCell,
 } from "../../../component/TableCells";
@@ -10,6 +11,8 @@ import { StudentService } from "../../../service/StudentService";
 import { CourseService } from "../../../service/CourseService";
 import { ProfessorService } from "../../../service/ProfessorService";
 import { useQuery } from "react-query";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const scheduleService = new ScheduleService();
 const studentService = new StudentService();
@@ -19,7 +22,7 @@ const professorService = new ProfessorService();
 export default function ScheduleView({}) {
   const errorRef = useRef();
 
-  const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
+  const { data: allStudents } = useQuery(QueryKeys.STUDENTS, () =>
     studentService.findAll()
   );
 
@@ -74,29 +77,37 @@ export default function ScheduleView({}) {
         ),
     },
     {
-      title: "Day of Week",
-      field: "dayOfWeek",
-      editComponent: (props) =>
-        SelectTableCell(props, errorRef, [
-          { value: "MONDAY", label: "Monday" },
+          title: "Day of Week",
+          field: "dayOfWeek",
+          editComponent: (props) =>
+            EnumSelectTableCell(props, errorRef, [
+              { value: "MONDAY", label: "Monday" },
           { value: "TUESDAY", label: "Tuesday" },
           { value: "WEDNESDAY", label: "Wednesday" },
           { value: "THURSDAY", label: "Thursday" },
           { value: "FRIDAY", label: "Friday" },
           { value: "SATURDAY", label: "Saturday" },
           { value: "SUNDAY", label: "Sunday" },
-        ]),
-    },
-    {
-      title: "Start Time",
-      field: "startTime",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
-    },
-    {
-      title: "End Time",
-      field: "endTime",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
-    },
+            ]),
+        },
+        {
+          title: "Start time",
+          field: "startTime",
+          editComponent: (props) => (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <TimePickers {...props} errorRef={errorRef} />
+            </MuiPickersUtilsProvider>
+          ),
+        },
+        {
+          title: "End time",
+          field: "endTime",
+          editComponent: (props) => (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <TimePickers {...props} errorRef={errorRef} />
+            </MuiPickersUtilsProvider>
+          ),
+        },
     {
       title: "Room",
       field: "room",

@@ -1,6 +1,7 @@
 package com.learning_management_system.model;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,5 +22,5 @@ public class Feedback extends BaseEntity {
 
    private int rating;
    private String comment;
-   private Timestamp timestamp;
+   private LocalDateTime createdAt;
 }

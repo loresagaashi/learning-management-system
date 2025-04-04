@@ -15,5 +15,5 @@ public class Orientation extends BaseEntity {
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_orientation_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
-    private List<Course> courses;
+    private List<Course> course;
 }
