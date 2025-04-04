@@ -3,6 +3,7 @@ package com.learning_management_system.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import jakarta.persistence.ForeignKey;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -12,6 +13,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class Professor extends UserAccount {
+    @Transient
+    private String type = "Professor";
     @NotEmpty
     private String department;
 

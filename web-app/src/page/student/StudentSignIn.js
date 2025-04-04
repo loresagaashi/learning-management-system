@@ -78,7 +78,7 @@ export default function StudentSignIn({
     error,
   } = useMutation(
     QueryKeys.USER_BY_EMAIL(userAccount.email),
-    (user) => userService.login(user),
+    (user) => userService.studentLogIn(user),
     {
       onSuccess: (data) => {
         if (data?.user?.type === "Student") {
