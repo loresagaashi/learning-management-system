@@ -7,7 +7,7 @@ import com.learning_management_system.model.Attachment;
 import com.learning_management_system.service.AttachmentService;
 
 @RestController
-@RequestMapping("/attachment")
+@RequestMapping("/attachments")
 public class AttachmentController extends BasicControllerOperations<AttachmentService,Attachment>{
 
     public AttachmentController(AttachmentService service){

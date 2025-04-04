@@ -1,6 +1,7 @@
 package com.learning_management_system.model;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import com.learning_management_system.enums.EnrollmentStatus;
 import jakarta.persistence.*;
@@ -22,7 +23,7 @@ public class Enrollment extends BaseEntity {
     @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_enrollment_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
     private Course course;
     
-    private Date enrollmentDate;
+    private LocalDate enrollmentDate;
     
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;

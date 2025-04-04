@@ -34,14 +34,13 @@ export default function OrientationView({}) {
     {
       title: "Courses",
       field: "courses",
-      render: (rowData) => rowData.courses?.map((course) => course.name).join(", "),
+      render: (rowData) => rowData.courses?.name,
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allCourses?.map((x) => ({ value: x.id, label: x.name })) || [],
-          "value", // Key for selection
-          true // Allows multiple selection
+          allCourses?.map((x) => ({ value: x, label: x.name })) || [],
+          "id"
         ),
     },
     {

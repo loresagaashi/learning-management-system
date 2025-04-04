@@ -60,6 +60,27 @@ export const SelectTableCell = (props, errorRef, menuItems, equalOn) => {
   );
 };
 
+export const EnumSelectTableCell = (props, errorRef, enumValues) => {
+  return (
+    <ValidTextField
+      select
+      fullWidth
+      sx={{ m: 1, minWidth: 120 }}
+      error={errorRef.current && errorRef.current[props.columnDef.field]}
+      value={props.value || ""}
+      onChange={(e) => props.onChange(e.target.value)}
+      label={props.columnDef.title}
+    >
+      {enumValues.map((enumValue, index) => (
+        <MenuItem key={index} value={enumValue.value}>
+          {enumValue.label}
+        </MenuItem>
+      ))}
+    </ValidTextField>
+  );
+};
+
+
 export const TimeTableCell = (props, errorRef) => {
   console.log("val", props);
   const value =
