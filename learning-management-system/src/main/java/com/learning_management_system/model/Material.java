@@ -15,8 +15,9 @@ public class Material {
     @Id
     private String id;
 
-    @DocumentReference(lazy = true)
+    @DocumentReference
     private Lecture lecture;
+    
 
     private String fileUrl;
     private String description;

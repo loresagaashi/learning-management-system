@@ -11,7 +11,7 @@ import com.learning_management_system.payload.LoginPayload;
 import com.learning_management_system.service.AdminService;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admins")
 public class AdminController extends BasicControllerOperations<AdminService, Admin> {
 
    public AdminController(AdminService service) {

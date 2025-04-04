@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/report")
+@RequestMapping("/reports")
 public class ReportController extends BasicMongoControllerOperations<ReportService, Report>{
 
     public ReportController(ReportService service){

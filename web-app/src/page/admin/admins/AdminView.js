@@ -32,7 +32,7 @@ export default function AdminView() {
     {
       title: "Email",
       field: "email",
-      editable: "never", 
+      editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
       title: "Password",

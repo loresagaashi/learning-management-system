@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/professor")
+@RequestMapping("/professors")
 public class ProfessorController extends BasicControllerOperations<ProfessorService, Professor>{
 
     private final ProfessorService professorService;

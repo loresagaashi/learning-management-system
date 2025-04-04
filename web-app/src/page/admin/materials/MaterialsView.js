@@ -8,15 +8,17 @@ import { QueryKeys } from "../../../service/QueryKeys";
 import { LectureService } from "../../../service/LectureService";
 import { useQuery } from "react-query";
 import { MaterialService } from "../../../service/MaterialService";
+import { LectureDocumentService } from "../../../service/LectureDocumentService";
 
 const materialService = new MaterialService();
 const lectureService = new LectureService();
+const lectureDocumentService = new LectureDocumentService();
 
 
 export default function MaterialsView({}) {
   const errorRef = useRef();
 
-  const { data: allCourses } = useQuery(QueryKeys.LECTURE, () =>
+  const { data: allLectures } = useQuery(QueryKeys.LECTURE, () =>
     lectureService.findAll()
   );
   const columns = [
@@ -28,15 +30,15 @@ export default function MaterialsView({}) {
     {
       title: "Lecture",
       field: "lecture",
-      render: (rowData) => rowData.lecture?.name,
+      render: (rowData) => rowData.lecture?.name ?? "No lecture",
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allCourses?.map((x) => ({ value: x, label: x.name })) || [],
-          "id"
+          allLectures?.map((x) => ({ value: x, label: x.name })) || [],
+          "id",
         ),
-    },
+    },    
     {
         title: 'File Url',
         field: 'fileUrl',
