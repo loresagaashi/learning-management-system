@@ -40,7 +40,11 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
         } else {
             Student user = repository.findById(entity.getId())
                     .orElseThrow(() -> new EntityNotFoundException("No entity found with id: " + entity.getId()));
-            entity.setPassword(user.getPassword());
+            if (!passwordEncoder.matches(entity.getPassword(), user.getPassword())) {
+                entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+            } else {
+                entity.setPassword(user.getPassword());
+            }
         }
 
         Student savedStudent = super.save(entity);

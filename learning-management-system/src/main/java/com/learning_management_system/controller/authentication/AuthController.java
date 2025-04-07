@@ -1,5 +1,7 @@
 package com.learning_management_system.controller.authentication;
 
+import com.learning_management_system.data.user.ForgotPasswordRequestDTO;
+import com.learning_management_system.data.user.ResetPasswordRequestDTO;
 import com.learning_management_system.data.user.UserView;
 import com.learning_management_system.model.UserAccount;
 import com.learning_management_system.payload.JwtAuthenticationResponse;
@@ -12,9 +14,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -115,4 +119,22 @@ public class AuthController {
     // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     // return dateFormat.format(expirationDate); // Format to a readable date string
     // }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDTO request) throws MessagingException, IOException {
+        userDetailsServiceImpl.sendPasswordResetCode(request.getEmail());
+        return ResponseEntity.ok("Verification code sent to your email.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRequestDTO request) {
+        userDetailsServiceImpl.resetPassword(
+                request.getEmail(),
+                request.getVerificationCode(),
+                request.getNewPassword(),
+                request.getConfirmPassword()
+        );
+        return ResponseEntity.ok("Password changed successfully.");
+    }
+
 }
