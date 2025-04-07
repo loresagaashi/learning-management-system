@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.learning_management_system.validation.group.Create;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +33,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     protected String email;
 
+    @Access(AccessType.FIELD)
     @NotEmpty(groups = Create.class)
     protected String password;
 

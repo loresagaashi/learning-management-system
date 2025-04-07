@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import com.amazonaws.services.kms.model.NotFoundException;
@@ -127,6 +129,32 @@ public class EmailService {
 
         return variables;
     }
+    public Map<String, String> replaceUserFields(Object user) {
+        Map<String, String> variables = new HashMap<>();
+
+        if (user instanceof Student) {
+            Student student = (Student) user;
+            variables.put(TemplateWildcards.USER_FIRST_NAME, student.getFirstName());
+            variables.put(TemplateWildcards.USER_LAST_NAME, student.getLastName());
+            variables.put(TemplateWildcards.USER_EMAIL, student.getEmail());
+            variables.put(TemplateWildcards.USER_ID, student.getId().toString());
+            // Add any student-specific fields if needed
+
+        } else if (user instanceof Professor) {
+            Professor professor = (Professor) user;
+            variables.put(TemplateWildcards.USER_FIRST_NAME, professor.getFirstName());
+            variables.put(TemplateWildcards.USER_LAST_NAME, professor.getLastName());
+            variables.put(TemplateWildcards.USER_EMAIL, professor.getEmail());
+            variables.put(TemplateWildcards.USER_ID, professor.getId().toString());
+            // Add any professor-specific fields if needed
+        }
+
+        // Add common fields for password reset
+        variables.put(TemplateWildcards.REQUEST_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        return variables;
+    }
+
 
 
 
