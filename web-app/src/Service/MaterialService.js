@@ -6,15 +6,8 @@ export class MaterialService extends BaseService {
     super("/materials");
   }
 
-  async findAllWithLecture() {
-    const response = await axios.get(`${this.baseUrl}/with-lecture`);
-    return response.data;
-  }
-
-  async saveMaterialWithLecture(material, lectureId) {
-    const response = await axios.post(`${this.baseUrl}/save`, material, {
-      params: { lectureId }
-    });
+  async saveMaterialWithLecture(material) {
+    const response = await axios.post(`${this.baseUrl}/save`, material);
     return response.data;
   }
 }

@@ -195,21 +195,21 @@ export default function AdminLayout({}) {
         {user?.user?.type === 'Admin' &&
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard/>}/>
-            <Route path="/admin" element={<AdminView/>}/>
+            <Route path="/admins" element={<AdminView/>}/>
             <Route path="/students" element={<StudentView/>}/>
-            <Route path="/professor" element={<ProfessorView/>}/>
+            <Route path="/professors" element={<ProfessorView/>}/>
             <Route path="/courses" element={<CoursesView/>}/>
             <Route path="/materials" element={<MaterialsView/>}/>
             <Route path="/lectures" element={<LecturesView/>}/>
-            <Route path="/assignment" element={<AssignmentView/>}/>
-            <Route path="/submission" element={<SubmissionView/>}/>
-            <Route path="/grade" element={<GradeView/>}/>
-            <Route path="/report" element={<ReportView/>}/>
-            <Route path="/log" element={<LogView/>}/>
+            <Route path="/assignments" element={<AssignmentView/>}/>
+            <Route path="/submissions" element={<SubmissionView/>}/>
+            <Route path="/grades" element={<GradeView/>}/>
+            <Route path="/reports" element={<ReportView/>}/>
+            <Route path="/logs" element={<LogView/>}/>
             <Route path="/payments" element={<PaymentView/>}/>
             <Route path="/orientations" element={<OrientationView/>}/>
             <Route path="/schedules" element={<ScheduleView/>}/>
-            <Route path="/enrollment" element={<EnrollmentView/>}/>
+            <Route path="/enrollments" element={<EnrollmentView/>}/>
             <Route path="/feedbacks" element={<FeedbackView/>}/>
             <Route path="/cities" element={<CityView/>}/>
 

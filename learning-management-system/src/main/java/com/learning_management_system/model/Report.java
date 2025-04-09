@@ -10,6 +10,8 @@ import java.util.Date;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Getter
 @Setter
 @Document(collection = "reports")
@@ -22,6 +24,8 @@ public class Report {
 
     private String performance;
 
-    @DocumentReference(lazy = true)
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Student student;
+    private Long studentId;
 }

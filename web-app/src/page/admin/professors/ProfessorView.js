@@ -87,6 +87,12 @@ export default function ProfessorView({}) {
               ),
     },
     {
+      title: "Type",
+      field: "type",
+      editable: "never",
+      defaultValue: "Professor",
+    },
+    {
       title: "Phone Number",
       field: "phoneNumber",
       editComponent: (props) => TextFieldTableCell(props, errorRef),

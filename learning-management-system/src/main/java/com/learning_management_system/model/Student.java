@@ -13,6 +13,7 @@ public class Student extends UserAccount {
 
     @Transient
     private String type = "Student";
+    
     @Column(unique = true, nullable = false)
     private Long studentId; // Numeric student ID
 

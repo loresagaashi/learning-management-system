@@ -40,7 +40,7 @@ const appMenuItems = [
   {
     name: "Admins",
     Icon: PersonOutlineIcon,
-    link: "/admin/admin",
+    link: "/admin/admins",
   },
   {
     name:"Students",
@@ -50,7 +50,7 @@ const appMenuItems = [
   {
     name:"Professors",
     Icon: AccountBoxIcon,
-    link: "/admin/professor",
+    link: "/admin/professors",
   },
   {
     name: "Courses",
@@ -70,27 +70,27 @@ const appMenuItems = [
   {
     name: "Assignments",
     Icon: AssignmentIcon,
-    link: "/admin/assignment",
+    link: "/admin/assignments",
   },
   {
     name: "Submissions",
     Icon: AssignmentTurnedInIcon,
-    link: "/admin/submission",
+    link: "/admin/submissions",
   },
   {
     name: "Grades",
     Icon: InsertDriveFileIcon,
-    link: "/admin/grade",
+    link: "/admin/grades",
   },
   {
     name: "Reports",
     Icon: DescriptionIcon,
-    link: "/admin/report",
+    link: "/admin/reports",
   },
   {
     name: "Logs",
     Icon: ListAltIcon,
-    link: "/admin/log",
+    link: "/admin/logs",
   },
   {
     name: "Payments",
@@ -110,7 +110,7 @@ const appMenuItems = [
   {
     name: "Enrollments",
     Icon: HowToRegIcon,
-    link: "/admin/enrollment",
+    link: "/admin/enrollments",
   },
   {
     name: "Feedbacks",

@@ -7,7 +7,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { StudentService } from "../../../service/StudentService";
 import { CityService } from "../../../service/CityService";
-import Lock from "@material-ui/icons/Lock";
+import LockIcon from "@material-ui/icons/Lock";
 import PasswordEditComponent from "../../../component/PasswordEditComponent";
 
 const studentService = new StudentService();
@@ -25,6 +25,12 @@ export default function StudentView({}) {
       title: "ID",
       field: "id",
       editable: "never",
+    },
+    {
+      title: "Type",
+      field: "type",
+      editable: "never",
+      defaultValue: "Student",
     },
     {
       title: "Student ID",
@@ -51,7 +57,7 @@ export default function StudentView({}) {
       field: "password",
       render: () => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Lock />
+          <LockIcon />
           <span style={{ marginLeft: 5 }}>••••••••</span>
         </div>
       ),
@@ -76,7 +82,7 @@ export default function StudentView({}) {
     {
       title: "City",
       field: "city",
-      render: (rowData) => rowData.city?.name,
+      render: (rowData) => rowData.city?.name ,
       editComponent: (props) =>
         SelectTableCell(
           props,
@@ -111,9 +117,9 @@ export default function StudentView({}) {
       field: "status",
       editComponent: (props) =>
         EnumSelectTableCell(props, errorRef, [
-          { value: "ACTIVE", label: "Active" },
-          { value: "INACTIVE", label: "Inactive" },
-          { value: "GRADUATED", label: "Graduated" },
+          { value: "ACTIVE", label: "ACTIVE" },
+          { value: "INACTIVE", label: "INACTIVE" },
+          { value: "GRADUATED", label: "GRADUATED" },
         ]),
     },
     {

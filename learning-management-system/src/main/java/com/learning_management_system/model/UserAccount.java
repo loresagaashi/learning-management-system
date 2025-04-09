@@ -1,6 +1,6 @@
 package com.learning_management_system.model;
 
-import java.beans.Transient;
+import jakarta.persistence.Transient;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;

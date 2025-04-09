@@ -18,9 +18,6 @@ export default function MaterialsView({}) {
   const { data: allLectures } = useQuery(QueryKeys.LECTURE, () =>
     lectureService.findAll()
   );
-  const { data: materials } = useQuery(QueryKeys.MATERIAL, () =>
-    materialService.findAllWithLecture() // Assuming the service fetches materials with lecture
-  );
 
   const columns = [
     {
@@ -30,8 +27,8 @@ export default function MaterialsView({}) {
     },
     {
       title: "Lecture",
-      field: "lectureName",  // Field to display lecture name
-      render: (rowData) => rowData.lectureName,  // Show lecture name
+      field: "lectureId",  // Field to display lecture name
+      render: (rowData) => rowData.lecture?.name,  // Show lecture name
       editComponent: (props) =>
         SelectTableCell(
           props,
@@ -58,15 +55,13 @@ export default function MaterialsView({}) {
   ];
 
   const handleSave = async (material) => {
-    const lectureId = material.lectureId;
-    await materialService.saveMaterialWithLecture(material, lectureId);
+    await materialService.saveMaterialWithLecture(material);
   };
 
   return (
     <CustomMaterialTable
       title="Manage Materials"
       columns={columns}
-      data={materials}
       service={materialService}
       queryKey={QueryKeys.MATERIAL}
       errorRef={errorRef}

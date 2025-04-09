@@ -25,13 +25,13 @@ public class MaterialController extends BasicMongoControllerOperations<MaterialS
         return materialService.getMaterialWithLecture(id);
     }
 
-    @GetMapping("/with-lecture")
-    public List<MaterialResponseDTO> getAllMaterialsWithLecture() {
+    @GetMapping("/{MaterialLecture}/all")
+    public List<Material> findAll() {
         return materialService.findAllWithLectureNames();
-    }
+    }    
 
     @PostMapping("/save")
-    public Material saveMaterialWithLecture(@RequestBody Material material, @RequestParam Long lectureId) {
-        return materialService.saveMaterialWithLecture(material, lectureId);
+    public Material saveMaterialWithLecture(@RequestBody Material material) {
+        return materialService.saveMaterialWithLecture(material);
     }
 }
