@@ -8,12 +8,9 @@ import { QueryKeys } from "../../../service/QueryKeys";
 import { LectureService } from "../../../service/LectureService";
 import { useQuery } from "react-query";
 import { MaterialService } from "../../../service/MaterialService";
-import { LectureDocumentService } from "../../../service/LectureDocumentService";
 
 const materialService = new MaterialService();
 const lectureService = new LectureService();
-const lectureDocumentService = new LectureDocumentService();
-
 
 export default function MaterialsView({}) {
   const errorRef = useRef();
@@ -21,6 +18,10 @@ export default function MaterialsView({}) {
   const { data: allLectures } = useQuery(QueryKeys.LECTURE, () =>
     lectureService.findAll()
   );
+  const { data: materials } = useQuery(QueryKeys.MATERIAL, () =>
+    materialService.findAllWithLecture() // Assuming the service fetches materials with lecture
+  );
+
   const columns = [
     {
       title: "Id",
@@ -29,52 +30,47 @@ export default function MaterialsView({}) {
     },
     {
       title: "Lecture",
-      field: "lecture",
-      render: (rowData) => rowData.lecture?.name ?? "No lecture",
+      field: "lectureName",  // Field to display lecture name
+      render: (rowData) => rowData.lectureName,  // Show lecture name
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allLectures?.map((x) => ({ value: x, label: x.name })) || [],
-          "id",
+          allLectures?.map((x) => ({ value: x.id, label: x.name })) || [],  // Populate lecture options with name
+          "lectureId" // Store lecture ID in the final object
         ),
-    },    
+    },
     {
-        title: 'File Url',
-        field: 'fileUrl',
-        editComponent: props => (
-          <input
-            type={"file"}
-            onChange={event => props.onChange(event.target.files[0].name)}
-          />
-        )
-      },
+      title: 'File Url',
+      field: 'fileUrl',
+      editComponent: props => (
+        <input
+          type={"file"}
+          onChange={event => props.onChange(event.target.files[0].name)}
+        />
+      )
+    },
     {
       title: "Description",
       field: "description",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
-    {
-      title: "Created On",
-      field: "createdOn",
-      type: "date",
-      editable: "never",
-    },
-    {
-      title: "Updated On",
-      field: "updatedOn",
-      type: "date",
-      editable: "never",
-    },
   ];
+
+  const handleSave = async (material) => {
+    const lectureId = material.lectureId;
+    await materialService.saveMaterialWithLecture(material, lectureId);
+  };
 
   return (
     <CustomMaterialTable
       title="Manage Materials"
       columns={columns}
+      data={materials}
       service={materialService}
       queryKey={QueryKeys.MATERIAL}
       errorRef={errorRef}
+      onSave={handleSave}
     />
   );
 }
