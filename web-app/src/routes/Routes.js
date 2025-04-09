@@ -9,6 +9,9 @@ import AdminLayout from "../page/admin/AdminLayout";
 import SignInChoicePage from "../page/SignInChoicePage";
 import StudentSignIn from "../page/student/StudentSignIn";
 import ProfessorSignIn from "../page/professor/ProfessorSignIn";
+import StudentPage from "../page/student/StudentPage";
+import LMSPage from "../page/student/LMS/LMSPage";
+import SMISPage from "../page/student/SMIS/SMISPage";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
 
@@ -35,6 +38,9 @@ const AppRoutes = [
   <Route key={11} path="/choice/sign-in" element={<SignInChoicePage />} />,
   <Route key={11} path="/student/sign-in" element={<StudentSignIn />} />,
   <Route key={11} path="/professor/sign-in" element={<ProfessorSignIn />} />,
+  <Route path="/student/page" element={<StudentPage />} />,
+  <Route path="/lms" element={<LMSPage />} />,
+  <Route path="/smis" element={<SMISPage />} />
   // <Route key={11} path="/client/sign-in" element={<ClientSignIn />} />,
   // <Route key={11} path="/client/sign-up" element={<ClientSignUp />} />,
   // <Route key={11} path="/client/profile" element={<ClientProfile />} />,
