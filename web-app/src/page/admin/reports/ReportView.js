@@ -49,14 +49,14 @@ export default function ReportView() {
     },
     {
       title: "Student",
-      field: "student",
+      field: "studentId",
       render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
           allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
-          "id",
+          "studentId",
         ),
     },
     {
@@ -72,7 +72,9 @@ export default function ReportView() {
       editable: "never",
     },
   ];
-
+  const handleSave = async (report) => {
+    await reportService.saveReportWithStudent(report);
+  };
   return (
     <CustomMaterialTable
       title="Manage Reports"
@@ -80,6 +82,7 @@ export default function ReportView() {
       service={reportService}
       queryKey={QueryKeys.REPORT}
       errorRef={errorRef}
+      onSave={handleSave}
     />
   );
 }

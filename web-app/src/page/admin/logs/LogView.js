@@ -59,18 +59,7 @@ export default function LogView() {
           "id",
         ),
     },
-    {
-      title: "Created On",
-      field: "createdOn",
-      type: "date",
-      editable: "never",
-    },
-    {
-      title: "Updated On",
-      field: "updatedOn",
-      type: "date",
-      editable: "never",
-    },
+   
   ];
 
   return (

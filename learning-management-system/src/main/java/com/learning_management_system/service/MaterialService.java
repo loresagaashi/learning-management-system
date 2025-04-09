@@ -31,22 +31,15 @@ public class MaterialService extends BasicMongoServiceOperations<MaterialReposit
         return new MaterialWithLectureDTO(material, lecture);
     }
 
-    public List<MaterialResponseDTO> findAllWithLectureNames() {
-        return materialRepository.findAll().stream().map(material -> {
+    public List<Material> findAllWithLectureNames() {
+        return materialRepository.findAll().stream().peek(material -> {
             Lecture lecture = lectureRepository.findById(material.getLectureId()).orElse(null);
-            MaterialResponseDTO dto = new MaterialResponseDTO();
-            dto.setId(material.getId());
-            dto.setLectureId(material.getLectureId());
-            dto.setLectureName(lecture != null ? lecture.getName() : null);
-            dto.setFileUrl(material.getFileUrl());
-            dto.setDescription(material.getDescription());
-            return dto;
+            material.setLecture(lecture);
         }).collect(Collectors.toList());
-    }
+    }    
 
-    public Material saveMaterialWithLecture(Material material, Long lectureId) {
-        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new RuntimeException("Lecture not found"));
-        material.setLectureId(lectureId);
+    public Material saveMaterialWithLecture(Material material) {
+        lectureRepository.findById(material.getLectureId()).orElseThrow(() -> new RuntimeException("Lecture not found"));
         return materialRepository.save(material);
     }
 }
