@@ -83,11 +83,19 @@ export default function StudentSignIn({
       onSuccess: (data) => {
         if (data?.user?.type === "Student") {
           setUser(data);
-          !!onSuccess ? onSuccess(data) : navigate("/student/page");
+      
+          const destination = localStorage.getItem("destination");
+          if (destination === "lms") {
+            navigate("/lms");
+          } else if (destination === "smis") {
+            navigate("/smis");
+          } else {
+            navigate("/student/page"); // fallback
+          }
         } else {
           setErrorMessage(true);
         }
-      },
+      },      
     }
   );
 
