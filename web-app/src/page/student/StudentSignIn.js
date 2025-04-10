@@ -154,6 +154,11 @@ export default function StudentSignIn({
             autoComplete="current-password"
             error={error}
           />
+          <Typography variant="body2" style={{ marginTop: 10 }}>
+            <a href="/forgot-password" style={{ textDecoration: "none", color: "#007bff" }}>
+              Forgot your password?
+            </a>
+          </Typography>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"

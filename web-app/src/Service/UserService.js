@@ -37,4 +37,13 @@ export class UserService extends BaseService {
   refreshToken(body) {
     return axiosInstance.post(`/auth/refresh`, body);
   }
+
+  async forgotPassword(email) {
+    const response = await axiosInstance.post("/auth/forgot-password", { email });
+    return response.data;
+  }
+  async resetPassword(data) {
+    return axiosInstance.post("/auth/reset-password", data).then((res) => res.data);
+  }
+  
 }

@@ -12,6 +12,8 @@ import ProfessorSignIn from "../page/professor/ProfessorSignIn";
 import StudentPage from "../page/student/StudentPage";
 import LMSPage from "../page/student/LMS/LMSPage";
 import SMISPage from "../page/student/SMIS/SMISPage";
+import ForgotPassword from "../page/ForgotPassword";
+import ResetPassword from "../page/ResetPassword";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
 
@@ -40,7 +42,9 @@ const AppRoutes = [
   <Route key={11} path="/professor/sign-in" element={<ProfessorSignIn />} />,
   <Route path="/student/page" element={<StudentPage />} />,
   <Route path="/lms" element={<LMSPage />} />,
-  <Route path="/smis" element={<SMISPage />} />
+  <Route path="/smis" element={<SMISPage />} />,
+  <Route path="/forgot-password" element={<ForgotPassword />} />,
+  <Route path="/reset-password" element={<ResetPassword />} />,
   // <Route key={11} path="/client/sign-in" element={<ClientSignIn />} />,
   // <Route key={11} path="/client/sign-up" element={<ClientSignUp />} />,
   // <Route key={11} path="/client/profile" element={<ClientProfile />} />,
