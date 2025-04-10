@@ -9,6 +9,7 @@ import { StudentService } from "../../../service/StudentService";
 import { CityService } from "../../../service/CityService";
 import LockIcon from "@material-ui/icons/Lock";
 import PasswordEditComponent from "../../../component/PasswordEditComponent";
+import StudentIdComponent from "../../../component/StudentIdComponent";
 
 const studentService = new StudentService();
 const cityService = new CityService();
@@ -35,7 +36,8 @@ export default function StudentView({}) {
     {
       title: "Student ID",
       field: "studentId",
-      editComponent: (props) => NumberFieldTableCell(props, errorRef),
+      editComponent: (props) => <StudentIdComponent  {...props}/>,
+
     },
     {
       title: "First Name",

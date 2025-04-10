@@ -150,15 +150,16 @@ export const MultipleCheckboxTableCell = (props, allItems, renderLabel) => {
 };
 
 export const NumberFieldTableCell = (props, errorRef, textFieldProps = {}) => {
+  const { columnDef, value, onChange } = props;
   return (
     <TextField
       {...textFieldProps}
       type="number"
       fullWidth
-      label={props.columnDef.title}
-      value={props.value || ""}
-      onChange={(e) => props.onChange(e.target.value)}
-      error={errorRef.current && errorRef.current[props.columnDef.field]}
+      label={columnDef?.title}
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value)}
+      error={errorRef.current && errorRef.current[columnDef.field]}
       style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.42)" }}
     />
   );
