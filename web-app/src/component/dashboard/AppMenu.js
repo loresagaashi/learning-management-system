@@ -30,6 +30,7 @@ import StarIcon from "@material-ui/icons/Star";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import EmailIcon from '@material-ui/icons/Email';
 
 const appMenuItems = [
   {
@@ -51,6 +52,11 @@ const appMenuItems = [
     name:"Professors",
     Icon: AccountBoxIcon,
     link: "/admin/professors",
+  },
+  {
+    name:"Send Emails",
+    Icon: EmailIcon,
+    link: "/admin/emails/sendEmail",
   },
   {
     name: "Courses",
