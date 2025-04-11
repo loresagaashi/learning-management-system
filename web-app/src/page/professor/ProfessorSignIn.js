@@ -83,7 +83,14 @@ export default function ProfessorSignIn({
       onSuccess: (data) => {
         if (data?.user?.type === "Professor") {
           setUser(data);
-          !!onSuccess ? onSuccess(data) : navigate("/professor/page");
+          const destination = localStorage.getItem("destination");
+          if (destination === "lms") {
+            navigate("/professor/lms");
+          } else if (destination === "smis") {
+            navigate("/professor/smis");
+          } else {
+            navigate("/student/page"); // fallback
+          }
         } else {
           setErrorMessage(true);
         }

@@ -86,9 +86,9 @@ export default function StudentSignIn({
       
           const destination = localStorage.getItem("destination");
           if (destination === "lms") {
-            navigate("/lms");
+            navigate("/student/lms");
           } else if (destination === "smis") {
-            navigate("/smis");
+            navigate("/student/smis");
           } else {
             navigate("/student/page"); // fallback
           }
