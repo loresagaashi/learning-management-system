@@ -1,5 +1,7 @@
 package com.learning_management_system.controller;
 
+import com.learning_management_system.data.student.AssignStudentToGroupRequest;
+import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +30,16 @@ public class StudentController extends BasicControllerOperations<StudentService,
     @GetMapping("/search-students")
     public List<StudentSearchDTO> getStudents(@RequestParam(required = false) String search) {
         return studentService.getStudents(search);
+    }
+
+    @PostMapping("/assign-to-group")
+    public Student assignToGroup(@RequestBody AssignStudentToGroupRequest request) {
+        return studentService.assignToGroup(request.getStudentId(), request.getGroupId());
+    }
+
+    @GetMapping("/by-generation-and-group")
+    public List<StudentDTO> getByGenerationAndGroup(@RequestParam Long generationId,
+                                                    @RequestParam Long groupId) {
+        return studentService.getStudentsByGenerationAndGroup(generationId, groupId);
     }
 }

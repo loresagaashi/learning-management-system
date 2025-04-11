@@ -26,4 +26,8 @@ public class Student extends UserAccount {
     @JoinColumn(name = "city_id", nullable = true, foreignKey = @ForeignKey(name = "fk_student_city", foreignKeyDefinition = "FOREIGN KEY (city_id) REFERENCES City(id) ON DELETE RESTRICT"))
     private City city;
 
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private StudentGroup group;
+
 }
