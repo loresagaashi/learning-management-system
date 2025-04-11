@@ -1,6 +1,5 @@
 package com.learning_management_system.service;
 
-import com.learning_management_system.data.material.MaterialWithLectureDTO;
 import com.learning_management_system.model.Lecture;
 import com.learning_management_system.model.Material;
 import com.learning_management_system.model.Student;
@@ -27,13 +26,6 @@ public class ReportService extends BasicMongoServiceOperations<ReportRepository,
     public ReportService(ReportRepository repository, SecurityFilterChain securityFilterChain) {
         super(repository);
     }
-
-    // public ReportWithStudentDTO getReportWithStudent(String reportId) {
-    //     Material student = studentRepository.findById(reportId).orElseThrow();
-    //     Lecture report = reportRepository.findById(report.getStudentId()).orElse(null);
-
-    //     return new ReportWithStudentDTO(report, student);
-    // }
 
     public List<Report> findAllWithStudentNames() {
         return reportRepository.findAll().stream().peek(report -> {

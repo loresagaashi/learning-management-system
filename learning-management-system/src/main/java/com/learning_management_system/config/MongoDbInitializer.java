@@ -4,24 +4,30 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.learning_management_system.model.*;
-import com.learning_management_system.repository.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Configuration
 public class MongoDbInitializer {
 
    @Bean
-   CommandLineRunner init(
-         LogRepository logRepository,
-         ReportRepository reportRepository,
-         NotificationRepository notificationRepository,
-         MessageRepository messageRepository,
-         MaterialRepository materialRepository){
+   CommandLineRunner init(MongoTemplate mongoTemplate){
       return args -> {
-         logRepository.save(new Log());
-         reportRepository.save(new Report());
-         notificationRepository.save(new Notification());
-         messageRepository.save(new Message());
-         materialRepository.save(new Material());
+
+         if (!mongoTemplate.collectionExists(Log.class)) {
+            mongoTemplate.createCollection(Log.class);
+         }
+         if (!mongoTemplate.collectionExists(Report.class)) {
+            mongoTemplate.createCollection(Report.class);
+         }
+         if (!mongoTemplate.collectionExists(Notification.class)) {
+            mongoTemplate.createCollection(Notification.class);
+         }
+         if (!mongoTemplate.collectionExists(Message.class)) {
+            mongoTemplate.createCollection(Message.class);
+         }
+         if (!mongoTemplate.collectionExists(Material.class)) {
+            mongoTemplate.createCollection(Material.class);
+         }
       };
    }
 }

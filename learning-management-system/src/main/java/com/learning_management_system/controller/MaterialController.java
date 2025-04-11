@@ -3,8 +3,6 @@ package com.learning_management_system.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.learning_management_system.data.material.MaterialResponseDTO;
-import com.learning_management_system.data.material.MaterialWithLectureDTO;
 import com.learning_management_system.model.Material;
 import com.learning_management_system.service.MaterialService;
 
@@ -19,16 +17,10 @@ public class MaterialController extends BasicMongoControllerOperations<MaterialS
     public MaterialController(MaterialService service) {
         super(service);
     }
-
-    @GetMapping("/Lecture/{id}")
-    public MaterialWithLectureDTO getMaterial(@PathVariable String id) {
-        return materialService.getMaterialWithLecture(id);
-    }
-
-    @GetMapping("/{MaterialLecture}/all")
+    @GetMapping("/all")
     public List<Material> findAll() {
         return materialService.findAllWithLectureNames();
-    }    
+    }
 
     @PostMapping("/save")
     public Material saveMaterialWithLecture(@RequestBody Material material) {
