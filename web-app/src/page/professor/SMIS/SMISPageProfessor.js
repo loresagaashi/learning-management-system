@@ -16,7 +16,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import AppMenu from "../../../component/studentSMIS/AppMenu";
+import AppMenu from "../../../component/professorSMIS/AppMenu";
 
 const drawerWidth = 240;
 
@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SMISPage() {
+export default function SMISPageProfessor() {
   const classes = useStyles();
   const [ open, setOpen ] = useState(true);
   const location = useLocation();
@@ -122,7 +122,7 @@ export default function SMISPage() {
   const locationPath = location.pathname.split("/")[1];
 
   const goToLMS = () => {
-    navigate("/student/lms"); // Navigate to LMS page
+    navigate("/professor/lms"); // Navigate to LMS page
   };
 
   return (

@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LMSPage = () => {
+const LMSPageProfessor = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const { setUser } = useUser(); // if using context
@@ -95,7 +95,7 @@ const LMSPage = () => {
   };
 
   const goToSMIS = () => {
-    navigate("/student/smis"); // Redirect to SMIS page
+    navigate("/professor/smis"); // Redirect to SMIS page
   };
 
   return (
@@ -170,4 +170,4 @@ const LMSPage = () => {
   );
 };
 
-export default LMSPage;
+export default LMSPageProfessor;

@@ -14,6 +14,9 @@ import LMSPage from "../page/student/LMS/LMSPage";
 import SMISPage from "../page/student/SMIS/SMISPage";
 import ForgotPassword from "../page/ForgotPassword";
 import ResetPassword from "../page/ResetPassword";
+import LMSPageProfessor from "../page/professor/LMS/LMSPageProfessor";
+import SMISPageProfessor from "../page/professor/SMIS/SMISPageProfessor";
+import CoursesView from "../page/professor/SMIS/CoursesView";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
 
@@ -41,10 +44,15 @@ const AppRoutes = [
   <Route key={11} path="/student/sign-in" element={<StudentSignIn />} />,
   <Route key={11} path="/professor/sign-in" element={<ProfessorSignIn />} />,
   <Route path="/student/page" element={<StudentPage />} />,
-  <Route path="/lms" element={<LMSPage />} />,
-  <Route path="/smis" element={<SMISPage />} />,
+  <Route path="/student/lms" element={<LMSPage />} />,
+  <Route path="/student/smis" element={<SMISPage />} />,
+
+  <Route path="/professor/lms" element={<LMSPageProfessor />} />,
+  <Route path="/professor/smis" element={<SMISPageProfessor />} />,
   <Route path="/forgot-password" element={<ForgotPassword />} />,
   <Route path="/reset-password" element={<ResetPassword />} />,
+  <Route path="/professor/courses" element={<CoursesView />} />,
+ 
   // <Route key={11} path="/client/sign-in" element={<ClientSignIn />} />,
   // <Route key={11} path="/client/sign-up" element={<ClientSignUp />} />,
   // <Route key={11} path="/client/profile" element={<ClientProfile />} />,
