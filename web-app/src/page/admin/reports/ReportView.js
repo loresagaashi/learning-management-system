@@ -59,18 +59,18 @@ export default function ReportView() {
           "studentId",
         ),
     },
-    {
-      title: "Created On",
-      field: "createdOn",
-      type: "date",
-      editable: "never",
-    },
-    {
-      title: "Updated On",
-      field: "updatedOn",
-      type: "date",
-      editable: "never",
-    },
+    // {
+    //   title: "Created On",
+    //   field: "createdOn",
+    //   type: "date",
+    //   editable: "never",
+    // },
+    // {
+    //   title: "Updated On",
+    //   field: "updatedOn",
+    //   type: "date",
+    //   editable: "never",
+    // },
   ];
   const handleSave = async (report) => {
     await reportService.saveReportWithStudent(report);
