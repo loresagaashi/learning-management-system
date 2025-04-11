@@ -1,6 +1,7 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
 import {
+  MultipleCheckboxTableCell,
   SelectTableCell,
   TextFieldTableCell,
 } from "../../../component/TableCells";
@@ -31,18 +32,24 @@ export default function OrientationView({}) {
       field: "name",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
-    {
-      title: "Courses",
-      field: "courses",
-      render: (rowData) => rowData.courses?.name,
-      editComponent: (props) =>
-        SelectTableCell(
-          props,
-          errorRef,
-          allCourses?.map((x) => ({ value: x, label: x.name })) || [],
-          "id"
-        ),
-    },
+    // {
+    //   title: "Courses",
+    //   field: "courses",
+    //   render: (rowData) => rowData.courses?.name,
+    //   editComponent: (props) =>
+    //     SelectTableCell(
+    //       props,
+    //       errorRef,
+    //       allCourses?.map((x) => ({ value: x, label: x.name })) || [],
+    //       "id"
+    //     ),
+    // },
+  //   {
+  //     title: 'Courses',
+  //     field: 'course',
+  //     render: rowData => rowData.course?.map(x => x.name).join(", "),
+  //     editComponent: props => MultipleCheckboxTableCell(props, allCourses, item => item.name)
+  // },
     {
       title: "Created On",
       field: "createdOn",

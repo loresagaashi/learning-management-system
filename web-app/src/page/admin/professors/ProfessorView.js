@@ -1,7 +1,7 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
 import { useQuery } from "react-query";
-import { SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
+import { MultipleCheckboxTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -9,15 +9,20 @@ import { ProfessorService } from "../../../service/ProfessorService";
 import { CityService } from "../../../service/CityService";
 import Lock from "@material-ui/icons/Lock";
 import PasswordEditComponent from "../../../component/PasswordEditComponent";
+import { CourseService } from "../../../service/CourseService";
 
 const professorService = new ProfessorService();
 const cityService = new CityService();
+const courseService = new CourseService();
 
 export default function ProfessorView({}) {
   const errorRef = useRef();
 
   const { data: allCities } = useQuery(QueryKeys.CITY, () =>
     cityService.findAll()
+  );  
+  const { data: allCourses } = useQuery(QueryKeys.COURSE, () =>
+    courseService.findAll()
   );  
 
   const columns = [
@@ -86,6 +91,12 @@ export default function ProfessorView({}) {
                 "id",
               ),
     },
+    {
+      title: 'Course',
+      field: 'courses',
+      render: rowData => rowData.courses?.map(x => x.name).join(", "),
+      editComponent: props => MultipleCheckboxTableCell(props, allCourses, item => item.name)
+  },
     {
       title: "Type",
       field: "type",
