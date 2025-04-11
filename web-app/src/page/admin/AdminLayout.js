@@ -38,6 +38,7 @@ import EnrollmentView from "./enrollments/EnrollmentView";
 import FeedbackView from "./feedbacks/FeedbackView";
 import AdminView from "./admins/AdminView";
 import CityView from "./cities/CityView";
+import SendEmailForm from "./emails/SendEmailForm";
 
 const drawerWidth = 240;
 
@@ -212,6 +213,7 @@ export default function AdminLayout({}) {
             <Route path="/enrollments" element={<EnrollmentView/>}/>
             <Route path="/feedbacks" element={<FeedbackView/>}/>
             <Route path="/cities" element={<CityView/>}/>
+            <Route path="/emails/sendEmail" element={<SendEmailForm/>}/>
 
           </Routes>
         }
