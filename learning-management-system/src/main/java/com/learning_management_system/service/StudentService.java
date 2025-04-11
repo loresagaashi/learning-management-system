@@ -1,6 +1,9 @@
 package com.learning_management_system.service;
 
+import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
+import com.learning_management_system.model.StudentGroup;
+import com.learning_management_system.repository.StudentGroupRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,12 +27,16 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
      private final PasswordEncoder passwordEncoder;
      private final StudentRepository studentRepository;
      private final EmailService emailService;
+     private final StudentGroupRepository studentGroupRepository;
 
-    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService) {
+
+
+    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService, StudentGroupRepository studentGroupRepository) {
         super(repository);
         this.passwordEncoder = passwordEncoder;
         this.studentRepository = studentRepository;
         this.emailService = emailService;
+        this.studentGroupRepository = studentGroupRepository;
     }
     @Override
     public Student save(Student entity) {
@@ -102,6 +109,26 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
     public List<StudentSearchDTO> getStudents(String search) {
         return studentRepository.searchStudents(search);
     }
-    
+
+    public Student assignToGroup(Long studentId, Long groupId) {
+        Student student = repository.findById(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+
+        StudentGroup group = studentGroupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
+
+        int currentSize = studentRepository.countStudentsInGroup(groupId);
+
+        if (group.getCapacity() != null && currentSize >= group.getCapacity()) {
+            throw new IllegalStateException("Group is full. Cannot assign student.");
+        }
+
+        student.setGroup(group);
+        return repository.save(student);
+    }
+
+    public List<StudentDTO> getStudentsByGenerationAndGroup(Long generationId, Long groupId) {
+        return repository.findByGenerationIdAndGroupId(generationId, groupId);
+    }
 }
 
