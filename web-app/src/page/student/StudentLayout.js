@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  CssBaseline,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Badge,
-  Drawer,
-  Divider,
-  Button,
-} from "@material-ui/core";
-import { useNavigate, useLocation } from "react-router-dom";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import AppMenu from "../../../component/studentSMIS/AppMenu";
+import { Route, Routes, useLocation } from "react-router-dom";
+import useUser from "../../hooks/useUser";
+import DarkModeIcon from '@material-ui/icons/Brightness4';
+import LightModeIcon from '@material-ui/icons/Brightness7';
+import {
+  useTheme,
+} from "@material-ui/core";
+import CoursesView from "../admin/courses/CoursesView";
+import GradeView from "../admin/grades/GradeView";
+import SMISPage from "./SMIS/SMISPage";
+import AppMenu from "../../component/studentSMIS/AppMenu";
+import StudentProfile from "./SMIS/StudentProfile";
 
 const drawerWidth = 240;
 
@@ -95,21 +102,17 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
-  smisButton: {
-    marginTop: theme.spacing(4),
-    backgroundColor: "#007bff",
-    color: "#fff",
-    "&:hover": {
-      backgroundColor: "#005bb5",
-    },
+  fixedHeight: {
+    height: 240,
   },
 }));
 
-export default function SMISPage() {
+export default function StudentLayout({}) {
   const classes = useStyles();
-  const [ open, setOpen ] = useState(true);
+  const [ open, setOpen ] = React.useState(true);
   const location = useLocation();
-  const navigate = useNavigate();
+  const { user } = useUser();
+  const theme = useTheme();
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -119,37 +122,45 @@ export default function SMISPage() {
     setOpen(false);
   }
 
-  const locationPath = location.pathname.split("/")[1];
-
-  const goToLMS = () => {
-    navigate("/student/lms"); // Navigate to LMS page
-  };
+  const locationPath = location.pathname.split("/student/")[1];
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <CssBaseline/>
+      <AppBar
+        position="absolute"
+        className={clsx(classes.appBar, open && classes.appBarShift)}
+      >
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            className={clsx(
+              classes.menuButton,
+              open && classes.menuButtonHidden,
+            )}
           >
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            {locationPath === "dashboard" ? "Dashboard" : locationPath.charAt(0).toUpperCase() + locationPath.slice(1)}
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            {locationPath === 'orderDetails' ? 'Orders' : locationPath.charAt(0).toUpperCase() + locationPath.slice(1)}
           </Typography>
+         
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
+              <NotificationsIcon/>
             </Badge>
           </IconButton>
         </Toolbar>
       </AppBar>
-
       <Drawer
         variant="permanent"
         classes={{
@@ -159,16 +170,20 @@ export default function SMISPage() {
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
+            <ChevronLeftIcon/>
           </IconButton>
         </div>
-        <Divider />
-        <AppMenu /> {/* Assuming AppMenu is already set up as in your original code */}
+        <Divider/>
+        <AppMenu/>
       </Drawer>
-
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-  
+        <div className={classes.appBarSpacer}/>
+        {user?.user?.type === 'Student' &&
+          <Routes>
+            <Route path="/smis" element={<SMISPage/>}/>
+            <Route path="/profile" element={<StudentProfile/>}/>
+          </Routes>
+        }
       </main>
     </div>
   );

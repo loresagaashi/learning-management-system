@@ -2,6 +2,7 @@ package com.learning_management_system.model;
 
 import java.time.LocalDate;
 
+import com.learning_management_system.enums.Gender;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,5 +30,9 @@ public class Student extends UserAccount {
     @ManyToOne
     @JoinColumn(name = "group_id")
     private StudentGroup group;
+
+    @Enumerated(EnumType.STRING) // Enum mapping to string in the database
+    private Gender gender; // M for Male, F for Female
+
 
 }
