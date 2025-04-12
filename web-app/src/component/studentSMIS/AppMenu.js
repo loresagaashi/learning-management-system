@@ -14,9 +14,30 @@ import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
+import SchoolIcon from '@material-ui/icons/School';
 
 
 const appMenuItems = [
+   {
+      name: "GO TO LMS",
+      Icon: SchoolIcon,
+      link: "/student/lms",
+    },
+    {
+      name: "SMIS",
+      Icon: SchoolIcon,
+      link: "/student/smis",
+    },
+    {
+      name: "My Profile",
+      Icon: SchoolIcon,
+      link: "/student/profile",
+    },
+    {
+      name: "Exams",
+      Icon: SchoolIcon,
+      link: "/student/exams",
+    },
   {
     name: "Grades",
     Icon: DashboardIcon,

@@ -125,6 +125,15 @@ export default function StudentView({}) {
         ]),
     },
     {
+      title: "Gender",
+      field: "gender",
+      editComponent: (props) =>
+        EnumSelectTableCell(props, errorRef, [
+          { value: "M", label: "M" },
+          { value: "F", label: "F" },
+        ]),
+    },
+    {
       title: "Created On",
       field: "createdOn",
       type: "date",

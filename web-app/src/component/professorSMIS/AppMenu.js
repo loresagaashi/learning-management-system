@@ -17,6 +17,16 @@ import SchoolIcon from '@material-ui/icons/School';
 
 const appMenuItems = [
   {
+    name: "GO TO LMS",
+    Icon: SchoolIcon,
+    link: "/professor/lms",
+  },
+  {
+    name: "SMIS",
+    Icon: SchoolIcon,
+    link: "/professor/smis",
+  },
+  {
     name: "My Courses",
     Icon: SchoolIcon,
     link: "/professor/courses",

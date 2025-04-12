@@ -169,14 +169,7 @@ export default function SMISPageProfessor() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
   
-        {/* Button to go to LMS */}
-        <Button
-          variant="contained"
-          className={classes.smisButton}
-          onClick={goToLMS}
-        >
-          Go to LMS
-        </Button>
+       
       </main>
     </div>
   );
