@@ -23,6 +23,10 @@ public class Grade extends BaseEntity {
    @ManyToOne
    @JoinColumn(name = "lecture_id", nullable = true, foreignKey = @ForeignKey(name = "fk_grade_lecture", foreignKeyDefinition = "FOREIGN KEY (lecture_id) REFERENCES Lecture(id) ON DELETE RESTRICT"))
    private Lecture lecture;
+
+   @ManyToOne
+   @JoinColumn(name = "exam_id", nullable = true, foreignKey = @ForeignKey(name = "fk_grade_exam", foreignKeyDefinition = "FOREIGN KEY (exam_id) REFERENCES Exam(id) ON DELETE RESTRICT"))
+   private Exam exam;
     
    private Integer grade;
 
