@@ -91,12 +91,7 @@ export default function ProfessorView({}) {
                 "id",
               ),
     },
-    {
-      title: 'Course',
-      field: 'courses',
-      render: rowData => rowData.courses?.map(x => x.name).join(", "),
-      editComponent: props => MultipleCheckboxTableCell(props, allCourses, item => item.name)
-  },
+   
     {
       title: "Type",
       field: "type",
@@ -121,6 +116,9 @@ export default function ProfessorView({}) {
       editable: "never",
     },
   ];
+  const { data: allProfessors } = useQuery(QueryKeys.PROFESSOR, () =>
+    professorService.findAll()
+  );
 
   return (
     <CustomMaterialTable
@@ -128,7 +126,8 @@ export default function ProfessorView({}) {
       columns={columns}
       service={professorService}
       queryKey={QueryKeys.PROFESSOR}
-      errorRef={errorRef}
+      data={() => allProfessors || []}
+  errorRef={errorRef}
     />
   );
 }

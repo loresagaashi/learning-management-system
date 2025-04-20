@@ -37,4 +37,6 @@ public class Student extends UserAccount {
 
     @OneToMany(mappedBy = "student")
     private List<Grade> grades;
+    @ManyToMany
+    private List<Course> courses;
 }

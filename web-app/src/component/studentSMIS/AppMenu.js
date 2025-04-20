@@ -15,6 +15,9 @@ import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
 import SchoolIcon from '@material-ui/icons/School';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import GradeIcon from '@material-ui/icons/Grade';
+import BallotIcon from '@material-ui/icons/Ballot';
 
 
 const appMenuItems = [
@@ -25,17 +28,17 @@ const appMenuItems = [
     },
     {
       name: "My Profile",
-      Icon: SchoolIcon,
+      Icon: AccountCircleIcon,
       link: "/student/profile",
     },
     {
       name: "Exams",
-      Icon: SchoolIcon,
+      Icon: BallotIcon,
       link: "/student/exams",
     },
   {
     name: "Grades",
-    Icon: DashboardIcon,
+    Icon: GradeIcon,
     link: "/student/grades",
   },
  

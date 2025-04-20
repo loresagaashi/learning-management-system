@@ -30,4 +30,7 @@ public class Course extends BaseEntity {
     @JoinColumn(name = "orientation_id", nullable = true, foreignKey = @ForeignKey(name = "fk_course_orientation", foreignKeyDefinition = "FOREIGN KEY (orientation_id) REFERENCES Orientation(id) ON DELETE RESTRICT"))
     private Orientation orientation;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Lecture> lectures;
+
 }

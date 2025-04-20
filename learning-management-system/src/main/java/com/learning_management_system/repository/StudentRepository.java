@@ -44,4 +44,6 @@ public interface StudentRepository extends JpaRepository<Student,Long>{
     List<StudentDTO> findByGenerationIdAndGroupId(@Param("generationId") Long generationId,
                                                   @Param("groupId") Long groupId);
 
+    List<Student> findByCoursesId(Long courseId);
+
 }
