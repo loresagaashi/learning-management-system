@@ -1,6 +1,7 @@
 package com.learning_management_system.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.learning_management_system.enums.Gender;
 import jakarta.persistence.*;
@@ -34,5 +35,6 @@ public class Student extends UserAccount {
     @Enumerated(EnumType.STRING) // Enum mapping to string in the database
     private Gender gender; // M for Male, F for Female
 
-
+    @OneToMany(mappedBy = "student")
+    private List<Grade> grades;
 }

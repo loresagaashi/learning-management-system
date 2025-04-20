@@ -3,6 +3,7 @@ package com.learning_management_system.controller;
 import com.learning_management_system.data.student.AssignStudentToGroupRequest;
 import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
+import com.learning_management_system.model.Grade;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +42,9 @@ public class StudentController extends BasicControllerOperations<StudentService,
     public List<StudentDTO> getByGenerationAndGroup(@RequestParam Long generationId,
                                                     @RequestParam Long groupId) {
         return studentService.getStudentsByGenerationAndGroup(generationId, groupId);
+    }
+    @GetMapping("/{studentId}/grades")
+    public List<Grade> getGradesForStudent(@PathVariable Long studentId) {
+        return studentService.getGradesForStudent(studentId);
     }
 }
