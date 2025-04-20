@@ -24,11 +24,6 @@ const appMenuItems = [
       link: "/student/lms",
     },
     {
-      name: "SMIS",
-      Icon: SchoolIcon,
-      link: "/student/smis",
-    },
-    {
       name: "My Profile",
       Icon: SchoolIcon,
       link: "/student/profile",

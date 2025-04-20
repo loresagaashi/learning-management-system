@@ -2,9 +2,12 @@ package com.learning_management_system.service;
 
 import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
+import com.learning_management_system.model.Grade;
 import com.learning_management_system.model.StudentGroup;
+import com.learning_management_system.repository.GradeRepository;
 import com.learning_management_system.repository.StudentGroupRepository;
 import jakarta.mail.MessagingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,8 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
      private final StudentRepository studentRepository;
      private final EmailService emailService;
      private final StudentGroupRepository studentGroupRepository;
+    @Autowired
+    private GradeRepository gradeRepository;
 
 
 
@@ -129,6 +134,11 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
 
     public List<StudentDTO> getStudentsByGenerationAndGroup(Long generationId, Long groupId) {
         return repository.findByGenerationIdAndGroupId(generationId, groupId);
+    }
+
+    public List<Grade> getGradesForStudent(Long studentId) {
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+        return gradeRepository.findByStudent(student);
     }
 }
 

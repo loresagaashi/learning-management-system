@@ -24,6 +24,7 @@ import GradeView from "../admin/grades/GradeView";
 import SMISPage from "./SMIS/SMISPage";
 import AppMenu from "../../component/studentSMIS/AppMenu";
 import StudentProfile from "./SMIS/StudentProfile";
+import StudentGrades from "./SMIS/StudentGrades";
 
 const drawerWidth = 240;
 
@@ -180,8 +181,8 @@ export default function StudentLayout({}) {
         <div className={classes.appBarSpacer}/>
         {user?.user?.type === 'Student' &&
           <Routes>
-            <Route path="/smis" element={<SMISPage/>}/>
             <Route path="/profile" element={<StudentProfile/>}/>
+            <Route path="/grades" element={<StudentGrades/>}/>
           </Routes>
         }
       </main>
