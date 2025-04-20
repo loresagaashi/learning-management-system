@@ -22,6 +22,8 @@ import {
 import AppMenu from "../../component/professorSMIS/AppMenu";
 import CoursesView from "../admin/courses/CoursesView";
 import SMISPageProfessor from "./SMIS/SMISPageProfessor";
+import ProfessorCourses from "./SMIS/ProfessorCourses";
+import Attendance from "./SMIS/Attendance";
 
 const drawerWidth = 240;
 
@@ -178,8 +180,8 @@ export default function ProfessorLayout({}) {
         <div className={classes.appBarSpacer}/>
         {user?.user?.type === 'Professor' &&
           <Routes>
-            <Route path="/smis" element={<SMISPageProfessor/>}/>
-            <Route path="/courses" element={<CoursesView/>}/>
+            <Route path="/courses" element={<ProfessorCourses/>}/>
+            <Route path="/attendance" element={<Attendance/>}/>
           </Routes>
         }
       </main>

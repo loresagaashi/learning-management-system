@@ -22,14 +22,14 @@ const appMenuItems = [
     link: "/professor/lms",
   },
   {
-    name: "SMIS",
-    Icon: SchoolIcon,
-    link: "/professor/smis",
-  },
-  {
     name: "My Courses",
     Icon: SchoolIcon,
     link: "/professor/courses",
+  },
+  {
+    name: "Attendance",
+    Icon: SchoolIcon,
+    link: "/professor/attendance",
   },
  
 ];
