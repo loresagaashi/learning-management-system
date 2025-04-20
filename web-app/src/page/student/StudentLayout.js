@@ -25,6 +25,7 @@ import SMISPage from "./SMIS/SMISPage";
 import AppMenu from "../../component/studentSMIS/AppMenu";
 import StudentProfile from "./SMIS/StudentProfile";
 import StudentGrades from "./SMIS/StudentGrades";
+import StudentExam from "./SMIS/StudentExams";
 
 const drawerWidth = 240;
 
@@ -183,6 +184,7 @@ export default function StudentLayout({}) {
           <Routes>
             <Route path="/profile" element={<StudentProfile/>}/>
             <Route path="/grades" element={<StudentGrades/>}/>
+            <Route path="/exams" element={<StudentExam/>}/>
           </Routes>
         }
       </main>
