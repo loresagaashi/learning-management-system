@@ -3,6 +3,7 @@ package com.learning_management_system.controller;
 import com.learning_management_system.payload.ChatMessage;
 import com.learning_management_system.service.ChatService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -18,8 +19,18 @@ public class ChatController {
 
     @MessageMapping("/private-message")
     public void sendPrivateMessage(ChatMessage message) {
-        chatService.saveMessage(message);
+        //chatService.saveMessage(message);
         messagingTemplate.convertAndSendToUser(
                 String.valueOf(message.getRecipientId()), "/queue/messages", message);
     }
+
+    @MessageMapping("/typing")
+    public void sendTypingIndicator(@Payload ChatMessage typingStatus) {
+        messagingTemplate.convertAndSendToUser(
+                typingStatus.getRecipientId().toString(),
+                "/queue/typing",
+                typingStatus
+        );
+    }
+
 }
