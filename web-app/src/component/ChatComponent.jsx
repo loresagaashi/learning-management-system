@@ -2,10 +2,12 @@ import { Client } from '@stomp/stompjs';
 import React, { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 
+import { AdminService } from '../service/AdminService';
 import { getChatHistory, markMessagesAsRead, sendChatMessage } from '../service/chatService';
 import { ProfessorService } from '../service/ProfessorService';
 import { getCurrentUser } from '../service/ServiceMe';
 import { StudentService } from '../service/StudentService';
+
 
 const ChatComponent = () => {
   const [user, setUser] = useState(null);
@@ -23,18 +25,21 @@ const ChatComponent = () => {
 
   const professorService = new ProfessorService();
   const studentService = new StudentService();
-
+  const adminService = new AdminService();
+  const [admins, setAdmins] = useState([]);
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [userRes, profsRes, studsRes] = await Promise.all([
+        const [userRes, profsRes, studsRes,adminsRes] = await Promise.all([
           getCurrentUser(),
           professorService.findAll(),
-          studentService.findAll()
+          studentService.findAll(),
+          adminService.findAll()
         ]);
         setUser(userRes.data);
         setProfessors(profsRes);
         setStudents(studsRes);
+        setAdmins(adminsRes);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -181,6 +186,8 @@ const ChatComponent = () => {
         <h3 style={{ marginBottom: '20px' }}>{user?.firstName} {user?.lastName}</h3>
         {renderUserList('Professors', professors)}
         {renderUserList('Students', students)}
+        {renderUserList('Admins', admins)}
+
       </div>
 
       <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
