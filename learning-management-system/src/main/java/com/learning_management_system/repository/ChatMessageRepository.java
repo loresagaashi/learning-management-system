@@ -10,4 +10,8 @@ import java.util.List;
 public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
     @Query("SELECT m FROM ChatMessageEntity m WHERE (m.senderId = :senderId AND m.recipientId = :recipientId) OR (m.senderId = :recipientId AND m.recipientId = :senderId) ORDER BY m.id ASC")
     List<ChatMessageEntity> findConversation(@Param("senderId") Long senderId, @Param("recipientId") Long recipientId);
+
+    @Query("SELECT m FROM ChatMessageEntity m WHERE m.senderId = :senderId AND m.recipientId = :recipientId AND m.isRead = false")
+    List<ChatMessageEntity> findUnreadMessages(@Param("senderId") Long senderId, @Param("recipientId") Long recipientId);
+
 }
