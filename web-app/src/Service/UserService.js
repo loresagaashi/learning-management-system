@@ -45,5 +45,4 @@ export class UserService extends BaseService {
   async resetPassword(data) {
     return axiosInstance.post("/auth/reset-password", data).then((res) => res.data);
   }
-  
 }
