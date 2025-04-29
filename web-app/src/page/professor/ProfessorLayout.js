@@ -1,29 +1,26 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import clsx from "clsx";
-import { Route, Routes, useLocation } from "react-router-dom";
-import useUser from "../../hooks/useUser";
-import DarkModeIcon from '@material-ui/icons/Brightness4';
-import LightModeIcon from '@material-ui/icons/Brightness7';
 import {
   useTheme,
 } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Badge from "@material-ui/core/Badge";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import MenuIcon from "@material-ui/icons/Menu";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import clsx from "clsx";
+import React from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import ChatComponent from "../../component/ChatComponent";
 import AppMenu from "../../component/professorSMIS/AppMenu";
-import CoursesView from "../admin/courses/CoursesView";
-import SMISPageProfessor from "./SMIS/SMISPageProfessor";
-import ProfessorCourses from "./SMIS/ProfessorCourses";
+import useUser from "../../hooks/useUser";
 import Attendance from "./SMIS/Attendance";
+import ProfessorCourses from "./SMIS/ProfessorCourses";
 
 const drawerWidth = 240;
 
@@ -182,6 +179,8 @@ export default function ProfessorLayout({}) {
           <Routes>
             <Route path="/courses" element={<ProfessorCourses/>}/>
             <Route path="/attendance" element={<Attendance/>}/>
+            <Route path="/chat" element={<ChatComponent/>}/>
+
           </Routes>
         }
       </main>
