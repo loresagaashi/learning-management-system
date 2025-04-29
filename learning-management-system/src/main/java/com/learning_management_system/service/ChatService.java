@@ -30,4 +30,10 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    public void markAsRead(Long senderId, Long recipientId) {
+        List<ChatMessageEntity> unreadMessages = chatMessageRepository.findUnreadMessages(senderId, recipientId);
+        unreadMessages.forEach(msg -> msg.setRead(true));
+        chatMessageRepository.saveAll(unreadMessages);
+    }
+
 }

@@ -115,6 +115,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (optionalUser.isPresent()) {
             UserAccountProjection user = optionalUser.get();
             return new UserView(
+                    user.getUserId(),
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),

@@ -3,6 +3,7 @@ package com.learning_management_system.controller;
 
 import com.learning_management_system.payload.ChatMessage;
 import com.learning_management_system.service.ChatService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,5 +25,11 @@ public class ChatRestController {
     @GetMapping("/history")
     public List<ChatMessage> getMessages(@RequestParam Long senderId, @RequestParam Long recipientId) {
         return chatService.getMessagesBetween(senderId, recipientId);
+    }
+
+    @PostMapping("/mark-as-read")
+    public ResponseEntity<?> markMessagesAsRead(@RequestBody ChatMessage request) {
+        chatService.markAsRead(request.getSenderId(), request.getRecipientId());
+        return ResponseEntity.ok().build();
     }
 }
