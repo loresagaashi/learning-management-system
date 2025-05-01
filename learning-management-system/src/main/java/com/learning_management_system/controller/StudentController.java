@@ -4,6 +4,7 @@ import com.learning_management_system.data.student.AssignStudentToGroupRequest;
 import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
 import com.learning_management_system.model.Grade;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +47,11 @@ public class StudentController extends BasicControllerOperations<StudentService,
     @GetMapping("/{studentId}/grades")
     public List<Grade> getGradesForStudent(@PathVariable Long studentId) {
         return studentService.getGradesForStudent(studentId);
+    }
+
+    @GetMapping("/by-generation")
+    public ResponseEntity<List<StudentDTO>> getStudentsByGeneration(@RequestParam Long generationId) {
+        List<StudentDTO> students = studentService.getStudentsByGeneration(generationId);
+        return ResponseEntity.ok(students);
     }
 }
