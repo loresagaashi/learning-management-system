@@ -140,5 +140,9 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
         return gradeRepository.findByStudent(student);
     }
+
+    public List<StudentDTO> getStudentsByGeneration(Long generationId) {
+        return repository.findAllByGenerationId(generationId);
+    }
 }
 
