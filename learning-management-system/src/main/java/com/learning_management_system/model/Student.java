@@ -39,4 +39,8 @@ public class Student extends UserAccount {
     private List<Grade> grades;
     @ManyToMany
     private List<Course> courses;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<StudentSemester> studentSemesters;
+
 }

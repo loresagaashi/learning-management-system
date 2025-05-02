@@ -6,6 +6,7 @@ import com.learning_management_system.model.Grade;
 import com.learning_management_system.model.StudentGroup;
 import com.learning_management_system.repository.GradeRepository;
 import com.learning_management_system.repository.StudentGroupRepository;
+import com.learning_management_system.repository.StudentSemesterRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,17 +32,19 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
      private final StudentRepository studentRepository;
      private final EmailService emailService;
      private final StudentGroupRepository studentGroupRepository;
+     private final StudentSemesterRepository studentSemesterRepository;
     @Autowired
     private GradeRepository gradeRepository;
 
 
 
-    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService, StudentGroupRepository studentGroupRepository) {
+    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService, StudentGroupRepository studentGroupRepository, StudentSemesterRepository studentSemesterRepository) {
         super(repository);
         this.passwordEncoder = passwordEncoder;
         this.studentRepository = studentRepository;
         this.emailService = emailService;
         this.studentGroupRepository = studentGroupRepository;
+        this.studentSemesterRepository = studentSemesterRepository;
     }
     @Override
     public Student save(Student entity) {
@@ -126,6 +129,12 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
 
         if (group.getCapacity() != null && currentSize >= group.getCapacity()) {
             throw new IllegalStateException("Group is full. Cannot assign student.");
+        }
+
+        boolean isRegisteredInSemester = studentSemesterRepository.existsByStudentAndSemester_Generation(student, group.getGeneration());
+
+        if (!isRegisteredInSemester) {
+            throw new IllegalStateException("Student must register in a semester of this generation before joining the group.");
         }
 
         student.setGroup(group);
