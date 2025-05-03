@@ -10,6 +10,7 @@ import { ScheduleService } from "../../../service/ScheduleService";
 import { StudentService } from "../../../service/StudentService";
 import { CourseService } from "../../../service/CourseService";
 import { ProfessorService } from "../../../service/ProfessorService";
+import { StudentGroupService } from "../../../service/StudentGroupService";
 import { useQuery } from "react-query";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
@@ -18,6 +19,7 @@ const scheduleService = new ScheduleService();
 const studentService = new StudentService();
 const courseService = new CourseService();
 const professorService = new ProfessorService();
+const studentGroupService = new StudentGroupService();
 
 export default function ScheduleView({}) {
   const errorRef = useRef();
@@ -32,6 +34,10 @@ export default function ScheduleView({}) {
   
   const { data: allProfessors } = useQuery(QueryKeys.PROFESSOR, () =>
     professorService.findAll()
+  );
+
+  const { data: allGroups } = useQuery(QueryKeys.STUDENT_GROUPS, () =>
+    studentGroupService.findAll()
   );
 
   const columns = [
@@ -76,6 +82,20 @@ export default function ScheduleView({}) {
           "id",
         ),
     },
+
+    {
+      title: "Group",
+      field: "studentGroup",
+      render: (rowData) => rowData.studentGroup?.name,
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allGroups?.map((g) => ({ value: g, label: g.name })) || [],
+          "id"
+        ),
+    },
+    
     {
           title: "Day of Week",
           field: "dayOfWeek",
