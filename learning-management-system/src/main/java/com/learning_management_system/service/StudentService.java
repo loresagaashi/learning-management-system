@@ -2,11 +2,8 @@ package com.learning_management_system.service;
 
 import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
-import com.learning_management_system.model.Grade;
-import com.learning_management_system.model.StudentGroup;
-import com.learning_management_system.repository.GradeRepository;
-import com.learning_management_system.repository.StudentGroupRepository;
-import com.learning_management_system.repository.StudentSemesterRepository;
+import com.learning_management_system.model.*;
+import com.learning_management_system.repository.*;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,14 +13,13 @@ import org.springframework.stereotype.Service;
 import com.learning_management_system.exception.EntityValidationException;
 import com.learning_management_system.exception.ExceptionPayload;
 // import com.learning_management_system.model.Professor;
-import com.learning_management_system.model.Student;
 // import com.learning_management_system.repository.ProfessorRepository;
-import com.learning_management_system.repository.StudentRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService extends BasicServiceOperations<StudentRepository, Student> {
@@ -33,18 +29,20 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
      private final EmailService emailService;
      private final StudentGroupRepository studentGroupRepository;
      private final StudentSemesterRepository studentSemesterRepository;
+     private final StudentGroupSemesterRepository studentGroupSemesterRepository;
     @Autowired
     private GradeRepository gradeRepository;
 
 
 
-    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService, StudentGroupRepository studentGroupRepository, StudentSemesterRepository studentSemesterRepository) {
+    public StudentService(StudentRepository repository, PasswordEncoder passwordEncoder, StudentRepository studentRepository, EmailService emailService, StudentGroupRepository studentGroupRepository, StudentSemesterRepository studentSemesterRepository, StudentGroupSemesterRepository studentGroupSemesterRepository) {
         super(repository);
         this.passwordEncoder = passwordEncoder;
         this.studentRepository = studentRepository;
         this.emailService = emailService;
         this.studentGroupRepository = studentGroupRepository;
         this.studentSemesterRepository = studentSemesterRepository;
+        this.studentGroupSemesterRepository = studentGroupSemesterRepository;
     }
     @Override
     public Student save(Student entity) {
@@ -131,10 +129,24 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
             throw new IllegalStateException("Group is full. Cannot assign student.");
         }
 
-        boolean isRegisteredInSemester = studentSemesterRepository.existsByStudentAndSemester_Generation(student, group.getGeneration());
+        Optional<StudentSemester> studentSemesterOpt =
+                studentSemesterRepository.findTopByStudentAndSemester_GenerationOrderByRegistrationDateDesc(student, group.getGeneration());
 
-        if (!isRegisteredInSemester) {
+        if (studentSemesterOpt.isEmpty()) {
             throw new IllegalStateException("Student must register in a semester of this generation before joining the group.");
+        }
+
+        Semester semester = studentSemesterOpt.get().getSemester();
+
+
+        Optional<StudentGroupSemester> existingGroupSemester =
+                studentGroupSemesterRepository.findByGroupAndSemester(group, semester);
+
+        if (existingGroupSemester.isEmpty()) {
+            StudentGroupSemester groupSemester = new StudentGroupSemester();
+            groupSemester.setGroup(group);
+            groupSemester.setSemester(semester);
+            studentGroupSemesterRepository.save(groupSemester);
         }
 
         student.setGroup(group);

@@ -44,21 +44,21 @@ public interface StudentRepository extends JpaRepository<Student,Long>{
     List<StudentDTO> findByGenerationIdAndGroupId(@Param("generationId") Long generationId,
                                                   @Param("groupId") Long groupId);
 
-    @Query("""
-    SELECT new com.learning_management_system.data.student.StudentDTO(
-        s.id,
-        CONCAT(s.firstName, ' ', s.lastName),
-        s.email,
-        g.generation.id,
-        g.generation.name,
-        g.id,
-        g.name
-    )
-    FROM Student s
-    JOIN s.group g
-    WHERE g.generation.id = :generationId
-""")
-    List<StudentDTO> findAllByGenerationId(@Param("generationId") Long generationId);
+        @Query("""
+        SELECT new com.learning_management_system.data.student.StudentDTO(
+            s.id,
+            CONCAT(s.firstName, ' ', s.lastName),
+            s.email,
+            g.generation.id,
+            g.generation.name,
+            g.id,
+            g.name
+        )
+        FROM Student s
+        JOIN s.group g
+        WHERE g.generation.id = :generationId
+    """)
+        List<StudentDTO> findAllByGenerationId(@Param("generationId") Long generationId);
 
 
     List<Student> findByCoursesId(Long courseId);
