@@ -38,6 +38,7 @@ import ReportView from "./reports/ReportView";
 import ScheduleView from "./schedules/ScheduleView";
 import StudentView from "./students/StudentView";
 import SubmissionView from "./submissions/SubmissionView";
+import StudentGroups from "./groups/StudentGroups";
 
 const drawerWidth = 240;
 
@@ -214,6 +215,7 @@ export default function AdminLayout({}) {
             <Route path="/cities" element={<CityView/>}/>
             <Route path="/emails/sendEmail" element={<SendEmailForm/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
+            <Route path="/student-groups" element={<StudentGroups/>}/>
 
 
           </Routes>

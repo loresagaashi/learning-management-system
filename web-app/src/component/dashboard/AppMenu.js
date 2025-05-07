@@ -31,6 +31,7 @@ import MenuBookIcon from "@material-ui/icons/MenuBook";
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import EmailIcon from '@material-ui/icons/Email';
+import GroupIcon from '@material-ui/icons/Group';
 
 const appMenuItems = [
   {
@@ -62,6 +63,11 @@ const appMenuItems = [
     name: "Courses",
     Icon: SchoolIcon,
     link: "/admin/courses",
+  },
+  {
+    name: "Groups",
+    Icon: GroupIcon,
+    link: "/admin/student-groups",
   },
   {
     name: "Materials",
