@@ -18,6 +18,7 @@ import LMSPageProfessor from "../page/professor/LMS/LMSPageProfessor";
 import SMISPageProfessor from "../page/professor/SMIS/SMISPageProfessor";
 import ProfessorLayout from "../page/professor/ProfessorLayout";
 import StudentLayout from "../page/student/StudentLayout";
+import StudentScheduleViewer from "../page/student/SMIS/StudentScheduleViewer";
 // import CoursesView from "../page/professor/SMIS/CoursesView";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
@@ -50,6 +51,8 @@ const AppRoutes = [
   <Route path="/student/page" element={<StudentPage />} />,
   <Route path="/student/lms" element={<LMSPage />} />,
   <Route path="/student/smis" element={<SMISPage />} />,
+  <Route path="schedule" element={<StudentScheduleViewer />} />,
+  
 
   <Route path="/professor/lms" element={<LMSPageProfessor />} />,
   <Route path="/professor/smis" element={<SMISPageProfessor />} />,
