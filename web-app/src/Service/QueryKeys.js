@@ -18,5 +18,6 @@ export const QueryKeys = {
   CITY: "CITY",
   LECTUREDOCUMENT: "LECTUREDOCUMENT",
   STUDENT_GROUPS: "STUDENT_GROUPS",
+  GENERATIONS: "GENERATIONS",
   USER_BY_EMAIL: (email) => "USER_" + email,
 };

@@ -32,6 +32,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import EmailIcon from '@material-ui/icons/Email';
 import GroupIcon from '@material-ui/icons/Group';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 
 const appMenuItems = [
   {
@@ -68,6 +69,11 @@ const appMenuItems = [
     name: "Groups",
     Icon: GroupIcon,
     link: "/admin/student-groups",
+  },
+  {
+    name: "Generations",
+    Icon: DateRangeIcon,
+    link: "/admin/generations",
   },
   {
     name: "Materials",
