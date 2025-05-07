@@ -23,4 +23,9 @@ public class Generation extends BaseEntity {
 
     @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentGroup> groups;
+
+    public Generation() {
+        int currentYear = LocalDateTime.now().getYear();
+        this.name = currentYear + "/" + (currentYear + 1);
+    }
 }
