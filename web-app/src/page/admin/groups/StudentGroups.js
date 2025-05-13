@@ -52,7 +52,7 @@ export default function StudentGroups() {
 
   return (
     <CustomMaterialTable
-      title="Student Groups"
+      title="Manage Student Groups"
       columns={columns}
       service={studentGroupService}
       queryKey={QueryKeys.STUDENT_GROUPS}

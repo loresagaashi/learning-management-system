@@ -68,7 +68,7 @@ const appMenuItems = [
   {
     name: "Groups",
     Icon: GroupIcon,
-    link: "/admin/studentgroups",
+    link: "/admin/student-groups",
   },
   {
     name: "Generations",
