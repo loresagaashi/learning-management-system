@@ -19,6 +19,7 @@ import { ProfessorService } from "./ProfessorService";
 import { CityService } from "./CityService";
 import { StudentGroupService } from "./StudentGroupService";
 import { GenerationService } from "./GenerationService";
+import { SemesterService } from "./SemesterService";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,7 @@ export const setQueryDefaults = () => {
   const cityService = new CityService();
   const studentGroupsService = new StudentGroupService();
   const generationService = new GenerationService();
+  const semesterService = new SemesterService();
 
   queryClient.setQueryDefaults(QueryKeys.ADMIN, {
     queryFn: () => adminsService.findAll(),
@@ -108,6 +110,9 @@ export const setQueryDefaults = () => {
     queryFn: () => studentGroupsService.findAll(),
   });
   queryClient.setQueryDefaults(QueryKeys.GENERATIONS, {
+    queryFn: () => generationService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.SEMESTER, {
     queryFn: () => generationService.findAll(),
   });
 };
