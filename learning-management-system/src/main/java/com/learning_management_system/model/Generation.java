@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -22,6 +24,7 @@ public class Generation extends BaseEntity {
     private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<StudentGroup> groups;
 
     public Generation() {
