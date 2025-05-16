@@ -24,7 +24,6 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import PaymentIcon from '@material-ui/icons/Payment';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
-import EventAvailableIcon from "@material-ui/icons/EventAvailable";
 import HowToRegIcon from "@material-ui/icons/HowToReg";
 import StarIcon from "@material-ui/icons/Star";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
@@ -33,6 +32,8 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import EmailIcon from '@material-ui/icons/Email';
 import GroupIcon from '@material-ui/icons/Group';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import TextsmsIcon from '@material-ui/icons/Textsms';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 
 const appMenuItems = [
   {
@@ -54,6 +55,11 @@ const appMenuItems = [
     name:"Professors",
     Icon: AccountBoxIcon,
     link: "/admin/professors",
+  },
+  {
+    name: "Chat",
+    Icon: TextsmsIcon,
+    link: "/student/chat",
   },
   {
     name:"Send Emails",
@@ -122,7 +128,7 @@ const appMenuItems = [
   },
   {
     name: "Schedules",
-    Icon: EventAvailableIcon,
+    Icon: QueryBuilderIcon,
     link: "/admin/schedules",
   },
   {

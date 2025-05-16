@@ -14,6 +14,7 @@ import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
 import SchoolIcon from '@material-ui/icons/School';
+import TextsmsIcon from '@material-ui/icons/Textsms';
 
 const appMenuItems = [
   {
@@ -30,6 +31,11 @@ const appMenuItems = [
     name: "Attendance",
     Icon: SchoolIcon,
     link: "/professor/attendance",
+  },
+  {
+    name: "Chat",
+    Icon: TextsmsIcon,
+    link: "/professor/chat",
   },
  
 ];

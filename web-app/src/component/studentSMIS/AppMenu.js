@@ -18,7 +18,8 @@ import SchoolIcon from '@material-ui/icons/School';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import GradeIcon from '@material-ui/icons/Grade';
 import BallotIcon from '@material-ui/icons/Ballot';
-
+import TextsmsIcon from '@material-ui/icons/Textsms';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 
 const appMenuItems = [
    {
@@ -36,12 +37,21 @@ const appMenuItems = [
       Icon: BallotIcon,
       link: "/student/exams",
     },
-  {
-    name: "Grades",
-    Icon: GradeIcon,
-    link: "/student/grades",
-  },
- 
+    {
+      name: "Grades",
+      Icon: GradeIcon,
+      link: "/student/grades",
+    },
+    {
+      name: "Chat",
+      Icon: TextsmsIcon,
+      link: "/student/chat",
+    },
+    {
+      name: "Schedule",
+      Icon: QueryBuilderIcon,
+      link: "/student/schedules",
+    },
 ];
 
 
