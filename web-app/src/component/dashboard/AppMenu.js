@@ -127,6 +127,11 @@ const appMenuItems = [
     link: "/admin/orientations",
   },
   {
+    name: "Semesters",
+    Icon: MenuBookIcon,
+    link: "/admin/semester",
+  },
+  {
     name: "Schedules",
     Icon: QueryBuilderIcon,
     link: "/admin/schedules",

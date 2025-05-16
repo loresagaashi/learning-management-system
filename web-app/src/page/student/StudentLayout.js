@@ -22,6 +22,7 @@ import useUser from "../../hooks/useUser";
 import StudentExam from "./SMIS/StudentExams";
 import StudentGrades from "./SMIS/StudentGrades";
 import StudentProfile from "./SMIS/StudentProfile";
+// import StudentScheduleView from "./SMIS/StudentScheduleView";
 
 const drawerWidth = 240;
 
@@ -182,6 +183,7 @@ export default function StudentLayout({}) {
             <Route path="/grades" element={<StudentGrades/>}/>
             <Route path="/exams" element={<StudentExam/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
+            {/* <Route path="/schedules" element={<StudentScheduleView/>}/> */}
 
           </Routes>
         }
