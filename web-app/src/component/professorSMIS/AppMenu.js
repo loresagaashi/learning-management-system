@@ -23,6 +23,11 @@ const appMenuItems = [
     link: "/professor/lms",
   },
   {
+    name: "My Profile", 
+    Icon: PersonIcon, 
+    link: "/professor/profile", 
+  },
+  {
     name: "My Courses",
     Icon: SchoolIcon,
     link: "/professor/courses",

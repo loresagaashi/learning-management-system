@@ -21,6 +21,7 @@ import AppMenu from "../../component/professorSMIS/AppMenu";
 import useUser from "../../hooks/useUser";
 import Attendance from "./SMIS/Attendance";
 import ProfessorCourses from "./SMIS/ProfessorCourses";
+import ProfessorProfile from "./SMIS/ProfessorProfile";
 
 const drawerWidth = 240;
 
@@ -178,6 +179,7 @@ export default function ProfessorLayout({}) {
         {user?.user?.type === 'Professor' &&
           <Routes>
             <Route path="/courses" element={<ProfessorCourses/>}/>
+            <Route path="/profile" element={<ProfessorProfile />} />
             <Route path="/attendance" element={<Attendance/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
 
