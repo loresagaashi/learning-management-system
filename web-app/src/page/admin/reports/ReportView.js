@@ -56,7 +56,7 @@ export default function ReportView() {
           props,
           errorRef,
           allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
-          "studentId",
+          "id",
         ),
     },
     // {

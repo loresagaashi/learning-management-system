@@ -40,12 +40,12 @@ export default function LogView() {
       field: "studentId",
       render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
       editComponent: (props) =>
-        SelectTableCell(
-          props,
-          errorRef,
-          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
-          "studentId",
-        ),
+         SelectTableCell(
+                 props,
+                 errorRef,
+                 allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+                 "id",
+               ),
     },
     {
       title: "Professor",

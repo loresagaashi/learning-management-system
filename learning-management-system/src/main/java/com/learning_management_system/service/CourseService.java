@@ -34,4 +34,8 @@ public class CourseService extends BasicServiceOperations<CourseRepository, Cour
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         return course.getLectures(); // assuming the Course entity has a getLectures() method
     }
+
+       public List<Course> getCoursesByProfessorId(Long professorId) {
+        return courseRepository.findByProfessorId(professorId);
+    }
 }
