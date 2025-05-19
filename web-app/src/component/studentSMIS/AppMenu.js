@@ -42,11 +42,11 @@ const appMenuItems = [
       Icon: GradeIcon,
       link: "/student/grades",
     },
-    {
-      name: "Chat",
-      Icon: TextsmsIcon,
-      link: "/student/chat",
-    },
+    // {
+    //   name: "Chat",
+    //   Icon: TextsmsIcon,
+    //   link: "/student/chat",
+    // },
     {
       name: "Schedule",
       Icon: QueryBuilderIcon,

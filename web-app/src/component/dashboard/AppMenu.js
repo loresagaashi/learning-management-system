@@ -56,11 +56,11 @@ const appMenuItems = [
     Icon: AccountBoxIcon,
     link: "/admin/professors",
   },
-  {
-    name: "Chat",
-    Icon: TextsmsIcon,
-    link: "/student/chat",
-  },
+  // {
+  //   name: "Chat",
+  //   Icon: TextsmsIcon,
+  //   link: "/admin/chat",
+  // },
   {
     name:"Send Emails",
     Icon: EmailIcon,

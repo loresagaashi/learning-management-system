@@ -19,6 +19,8 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useUser from "../../../hooks/useUser"; // if you have user context
+// import ChatComponent from "../../../component/ChatComponent";
+// import ChatIcon from "@material-ui/icons/Chat";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -65,6 +67,29 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#005bb5",
     },
   },
+  // chatButton: {
+  //   position: "fixed",
+  //   bottom: "20px",
+  //   right: "20px",
+  //   backgroundColor: "#007bff",
+  //   color: "#fff",
+  //   zIndex: 1000,
+  //   "&:hover": {
+  //     backgroundColor: "#005bb5",
+  //   },
+  // },
+  // chatOverlay: {
+  //   position: "fixed",
+  //   bottom: 80,
+  //   right: 20,
+  //   width: 400,
+  //   maxHeight: "70vh",
+  //   boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+  //   borderRadius: 8,
+  //   backgroundColor: "#fff",
+  //   zIndex: 1500,
+  //   overflow: "auto",
+  // },
 }));
 
 const LMSPage = () => {
@@ -73,6 +98,11 @@ const LMSPage = () => {
   const { setUser } = useUser(); // if using context
   const [orientations, setOrientations] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const [chatOpen, setChatOpen] = useState(false);
+
+  // const toggleChat = () => {
+  //   setChatOpen((prev) => !prev);
+  // };
 
   useEffect(() => {
     axios
@@ -166,6 +196,23 @@ const LMSPage = () => {
           </Button>
         </Container>
       </div>
+
+      {/* {!chatOpen && (
+        <Button
+          variant="contained"
+          className={classes.chatButton}
+          startIcon={<ChatIcon />}
+          onClick={toggleChat}
+        >
+          Chat
+        </Button>
+      )}
+
+      {chatOpen && (
+        <div className={classes.chatOverlay}>
+          <ChatComponent onClose={() => setChatOpen(false)} />
+        </div>
+      )} */}
     </>
   );
 };
