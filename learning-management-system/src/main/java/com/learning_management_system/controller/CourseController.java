@@ -29,4 +29,5 @@ public class CourseController extends BasicControllerOperations<CourseService,Co
     public List<Lecture> getLecturesByCourse(@PathVariable Long courseId) {
         return service.getLecturesByCourse(courseId);
     }
+    
 }
