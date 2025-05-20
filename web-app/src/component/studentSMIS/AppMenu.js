@@ -47,6 +47,11 @@ const appMenuItems = [
       Icon: TextsmsIcon,
       link: "/student/chat",
     },
+        {
+      name: "Choose Semester",
+      Icon: QueryBuilderIcon,
+      link: "/student/semester",
+    },
     {
       name: "Schedule",
       Icon: QueryBuilderIcon,
