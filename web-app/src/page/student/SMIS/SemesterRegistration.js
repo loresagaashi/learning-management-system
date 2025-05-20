@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   FormControl,
@@ -9,48 +9,77 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
-import axios from 'axios';
 import { SemesterService } from '../../../service/SemesterService';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../service/QueryKeys';
 import { StudentSemesterService } from '../../../service/StudentSemesterService';
+import useUser from '../../../hooks/useUser';
 
 const semesterService = new SemesterService();
 const studentSemesterService = new StudentSemesterService();
 
-const SemesterRegistration = ({ studentId }) => {
+const SemesterRegistration = () => {
   const [selectedSemester, setSelectedSemester] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+  const [registeredSemesters, setRegisteredSemesters] = useState([]);
 
-const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
-    semesterService.findAll(),
+  const { user } = useUser();
+  const studentId = user?.user?.id; // or user?.user?.studentId
+
+  const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
+    semesterService.findAll()
   );
 
- const handleRegister = () => {
-  if (!selectedSemester) {
-    setError('Please select a semester.');
-    return;
-  }
+  // Fetch student's registered semesters on load
+  useEffect(() => {
+    if (studentId) {
+      studentSemesterService
+        .findByStudentId(studentId)
+        .then((res) => {
+          setRegisteredSemesters(res.data);
+        })
+        .catch(() => {
+          setError('Failed to load registered semesters.');
+        });
+    }
+  }, [studentId]);
 
-  setSubmitting(true);
-  setError(null);
-  setMessage(null);
+  const handleRegister = () => {
+    if (!selectedSemester) {
+      setError('Please select a semester.');
+      return;
+    }
 
-  studentSemesterService.register(studentId, selectedSemester)
-  .then(res => {
-    setMessage(res.data);
-  })
-  .catch(err => {
-    setError(err.response?.data || 'Registration failed.');
-  });
-};
+    if (!studentId) {
+      setError('User not logged in or student ID missing.');
+      return;
+    }
 
-  // if (isLoading) return <Box textAlign="center"><CircularProgress /></Box>;
+    setSubmitting(true);
+    setError(null);
+    setMessage(null);
 
-  // if (isError) return <Alert severity="error">Error loading semesters: {fetchError.message}</Alert>;
+    studentSemesterService
+      .register(studentId, selectedSemester)
+      .then((res) => {
+        setMessage(res.data);
+        // Refresh registered semesters
+        return studentSemesterService.findByStudentId(studentId);
+      })
+      .then((res) => {
+        setRegisteredSemesters(res.data);
+      })
+      .catch((err) => {
+        setError(err.response?.data || 'Registration failed.');
+      })
+      .finally(() => setSubmitting(false));
+  };
 
   return (
     <Box sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
@@ -90,6 +119,26 @@ const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
       >
         {submitting ? 'Registering...' : 'Register'}
       </Button>
+
+      {/* Show registered semesters below */}
+      <Box mt={4}>
+        <Typography variant="h6" gutterBottom>
+          Registered Semesters
+        </Typography>
+        {registeredSemesters.length === 0 ? (
+          <Typography variant="body2" color="text.secondary">
+            You haven't registered in any semester yet.
+          </Typography>
+        ) : (
+          <List>
+            {registeredSemesters.map((sem) => (
+              <ListItem key={sem.id}>
+                <ListItemText primary={`${sem.semester.name} (${sem.semester.season})`} />
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Box>
     </Box>
   );
 };
