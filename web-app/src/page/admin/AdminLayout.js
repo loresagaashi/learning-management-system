@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
-      chatButton: {
+  chatButton: {
     position: "fixed",
     bottom: "20px",
     right: "20px",

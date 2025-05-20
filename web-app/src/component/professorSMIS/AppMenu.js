@@ -37,11 +37,11 @@ const appMenuItems = [
     Icon: SchoolIcon,
     link: "/professor/attendance",
   },
-  {
-    name: "Chat",
-    Icon: TextsmsIcon,
-    link: "/professor/chat",
-  },
+  // {
+  //   name: "Chat",
+  //   Icon: TextsmsIcon,
+  //   link: "/professor/chat",
+  // },
  
 ];
 
