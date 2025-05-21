@@ -59,7 +59,7 @@ const appMenuItems = [
   {
     name: "Chat",
     Icon: TextsmsIcon,
-    link: "/student/chat",
+    link: "/admin/chat",
   },
   {
     name:"Send Emails",

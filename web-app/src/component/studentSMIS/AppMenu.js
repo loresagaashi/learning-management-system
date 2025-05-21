@@ -50,7 +50,7 @@ const appMenuItems = [
         {
       name: "Choose Semester",
       Icon: QueryBuilderIcon,
-      link: "/student/semester",
+      link: "/student/semester-registration",
     },
     {
       name: "Schedule",
