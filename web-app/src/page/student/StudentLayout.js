@@ -184,7 +184,7 @@ export default function StudentLayout({}) {
             <Route path="/grades" element={<StudentGrades/>}/>
             <Route path="/exams" element={<StudentExam/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
-            <Route path="/semester" element={<SemesterRegistration/>}/>
+            <Route path="/semester-registration" element={<SemesterRegistration/>}/>
             {/* <Route path="/schedules" element={<StudentScheduleView/>}/> */}
 
           </Routes>
