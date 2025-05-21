@@ -120,44 +120,10 @@ const ProfessorProfile = () => {
       </Grid>
 
       <Grid item xs={12}>
-        <Typography variant="subtitle2">Status</Typography>
-        <TextField
-          fullWidth
-          value={user?.user.status}
-          variant="outlined"
-          margin="dense"
-          disabled
-          InputProps={{
-            style: {
-              color: 'black',
-              backgroundColor: 'white',
-            },
-          }}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
         <Typography variant="subtitle2">Birth Date</Typography>
         <TextField
           fullWidth
           value={user?.user.birthDate}
-          variant="outlined"
-          margin="dense"
-          disabled
-          InputProps={{
-            style: {
-              color: 'black',
-              backgroundColor: 'white',
-            },
-          }}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography variant="subtitle2">Gender</Typography>
-        <TextField
-          fullWidth
-          value={user?.user.gender}
           variant="outlined"
           margin="dense"
           disabled
