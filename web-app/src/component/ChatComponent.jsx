@@ -182,12 +182,11 @@ const ChatComponent = () => {
 
   return (
     <div style={{ display: 'flex', height: '90vh', border: '1px solid #ccc' }}>
-      <div style={{ width: '25%', padding: '20px', borderRight: '1px solid #eee', overflowY: 'auto' }}>
-        <h3 style={{ marginBottom: '20px' }}>{user?.firstName} {user?.lastName}</h3>
+      <div style={{ width: '28%', padding: '20px', borderRight: '1px solid #eee', overflowY: 'auto' }}>
+        {/* <h3 style={{ marginBottom: '20px' }}>{user?.firstName} {user?.lastName}</h3> */}
         {renderUserList('Professors', professors)}
         {renderUserList('Students', students)}
         {renderUserList('Admins', admins)}
-
       </div>
 
       <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>

@@ -13,6 +13,7 @@ import Attendance from "./SMIS/Attendance";
 import ProfessorCourses from "./SMIS/ProfessorCourses";
 import ProfessorProfile from "./SMIS/ProfessorProfile";
 import ChatIcon from "@material-ui/icons/Chat";
+import CloseIcon from "@material-ui/icons/Close";
 
 const drawerWidth = 240;
 
@@ -117,6 +118,16 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1500,
     overflow: "auto",
   },
+  chatHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "8px 12px",
+    backgroundColor: "#007bff",
+    color: "white",
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
 }));
 
 export default function ProfessorLayout({}) {
@@ -217,6 +228,14 @@ export default function ProfessorLayout({}) {
 
           {chatOpen && (
             <div className={classes.chatOverlay}>
+              <div className={classes.chatHeader}>
+                <Typography variant="subtitle1">Chat</Typography>
+                <div>
+                  <IconButton size="small" onClick={() => setChatOpen(false)}>
+                    <CloseIcon style={{ color: "white" }} />
+                  </IconButton>
+                </div>
+              </div>
               <ChatComponent onClose={() => setChatOpen(false)} />
             </div>
           )}        
