@@ -3,6 +3,7 @@ package com.learning_management_system.controller;
 import com.learning_management_system.service.StudentSemesterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,4 +27,14 @@ public class StudentSemesteController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
+    @GetMapping("/get-student-semesters")
+    public ResponseEntity<?> getSemestersForStudent(@RequestParam Long studentId) {
+        try {
+            return ResponseEntity.ok(studentSemesterService.getSemestersForStudent(studentId));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
 }

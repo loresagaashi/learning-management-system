@@ -115,6 +115,16 @@ export default function StudentSignIn({
   if (user) {
     navigate("/student/page", { replace: true });
   }
+// if (user) {
+//   const destination = localStorage.getItem("destination");
+//   if (destination === "lms") {
+//     navigate("/student/lms", { replace: true });
+//   } else if (destination === "smis") {
+//     navigate("/student/smis", { replace: true });
+//   } else {
+//     navigate("/student/page", { replace: true });
+//   }
+// }
 
   return (
     <div className={classes.container}>
