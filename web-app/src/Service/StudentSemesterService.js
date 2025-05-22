@@ -9,5 +9,9 @@ register(studentId, semesterId) {
     params: { studentId, semesterId }
   });
 }
-
+  findByStudentId(studentId) {
+    return this.client.get(`${this.requestMapping}/semesters-by-studentId`, {
+      params: { studentId }
+    });
+  }
 }
