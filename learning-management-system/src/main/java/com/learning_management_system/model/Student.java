@@ -3,6 +3,8 @@ package com.learning_management_system.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.learning_management_system.enums.Gender;
 import jakarta.persistence.*;
@@ -31,6 +33,7 @@ public class Student extends UserAccount {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonBackReference("student-group")
     private StudentGroup group;
 
     @Enumerated(EnumType.STRING) // Enum mapping to string in the database
@@ -42,7 +45,8 @@ public class Student extends UserAccount {
     private List<Course> courses;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    // @JsonManagedReference
+    @JsonIgnore
     private List<StudentSemester> studentSemesters;
 
 }
