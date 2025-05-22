@@ -44,7 +44,7 @@ export default function StudentGroups() {
         SelectTableCell(
           props,
           errorRef,
-          allGenerations?.map((g) => ({ value: g, label: g.name })) || [],
+          allGenerations?.data?.map((g) => ({ value: g, label: g.name })) || [],
           "id"
         ),
     },
