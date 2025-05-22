@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   FormControl,
@@ -12,18 +12,18 @@ import {
   List,
   ListItem,
   ListItemText,
-} from '@mui/material';
-import { SemesterService } from '../../../service/SemesterService';
-import { useQuery } from 'react-query';
-import { QueryKeys } from '../../../service/QueryKeys';
-import { StudentSemesterService } from '../../../service/StudentSemesterService';
-import useUser from '../../../hooks/useUser';
+} from "@mui/material";
+import { SemesterService } from "../../../service/SemesterService";
+import { useQuery } from "react-query";
+import { QueryKeys } from "../../../service/QueryKeys";
+import { StudentSemesterService } from "../../../service/StudentSemesterService";
+import useUser from "../../../hooks/useUser";
 
 const semesterService = new SemesterService();
 const studentSemesterService = new StudentSemesterService();
 
 const SemesterRegistration = () => {
-  const [selectedSemester, setSelectedSemester] = useState('');
+  const [selectedSemester, setSelectedSemester] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
@@ -35,29 +35,36 @@ const SemesterRegistration = () => {
   const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
     semesterService.findAll()
   );
-
-  // Fetch student's registered semesters on load
   useEffect(() => {
-    if (studentId) {
+    if (user && user.user?.id) {
       studentSemesterService
-        .findByStudentId(studentId)
+        .findByStudentId(user?.user?.id)
         .then((res) => {
-          setRegisteredSemesters(res.data);
+          setRegisteredSemesters(res);
+          console.log("Fetched registered semesters:", res);
         })
         .catch(() => {
-          setError('Failed to load registered semesters.');
+          setError("Failed to load registered semesters.");
         });
     }
-  }, [studentId]);
+  }, [user]);
+
+  // const uniqueSemestersMap = new Map();
+  // registeredSemesters.forEach((reg) => {
+  //   if (!uniqueSemestersMap.has(reg.semester.id)) {
+  //     uniqueSemestersMap.set(reg.semester.id, reg);
+  //   }
+  // });
+  // const uniqueRegisteredSemesters = Array.from(uniqueSemestersMap.values());
 
   const handleRegister = () => {
     if (!selectedSemester) {
-      setError('Please select a semester.');
+      setError("Please select a semester.");
       return;
     }
 
     if (!studentId) {
-      setError('User not logged in or student ID missing.');
+      setError("User not logged in or student ID missing.");
       return;
     }
 
@@ -67,28 +74,38 @@ const SemesterRegistration = () => {
 
     studentSemesterService
       .register(studentId, selectedSemester)
-      .then((res) => {
-        setMessage(res.data);
-        // Refresh registered semesters
+      .then(() => {
+        setMessage("Successfully registered in the semester.");
+        // 🔁 Re-fetch registered semesters
         return studentSemesterService.findByStudentId(studentId);
       })
       .then((res) => {
-        setRegisteredSemesters(res.data);
+        console.log("Full response:", res);
+        setRegisteredSemesters(res || []);
       })
+
       .catch((err) => {
-        setError(err.response?.data || 'Registration failed.');
+        setError(err.response?.data || "Registration failed.");
       })
       .finally(() => setSubmitting(false));
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
+    <Box sx={{ maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" gutterBottom>
         Register in a Semester
       </Typography>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {message && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {message}
+        </Alert>
+      )}
 
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="semester-label">Select Semester</InputLabel>
@@ -98,7 +115,7 @@ const SemesterRegistration = () => {
           label="Select Semester"
           onChange={(e) => setSelectedSemester(e.target.value)}
         >
-          {allSemesters && allSemesters.length > 0 ? (
+          {Array.isArray(allSemesters) && allSemesters.length > 0 ? (
             allSemesters.map((semester) => (
               <MenuItem key={semester.id} value={semester.id}>
                 {semester.name} ({semester.season})
@@ -117,26 +134,44 @@ const SemesterRegistration = () => {
         onClick={handleRegister}
         disabled={submitting}
       >
-        {submitting ? 'Registering...' : 'Register'}
+        {submitting ? "Registering..." : "Register"}
       </Button>
 
+      {/* Show registered semesters below */}
       {/* Show registered semesters below */}
       <Box mt={4}>
         <Typography variant="h6" gutterBottom>
           Registered Semesters
         </Typography>
-        {registeredSemesters.length === 0 ? (
-          <Typography variant="body2" color="text.secondary">
-            You haven't registered in any semester yet.
-          </Typography>
+        {Array.isArray(registeredSemesters) ? (
+          registeredSemesters.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              You haven't registered in any semester yet.
+            </Typography>
+          ) : (
+            <List>
+              {registeredSemesters.map((registration) => (
+                <ListItem key={registration.id}>
+                  <ListItemText
+                    primary={
+                      registration.semester
+                        ? `${registration.semester.name} (${registration.semester.season})`
+                        : "No semester data"
+                    }
+                    secondary={
+                      registration.registrationDate
+                        ? `Registered on: ${new Date(registration.registrationDate).toLocaleDateString()}`
+                        : "No date"
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )
         ) : (
-          <List>
-            {registeredSemesters.map((sem) => (
-              <ListItem key={sem.id}>
-                <ListItemText primary={`${sem.semester.name} (${sem.semester.season})`} />
-              </ListItem>
-            ))}
-          </List>
+          <Typography variant="body2" color="text.secondary">
+            Loading or no data available.
+          </Typography>
         )}
       </Box>
     </Box>

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +43,9 @@ public class StudentSemesterService {
         studentSemesterRepository.save(studentSemester);
 
         return "Student registered successfully in semester.";
+    }
+
+    public List<StudentSemester> getStudentSemestersByStudentId(Long studentId) {
+        return studentSemesterRepository.findByStudentId(studentId);
     }
 }
