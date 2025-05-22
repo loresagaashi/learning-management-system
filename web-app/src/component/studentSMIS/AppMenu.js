@@ -20,6 +20,7 @@ import GradeIcon from '@material-ui/icons/Grade';
 import BallotIcon from '@material-ui/icons/Ballot';
 import TextsmsIcon from '@material-ui/icons/Textsms';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 
 const appMenuItems = [
    {
@@ -51,6 +52,11 @@ const appMenuItems = [
       name: "Choose Semester",
       Icon: QueryBuilderIcon,
       link: "/student/semester",
+    },
+    {
+      name: "Choose Group",
+      Icon: PeopleOutlineIcon,
+      link: "/student/assign-to-group",
     },
     {
       name: "Schedule",

@@ -16,6 +16,7 @@ import SemesterRegistration from "./SMIS/SemesterRegistration";
 // import StudentScheduleView from "./SMIS/StudentScheduleView";
 import ChatIcon from "@material-ui/icons/Chat";
 import CloseIcon from "@material-ui/icons/Close";
+import GroupRegister from "./SMIS/GroupRegister";
 
 const drawerWidth = 240;
 
@@ -215,6 +216,7 @@ export default function StudentLayout({}) {
             <Route path="/exams" element={<StudentExam/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
             <Route path="/semester" element={<SemesterRegistration/>}/>
+            <Route path="/assign-to-group" element={<GroupRegister/>}/>
             {/* <Route path="/schedules" element={<StudentScheduleView/>}/> */}
 
           </Routes>
