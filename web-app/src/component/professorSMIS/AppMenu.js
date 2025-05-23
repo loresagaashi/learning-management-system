@@ -14,12 +14,18 @@ import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
 import SchoolIcon from '@material-ui/icons/School';
+import TextsmsIcon from '@material-ui/icons/Textsms';
 
 const appMenuItems = [
   {
     name: "GO TO LMS",
     Icon: SchoolIcon,
     link: "/professor/lms",
+  },
+  {
+    name: "My Profile", 
+    Icon: PersonIcon, 
+    link: "/professor/profile", 
   },
   {
     name: "My Courses",
@@ -31,6 +37,11 @@ const appMenuItems = [
     Icon: SchoolIcon,
     link: "/professor/attendance",
   },
+  // {
+  //   name: "Chat",
+  //   Icon: TextsmsIcon,
+  //   link: "/professor/chat",
+  // },
  
 ];
 

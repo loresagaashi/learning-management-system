@@ -1,15 +1,5 @@
-import {
-  useTheme,
-} from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
-import Badge from "@material-ui/core/Badge";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
-import { makeStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
+import { useState } from "react";
+import { useTheme, makeStyles, Button, AppBar, Badge, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core';
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -40,6 +30,9 @@ import StudentView from "./students/StudentView";
 import SubmissionView from "./submissions/SubmissionView";
 import StudentGroups from "./groups/StudentGroups";
 import GenerationView from "./generations/GenerationView";
+import SemesterView from "./semesters/SemesterView";
+import ChatIcon from "@material-ui/icons/Chat";
+import CloseIcon from "@material-ui/icons/Close";
 
 const drawerWidth = 240;
 
@@ -121,6 +114,39 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  chatButton: {
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    zIndex: 1000,
+    "&:hover": {
+      backgroundColor: "#005bb5",
+    },
+  },
+  chatOverlay: {
+    position: "fixed",
+    bottom: 80,
+    right: 20,
+    width: 400,
+    maxHeight: "70vh",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    zIndex: 1500,
+    overflow: "auto",
+  },
+  chatHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "8px 12px",
+    backgroundColor: "#007bff",
+    color: "white",
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
 }));
 
 export default function AdminLayout({}) {
@@ -129,6 +155,11 @@ export default function AdminLayout({}) {
   const location = useLocation();
   const { user } = useUser();
   const theme = useTheme();
+  const [chatOpen, setChatOpen] = useState(false);
+  
+  const toggleChat = () => {
+    setChatOpen((prev) => !prev);
+  };
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -218,10 +249,34 @@ export default function AdminLayout({}) {
             <Route path="/chat" element={<ChatComponent/>}/>
             <Route path="/student-groups" element={<StudentGroups/>}/>
             <Route path="/generations" element={<GenerationView/>}/>
-
+            <Route path="/semester" element={<SemesterView/>}/>
 
           </Routes>
         }
+        {!chatOpen && (
+            <Button
+              variant="contained"
+              className={classes.chatButton}
+              startIcon={<ChatIcon />}
+              onClick={toggleChat}
+            >
+              Chat
+            </Button>
+          )}
+
+          {chatOpen && (
+            <div className={classes.chatOverlay}>
+              <div className={classes.chatHeader}>
+                <Typography variant="subtitle1">Chat</Typography>
+                <div>
+                  <IconButton size="small" onClick={() => setChatOpen(false)}>
+                    <CloseIcon style={{ color: "white" }} />
+                  </IconButton>
+                </div>
+              </div>
+              <ChatComponent onClose={() => setChatOpen(false)} />
+            </div>
+          )}
       </main>
     </div>
   );

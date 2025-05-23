@@ -1,5 +1,6 @@
 package com.learning_management_system.service;
 
+import com.learning_management_system.data.course.CourseDTO;
 import com.learning_management_system.model.Lecture;
 import com.learning_management_system.model.Student;
 import com.learning_management_system.repository.StudentRepository;
@@ -33,5 +34,13 @@ public class CourseService extends BasicServiceOperations<CourseRepository, Cour
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         return course.getLectures(); // assuming the Course entity has a getLectures() method
+    }
+
+       public List<Course> getCoursesByProfessorId(Long professorId) {
+        return courseRepository.findByProfessorId(professorId);
+    }
+
+    public List<CourseDTO> getUnpassedCourses(Long studentId) {
+        return courseRepository.findUnpassedOrUnattemptedCoursesByStudentId(studentId);
     }
 }
