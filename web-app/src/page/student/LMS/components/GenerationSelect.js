@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import {
   FormControl,
   InputLabel,
@@ -9,34 +8,24 @@ import {
   Box
 } from '@mui/material';
 
-const GenerationSelect = ({ selectedGeneration, setSelectedGeneration }) => {
-  const [generations, setGenerations] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get('/generations')
-      .then(res => setGenerations(res.data))
-      .catch(err => console.error('Failed to fetch generations', err));
-  }, []);
-
-  const handleChange = (event) => {
-    const selected = generations.find(g => g.id === event.target.value);
-    setSelectedGeneration(selected);
-  };
-
+const GenerationSelect = ({ value, onChange, options }) => {
   return (
-    <Box mt={2}>
-      <Typography variant="h6">Select Generation</Typography>
-      <FormControl fullWidth margin="normal">
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Select Generation
+      </Typography>
+      <FormControl fullWidth variant="outlined">
         <InputLabel id="generation-select-label">Generation</InputLabel>
         <Select
           labelId="generation-select-label"
-          value={selectedGeneration?.id || ''}
-          onChange={handleChange}
+          id="generation-select"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          label="Generation"
         >
-          {generations.map(generation => (
-            <MenuItem key={generation.id} value={generation.id}>
-              {generation.name}
+          {options.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
             </MenuItem>
           ))}
         </Select>

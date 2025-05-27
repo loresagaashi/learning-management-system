@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import LectureSelect from "./LectureSelect";
-import DegreeLevelSelect from "./DegreeLevelSelect";
-import GenerationSelect from "./GenerationSelect";
-import SemesterSelect from "./SemesterSelect";
-import CoursesSelect from "./CoursesSelect";
-// import BreadcrumbNav from "./BreadcrumbNav";
+import LectureSelect from "./components/LectureSelect";
+import DegreeLevelSelect from "./components/DegreeLevelSelect";
+import GenerationSelect from "./components/GenerationSelect";
+import SemesterSelect from "./components/SemesterSelect";
+import CoursesSelect from "./components/CoursesSelect";
+import { Breadcrumbs, Typography, Link } from "@mui/material";
 
 const LMSPage = () => {
   const [step, setStep] = useState(1);
@@ -75,9 +75,57 @@ const LMSPage = () => {
     }
   };
 
+  // Custom breadcrumb navigation based on current step
+  const renderBreadcrumbs = () => {
+    const steps = [
+      { label: "Category", step: 1 },
+      { label: "Degree", step: 2 },
+      { label: "Generation", step: 3 },
+      { label: "Semester", step: 4 },
+      { label: "Courses", step: 5 }
+    ];
+
+    return (
+      <Breadcrumbs aria-label="breadcrumb">
+        {steps.map((item, index) => {
+          const isActive = item.step === step;
+          const isPast = item.step < step;
+          
+          if (isActive) {
+            return (
+              <Typography key={index} color="text.primary" fontWeight="bold">
+                {item.label}
+              </Typography>
+            );
+          } else if (isPast) {
+            return (
+              <Link 
+                key={index} 
+                color="inherit" 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setStep(item.step);
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          } else {
+            return (
+              <Typography key={index} color="text.secondary">
+                {item.label}
+              </Typography>
+            );
+          }
+        })}
+      </Breadcrumbs>
+    );
+  };
+
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
-      <BreadcrumbNav step={step} />
+      {renderBreadcrumbs()}
       <div className="my-6">{renderContent()}</div>
       <div className="flex justify-between mt-6">
         <button
