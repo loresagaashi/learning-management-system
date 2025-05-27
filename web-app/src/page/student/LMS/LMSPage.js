@@ -9,7 +9,7 @@ import { Breadcrumbs, Typography, Link } from "@mui/material";
 const LMSPage = () => {
   const [step, setStep] = useState(1);
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  // const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
   const [selectedGeneration, setSelectedGeneration] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
@@ -17,33 +17,28 @@ const LMSPage = () => {
 
   const categories = ["Technologies", "Economy"];
   const degreeLevels = ["Bachelor", "Master"];
-  const generations = ["2020/21", "2021/22", "2022/23"];
-  const semesters = ["Semester 1", "Semester 2"];
-  const courses = [
-    "Mathematics 1",
-    "Computer Science Basics",
-    "Algorithms and Data Structures",
-  ];
+  // Generations are now fetched from the backend in the GenerationSelect component
+  // Semesters are now fetched from the backend in the SemesterSelect component
+  // Courses are now fetched from the backend in the CoursesSelect component
 
   const handleNext = () => setStep((prev) => Math.min(prev + 1, 5));
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const renderContent = () => {
     switch (step) {
-      case 1:
-        return (
-          <LectureSelect
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            options={categories}
-          />
-        );
+      // case 1:
+      //   return (
+      //     <LectureSelect
+      //       value={selectedCategory}
+      //       onChange={setSelectedCategory}
+      //       options={categories}
+      //     />
+      //   );
       case 2:
         return (
           <DegreeLevelSelect
             value={selectedDegreeLevel}
             onChange={setSelectedDegreeLevel}
-            options={degreeLevels}
           />
         );
       case 3:
@@ -51,7 +46,6 @@ const LMSPage = () => {
           <GenerationSelect
             value={selectedGeneration}
             onChange={setSelectedGeneration}
-            options={generations}
           />
         );
       case 4:
@@ -59,7 +53,6 @@ const LMSPage = () => {
           <SemesterSelect
             value={selectedSemester}
             onChange={setSelectedSemester}
-            options={semesters}
           />
         );
       case 5:
@@ -67,7 +60,6 @@ const LMSPage = () => {
           <CoursesSelect
             value={selectedCourses}
             onChange={setSelectedCourses}
-            options={courses}
           />
         );
       default:
@@ -78,7 +70,7 @@ const LMSPage = () => {
   // Custom breadcrumb navigation based on current step
   const renderBreadcrumbs = () => {
     const steps = [
-      { label: "Category", step: 1 },
+      // { label: "Category", step: 1 },
       { label: "Degree", step: 2 },
       { label: "Generation", step: 3 },
       { label: "Semester", step: 4 },

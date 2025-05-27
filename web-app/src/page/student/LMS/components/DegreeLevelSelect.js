@@ -1,35 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Typography,
   Box
 } from '@mui/material';
+import { EnumSelectTableCell } from '../../../../component/TableCells';
 
-const DegreeLevelSelect = ({ value, onChange, options }) => {
+const DegreeLevelSelect = ({ value, onChange }) => {
+  const errorRef = useRef({});
+  
+  // Define the degree type enum values
+  const degreeTypeOptions = [
+    { value: 'BACHELOR', label: 'Bachelor' },
+    { value: 'MASTER', label: 'Master' },
+  ];
+  
+  // Create props object similar to what material-table would pass to editComponent
+  const tableProps = {
+    value: value,
+    onChange: onChange,
+    columnDef: { field: 'degreeType', title: 'Degree Level' }
+  };
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
         Select Degree Level
       </Typography>
-      <FormControl fullWidth variant="outlined">
-        <InputLabel id="degree-level-select-label">Degree Level</InputLabel>
-        <Select
-          labelId="degree-level-select-label"
-          id="degree-level-select"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          label="Degree Level"
-        >
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {EnumSelectTableCell(tableProps, errorRef, degreeTypeOptions)}
     </Box>
   );
 };
