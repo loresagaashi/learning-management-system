@@ -5,10 +5,21 @@ import {
   Select,
   MenuItem,
   Typography,
-  Box
+  Box,
+  CircularProgress
 } from '@mui/material';
+import { useQuery } from 'react-query';
+import { QueryKeys } from '../../../../service/QueryKeys';
+import { SemesterService } from '../../../../service/SemesterService';
 
-const SemesterSelect = ({ value, onChange, options }) => {
+const semesterService = new SemesterService();
+
+const SemesterSelect = ({ value, onChange }) => {
+  const { data: semesters = [], isLoading, isError } = useQuery(
+    QueryKeys.SEMESTER,
+    () => semesterService.findAll()
+  );
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
@@ -22,14 +33,29 @@ const SemesterSelect = ({ value, onChange, options }) => {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           label="Semester"
+          disabled={isLoading || isError}
         >
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
+          {isLoading ? (
+            <MenuItem disabled>
+              <CircularProgress size={20} />
+              Loading...
             </MenuItem>
-          ))}
+          ) : isError ? (
+            <MenuItem disabled>Error loading semesters</MenuItem>
+          ) : (
+            semesters.map((semester) => (
+              <MenuItem key={semester.id} value={semester.name}>
+                {semester.name}
+              </MenuItem>
+            ))
+          )}
         </Select>
       </FormControl>
+      {isError && (
+        <Typography color="error" variant="caption" sx={{ mt: 1 }}>
+          Failed to load semesters. Please try again later.
+        </Typography>
+      )}
     </Box>
   );
 };

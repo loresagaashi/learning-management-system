@@ -5,10 +5,21 @@ import {
   Select,
   MenuItem,
   Typography,
-  Box
+  Box,
+  CircularProgress
 } from '@mui/material';
+import { useQuery } from 'react-query';
+import { QueryKeys } from '../../../../service/QueryKeys';
+import { GenerationService } from '../../../../service/GenerationService';
 
-const GenerationSelect = ({ value, onChange, options }) => {
+const generationService = new GenerationService();
+
+const GenerationSelect = ({ value, onChange }) => {
+  const { data: generations = [], isLoading, isError } = useQuery(
+    QueryKeys.GENERATIONS,
+    () => generationService.findAll()
+  );
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
@@ -22,14 +33,29 @@ const GenerationSelect = ({ value, onChange, options }) => {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           label="Generation"
+          disabled={isLoading || isError}
         >
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
+          {isLoading ? (
+            <MenuItem disabled>
+              <CircularProgress size={20} />
+              Loading...
             </MenuItem>
-          ))}
+          ) : isError ? (
+            <MenuItem disabled>Error loading generations</MenuItem>
+          ) : (
+            generations.map((generation) => (
+              <MenuItem key={generation.id} value={generation.name}>
+                {generation.name}
+              </MenuItem>
+            ))
+          )}
         </Select>
       </FormControl>
+      {isError && (
+        <Typography color="error" variant="caption" sx={{ mt: 1 }}>
+          Failed to load generations. Please try again later.
+        </Typography>
+      )}
     </Box>
   );
 };
