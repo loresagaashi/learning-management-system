@@ -1,40 +1,36 @@
-// src/page/student/LMS/components/LectureList.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Paper
+  Box
 } from '@mui/material';
 
-const LectureSelect = ({ course }) => {
-  const [lectures, setLectures] = useState([]);
-
-  useEffect(() => {
-    if (course?.id) {
-      axios
-        .get(`/courses/${course.id}/lectures`)
-        .then(res => setLectures(res.data))
-        .catch(err => console.error('Failed to load lectures:', err));
-    }
-  }, [course]);
-
+const LectureSelect = ({ value, onChange, options }) => {
   return (
-    <Paper elevation={3} style={{ padding: 20, marginTop: 16 }}>
-      <Typography variant="h6">Lectures for {course?.name}</Typography>
-      <List>
-        {lectures.map(lecture => (
-          <ListItem key={lecture.id}>
-            <ListItemText
-              primary={lecture.name}
-              secondary={`Date: ${lecture.lectureDate} | Topic: ${lecture.topic}`}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Select Category
+      </Typography>
+      <FormControl fullWidth variant="outlined">
+        <InputLabel id="category-select-label">Category</InputLabel>
+        <Select
+          labelId="category-select-label"
+          id="category-select"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          label="Category"
+        >
+          {options.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   );
 };
 

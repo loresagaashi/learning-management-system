@@ -1,30 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Typography, List, ListItem, ListItemText, Paper } from '@mui/material';
+import React from 'react';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  Box,
+  Checkbox,
+  ListItemText,
+  OutlinedInput
+} from '@mui/material';
 
-const CoursesSelect = ({ semester }) => {
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    if (semester?.id) {
-      axios
-        .get(`/api/semester/${semester.id}/courses`) 
-        .then(res => setCourses(res.data))
-        .catch(err => console.error('Error fetching courses:', err));
-    }
-  }, [semester]);
+const CoursesSelect = ({ value, onChange, options }) => {
+  const handleChange = (event) => {
+    const { value } = event.target;
+    onChange(value);
+  };
 
   return (
-    <Paper elevation={3} style={{ padding: 20 }}>
-      <Typography variant="h6">Courses for {semester?.name}</Typography>
-      <List>
-        {courses.map(course => (
-          <ListItem key={course.id}>
-            <ListItemText primary={course.name} secondary={course.description} />
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Select Courses
+      </Typography>
+      <FormControl fullWidth variant="outlined">
+        <InputLabel id="courses-select-label">Courses</InputLabel>
+        <Select
+          labelId="courses-select-label"
+          id="courses-select"
+          multiple
+          value={value}
+          onChange={handleChange}
+          input={<OutlinedInput label="Courses" />}
+          renderValue={(selected) => selected.join(', ')}
+        >
+          {options.map((option) => (
+            <MenuItem key={option} value={option}>
+              <Checkbox checked={value.indexOf(option) > -1} />
+              <ListItemText primary={option} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   );
 };
 
