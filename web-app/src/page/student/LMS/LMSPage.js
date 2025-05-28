@@ -4,18 +4,70 @@ import DegreeLevelSelect from "./components/DegreeLevelSelect";
 import GenerationSelect from "./components/GenerationSelect";
 import SemesterSelect from "./components/SemesterSelect";
 import CoursesSelect from "./components/CoursesSelect";
-import { Breadcrumbs, Typography, Link } from "@mui/material";
+import { 
+  Breadcrumbs, 
+  Typography, 
+  Link,
+  Grid,
+  Box,
+  Paper,
+  useTheme,
+  useMediaQuery,
+  styled
+} from "@mui/material";
+import { useQuery } from 'react-query';
+import { QueryKeys } from '../../../service/QueryKeys';
+import { CourseService } from '../../../service/CourseService';
+
+const courseService = new CourseService();
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  backgroundColor: theme.palette.background.paper,
+  marginTop: theme.spacing(6),
+}));
+
+const StyledButton = styled(Paper)(({ theme }) => ({
+  px: 2,
+  py: 1,
+  borderRadius: 1,
+  cursor: 'pointer',
+  transition: 'background-color 0.2s',
+  minWidth: 100,
+  textAlign: 'center',
+  '&:hover': {
+    bgcolor: theme.palette.primary.main,
+    color: 'white',
+  },
+  '&:disabled': {
+    bgcolor: theme.palette.action.disabled,
+    cursor: 'not-allowed',
+  },
+}));
 
 const LMSPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [step, setStep] = useState(1);
 
-  // const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
   const [selectedGeneration, setSelectedGeneration] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const [selectedCourses, setSelectedCourses] = useState([]);
 
-  const categories = ["Technologies", "Economy"];
+  const categories = [
+    "Shkenca Kompjuterike dhe Inxhinieri",
+    "Menaxhment, Biznes dhe Ekonomi",
+    "Juridik",
+    "Inxhinieri Ndertimore",
+    "Sisteme te Informacionit",
+    "Mekatronike"
+  ];
   const degreeLevels = ["Bachelor", "Master"];
   // Generations are now fetched from the backend in the GenerationSelect component
   // Semesters are now fetched from the backend in the SemesterSelect component
@@ -26,19 +78,27 @@ const LMSPage = () => {
 
   const renderContent = () => {
     switch (step) {
-      // case 1:
-      //   return (
-      //     <LectureSelect
-      //       value={selectedCategory}
-      //       onChange={setSelectedCategory}
-      //       options={categories}
-      //     />
-      //   );
+      case 1:
+        const handleCategoryChange = (category) => {
+          setSelectedCategory(category);
+          handleNext();
+        };
+        return (
+          <LectureSelect
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+            options={categories}
+          />
+        );
       case 2:
+        const handleDegreeChange = (level) => {
+          setSelectedDegreeLevel(level);
+          handleNext();
+        };
         return (
           <DegreeLevelSelect
             value={selectedDegreeLevel}
-            onChange={setSelectedDegreeLevel}
+            onChange={handleDegreeChange}
           />
         );
       case 3:
@@ -70,7 +130,7 @@ const LMSPage = () => {
   // Custom breadcrumb navigation based on current step
   const renderBreadcrumbs = () => {
     const steps = [
-      // { label: "Category", step: 1 },
+      { label: "Category", step: 1 },
       { label: "Degree", step: 2 },
       { label: "Generation", step: 3 },
       { label: "Semester", step: 4 },
@@ -116,26 +176,35 @@ const LMSPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
-      {renderBreadcrumbs()}
-      <div className="my-6">{renderContent()}</div>
-      <div className="flex justify-between mt-6">
-        <button
+    <StyledContainer>
+      <Box sx={{ mb: 4 }}>
+        {renderBreadcrumbs()}
+      </Box>
+      <Box sx={{ mb: 4 }}>
+        {renderContent()}
+      </Box>
+      <Box
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: 2,
+          mt: 4 
+        }}
+      >
+        <StyledButton
           onClick={handleBack}
           disabled={step === 1}
-          className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
         >
-          Back
-        </button>
-        <button
+          <Typography variant="button">Back</Typography>
+        </StyledButton>
+        <StyledButton
           onClick={handleNext}
           disabled={step === 5}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
         >
-          Next
-        </button>
-      </div>
-    </div>
+          <Typography variant="button">Next</Typography>
+        </StyledButton>
+      </Box>
+    </StyledContainer>
   );
 };
 
