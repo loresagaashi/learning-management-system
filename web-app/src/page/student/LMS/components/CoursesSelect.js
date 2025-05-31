@@ -1,31 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Typography,
   Box,
-  Checkbox,
-  ListItemText,
-  OutlinedInput,
-  CircularProgress
+  CircularProgress,
+  Grid
 } from '@mui/material';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../../service/QueryKeys';
 import { CourseService } from '../../../../service/CourseService';
+import CourseCard from './CourseCard';
 
 const courseService = new CourseService();
 
 const CoursesSelect = ({ value, onChange }) => {
-  const { data: courses = [], isLoading, isError } = useQuery(
-    QueryKeys.COURSE,
+  const { isLoading, isError, data: courses } = useQuery(
+    QueryKeys.COURSES,
     () => courseService.findAll()
   );
 
-  const handleChange = (event) => {
-    const { value } = event.target;
-    onChange(value);
+  const handleCourseClick = (courseId) => {
+    const selectedCourses = value.includes(courseId)
+      ? value.filter(id => id !== courseId)
+      : [...value, courseId];
+    onChange(selectedCourses);
   };
 
   return (
@@ -33,39 +30,27 @@ const CoursesSelect = ({ value, onChange }) => {
       <Typography variant="h6" gutterBottom>
         Select Courses
       </Typography>
-      <FormControl fullWidth variant="outlined">
-        <InputLabel id="courses-select-label">Courses</InputLabel>
-        <Select
-          labelId="courses-select-label"
-          id="courses-select"
-          multiple
-          value={value}
-          onChange={handleChange}
-          input={<OutlinedInput label="Courses" />}
-          renderValue={(selected) => selected.join(', ')}
-          disabled={isLoading || isError}
-        >
-          {isLoading ? (
-            <MenuItem disabled>
-              <CircularProgress size={20} />
-              Loading...
-            </MenuItem>
-          ) : isError ? (
-            <MenuItem disabled>Error loading courses</MenuItem>
-          ) : (
-            courses.map((course) => (
-              <MenuItem key={course.id} value={course.name}>
-                <Checkbox checked={value.indexOf(course.name) > -1} />
-                <ListItemText primary={course.name} />
-              </MenuItem>
-            ))
-          )}
-        </Select>
-      </FormControl>
-      {isError && (
-        <Typography color="error" variant="caption" sx={{ mt: 1 }}>
+      
+      {isLoading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : isError ? (
+        <Typography color="error" variant="body2" sx={{ mt: 4 }}>
           Failed to load courses. Please try again later.
         </Typography>
+      ) : (
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+          {courses.map((course) => (
+            <Grid item xs={12} sm={6} md={4} key={course.id}>
+              <CourseCard
+                course={course}
+                isSelected={value.includes(course.id)}
+                onClick={handleCourseClick}
+              />
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Box>
   );

@@ -1,24 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
-  Box
+  Box,
+  Button,
+  styled
 } from '@mui/material';
-import { EnumSelectTableCell } from '../../../../component/TableCells';
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  minWidth: 120,
+  margin: theme.spacing(1),
+  textTransform: 'none',
+  '&.Mui-selected': {
+    backgroundColor: theme.palette.primary.main,
+    color: 'white',
+    '&:hover': {
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
+}));
 
 const DegreeLevelSelect = ({ value, onChange }) => {
-  const errorRef = useRef({});
-  
-  // Define the degree type enum values
-  const degreeTypeOptions = [
-    { value: 'BACHELOR', label: 'Bachelor' },
-    { value: 'MASTER', label: 'Master' },
-  ];
-  
-  // Create props object similar to what material-table would pass to editComponent
-  const tableProps = {
-    value: value,
-    onChange: onChange,
-    columnDef: { field: 'degreeType', title: 'Degree Level' }
+  const [selectedLevel, setSelectedLevel] = useState(value);
+
+  const handleSelect = (level) => {
+    setSelectedLevel(level);
+    onChange(level);
   };
 
   return (
@@ -26,7 +32,20 @@ const DegreeLevelSelect = ({ value, onChange }) => {
       <Typography variant="h6" gutterBottom>
         Select Degree Level
       </Typography>
-      {EnumSelectTableCell(tableProps, errorRef, degreeTypeOptions)}
+      <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+        <StyledButton
+          variant={selectedLevel === 'BACHELOR' ? 'contained' : 'outlined'}
+          onClick={() => handleSelect('BACHELOR')}
+        >
+          Bachelor
+        </StyledButton>
+        <StyledButton
+          variant={selectedLevel === 'MASTER' ? 'contained' : 'outlined'}
+          onClick={() => handleSelect('MASTER')}
+        >
+          Master
+        </StyledButton>
+      </Box>
     </Box>
   );
 };
