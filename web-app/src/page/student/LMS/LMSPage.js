@@ -1,102 +1,211 @@
-// import { useState } from "react";
-// import BreadcrumbNav from "./components/BreadcrumbNav";
-// import CoursesSelect from "./components/CoursesSelect";
-// import DegreeLevelSelect from "./components/DegreeLevelSelect";
-// import GenerationSelect from "./components/GenerationSelect";
-// import LectureSelect from "./components/LectureSelect";
-// import SemesterSelect from "./components/SemesterSelect";
+import React, { useState } from "react";
+import LectureSelect from "./components/LectureSelect";
+import DegreeLevelSelect from "./components/DegreeLevelSelect";
+import GenerationSelect from "./components/GenerationSelect";
+import SemesterSelect from "./components/SemesterSelect";
+import CoursesSelect from "./components/CoursesSelect";
+import { 
+  Breadcrumbs, 
+  Typography, 
+  Link,
+  Grid,
+  Box,
+  Paper,
+  useTheme,
+  useMediaQuery,
+  styled
+} from "@mui/material";
+import { useQuery } from 'react-query';
+import { QueryKeys } from '../../../service/QueryKeys';
+import { CourseService } from '../../../service/CourseService';
 
-// const LMSPage = () => {
-//   const [step, setStep] = useState(1);
+const courseService = new CourseService();
 
-//   const [selectedCategory, setSelectedCategory] = useState("");
-//   const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
-//   const [selectedGeneration, setSelectedGeneration] = useState("");
-//   const [selectedSemester, setSelectedSemester] = useState("");
-//   const [selectedCourses, setSelectedCourses] = useState([]);
+const StyledContainer = styled(Box)(({ theme }) => ({
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  backgroundColor: theme.palette.background.paper,
+  marginTop: theme.spacing(6),
+}));
 
-//   const categories = ["Technologies", "Economy"];
-//   const degreeLevels = ["Bachelor", "Master"];
-//   const generations = ["2020/21", "2021/22", "2022/23"];
-//   const semesters = ["Semester 1", "Semester 2"];
-//   const courses = [
-//     "Mathematics 1",
-//     "Computer Science Basics",
-//     "Algorithms and Data Structures",
-//   ];
+const StyledButton = styled(Paper)(({ theme }) => ({
+  px: 2,
+  py: 1,
+  borderRadius: 1,
+  cursor: 'pointer',
+  transition: 'background-color 0.2s',
+  minWidth: 100,
+  textAlign: 'center',
+  '&:hover': {
+    bgcolor: theme.palette.primary.main,
+    color: 'white',
+  },
+  '&:disabled': {
+    bgcolor: theme.palette.action.disabled,
+    cursor: 'not-allowed',
+  },
+}));
 
-//   const handleNext = () => setStep((prev) => Math.min(prev + 1, 5));
-//   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
+const LMSPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [step, setStep] = useState(1);
 
-//   const renderContent = () => {
-//     switch (step) {
-//       case 1:
-//         return (
-//           <LectureSelect
-//             value={selectedCategory}
-//             onChange={setSelectedCategory}
-//             options={categories}
-//           />
-//         );
-//       case 2:
-//         return (
-//           <DegreeLevelSelect
-//             value={selectedDegreeLevel}
-//             onChange={setSelectedDegreeLevel}
-//             options={degreeLevels}
-//           />
-//         );
-//       case 3:
-//         return (
-//           <GenerationSelect
-//             value={selectedGeneration}
-//             onChange={setSelectedGeneration}
-//             options={generations}
-//           />
-//         );
-//       case 4:
-//         return (
-//           <SemesterSelect
-//             value={selectedSemester}
-//             onChange={setSelectedSemester}
-//             options={semesters}
-//           />
-//         );
-//       case 5:
-//         return (
-//           <CoursesSelect
-//             value={selectedCourses}
-//             onChange={setSelectedCourses}
-//             options={courses}
-//           />
-//         );
-//       default:
-//         return <div>All steps completed!</div>;
-//     }
-//   };
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
+  const [selectedGeneration, setSelectedGeneration] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedCourses, setSelectedCourses] = useState([]);
 
-//   return (
-//     <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
-//       <BreadcrumbNav step={step} />
-//       <div className="my-6">{renderContent()}</div>
-//       <div className="flex justify-between mt-6">
-//         <button
-//           onClick={handleBack}
-//           disabled={step === 1}
-//           className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
-//         >
-//           Back
-//         </button>
-//         <button
-//           onClick={handleNext}
-//           disabled={step === 5}
-//           className="px-4 py-2 bg-blue-500 text-white rounded"
-//         >
-//           Next
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
+  const categories = [
+    "Shkenca Kompjuterike dhe Inxhinieri",
+    "Menaxhment, Biznes dhe Ekonomi",
+    "Juridik",
+    "Inxhinieri Ndertimore",
+    "Sisteme te Informacionit",
+    "Mekatronike"
+  ];
+  const degreeLevels = ["Bachelor", "Master"];
+  // Generations are now fetched from the backend in the GenerationSelect component
+  // Semesters are now fetched from the backend in the SemesterSelect component
+  // Courses are now fetched from the backend in the CoursesSelect component
 
-// export default LMSPage;
+  const handleNext = () => setStep((prev) => Math.min(prev + 1, 5));
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  const renderContent = () => {
+    switch (step) {
+      case 1:
+        const handleCategoryChange = (category) => {
+          setSelectedCategory(category);
+          handleNext();
+        };
+        return (
+          <LectureSelect
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+            options={categories}
+          />
+        );
+      case 2:
+        const handleDegreeChange = (level) => {
+          setSelectedDegreeLevel(level);
+          handleNext();
+        };
+        return (
+          <DegreeLevelSelect
+            value={selectedDegreeLevel}
+            onChange={handleDegreeChange}
+          />
+        );
+      case 3:
+        return (
+          <GenerationSelect
+            value={selectedGeneration}
+            onChange={setSelectedGeneration}
+          />
+        );
+      case 4:
+        return (
+          <SemesterSelect
+            value={selectedSemester}
+            onChange={setSelectedSemester}
+          />
+        );
+      case 5:
+        return (
+          <CoursesSelect
+            value={selectedCourses}
+            onChange={setSelectedCourses}
+          />
+        );
+      default:
+        return <div>All steps completed!</div>;
+    }
+  };
+
+  // Custom breadcrumb navigation based on current step
+  const renderBreadcrumbs = () => {
+    const steps = [
+      { label: "Category", step: 1 },
+      { label: "Degree", step: 2 },
+      { label: "Generation", step: 3 },
+      { label: "Semester", step: 4 },
+      { label: "Courses", step: 5 }
+    ];
+
+    return (
+      <Breadcrumbs aria-label="breadcrumb">
+        {steps.map((item, index) => {
+          const isActive = item.step === step;
+          const isPast = item.step < step;
+          
+          if (isActive) {
+            return (
+              <Typography key={index} color="text.primary" fontWeight="bold">
+                {item.label}
+              </Typography>
+            );
+          } else if (isPast) {
+            return (
+              <Link 
+                key={index} 
+                color="inherit" 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setStep(item.step);
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          } else {
+            return (
+              <Typography key={index} color="text.secondary">
+                {item.label}
+              </Typography>
+            );
+          }
+        })}
+      </Breadcrumbs>
+    );
+  };
+
+  return (
+    <StyledContainer>
+      <Box sx={{ mb: 4 }}>
+        {renderBreadcrumbs()}
+      </Box>
+      <Box sx={{ mb: 4 }}>
+        {renderContent()}
+      </Box>
+      <Box
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: 2,
+          mt: 4 
+        }}
+      >
+        <StyledButton
+          onClick={handleBack}
+          disabled={step === 1}
+        >
+          <Typography variant="button">Back</Typography>
+        </StyledButton>
+        <StyledButton
+          onClick={handleNext}
+          disabled={step === 5}
+        >
+          <Typography variant="button">Next</Typography>
+        </StyledButton>
+      </Box>
+    </StyledContainer>
+  );
+};
+
+export default LMSPage;

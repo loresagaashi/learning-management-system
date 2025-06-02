@@ -1,30 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Typography, List, ListItem, ListItemText, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Typography,
+  Box,
+  CircularProgress,
+  Grid
+} from '@mui/material';
+import { useQuery } from 'react-query';
+import { QueryKeys } from '../../../../service/QueryKeys';
+import { CourseService } from '../../../../service/CourseService';
+import CourseCard from './CourseCard';
 
-const CoursesSelect = ({ semester }) => {
-  const [courses, setCourses] = useState([]);
+const courseService = new CourseService();
 
-  useEffect(() => {
-    if (semester?.id) {
-      axios
-        .get(`/api/semester/${semester.id}/courses`) 
-        .then(res => setCourses(res.data))
-        .catch(err => console.error('Error fetching courses:', err));
-    }
-  }, [semester]);
+const CoursesSelect = ({ value, onChange }) => {
+  const { isLoading, isError, data: courses } = useQuery(
+    QueryKeys.COURSES,
+    () => courseService.findAll()
+  );
+
+  const handleCourseClick = (courseId) => {
+    const selectedCourses = value.includes(courseId)
+      ? value.filter(id => id !== courseId)
+      : [...value, courseId];
+    onChange(selectedCourses);
+  };
 
   return (
-    <Paper elevation={3} style={{ padding: 20 }}>
-      <Typography variant="h6">Courses for {semester?.name}</Typography>
-      <List>
-        {courses.map(course => (
-          <ListItem key={course.id}>
-            <ListItemText primary={course.name} secondary={course.description} />
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Select Courses
+      </Typography>
+      
+      {isLoading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : isError ? (
+        <Typography color="error" variant="body2" sx={{ mt: 4 }}>
+          Failed to load courses. Please try again later.
+        </Typography>
+      ) : (
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+          {courses.map((course) => (
+            <Grid item xs={12} sm={6} md={4} key={course.id}>
+              <CourseCard
+                course={course}
+                isSelected={value.includes(course.id)}
+                onClick={handleCourseClick}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Box>
   );
 };
 

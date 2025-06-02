@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.learning_management_system.enums.DegreeType;
 import com.learning_management_system.enums.Gender;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -54,5 +55,8 @@ public class Student extends UserAccount {
     // @JsonManagedReference
     @JsonIgnore
     private List<StudentSemester> studentSemesters;
+
+    @Enumerated(EnumType.STRING)
+    private DegreeType degreeType;
 
 }
