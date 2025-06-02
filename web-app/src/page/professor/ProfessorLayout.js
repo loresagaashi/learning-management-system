@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { useTheme, makeStyles, Button, AppBar, Badge, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Badge, Button, CssBaseline, Divider, Drawer, IconButton, makeStyles, Toolbar, Typography, useTheme } from '@material-ui/core';
+import ChatIcon from "@material-ui/icons/Chat";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import CloseIcon from "@material-ui/icons/Close";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ChatComponent from "../../component/ChatComponent";
 import AppMenu from "../../component/professorSMIS/AppMenu";
 import useUser from "../../hooks/useUser";
+import ProfessorExamApplications from "../admin/exams/ProfessorExamApplications";
 import Attendance from "./SMIS/Attendance";
 import ProfessorCourses from "./SMIS/ProfessorCourses";
 import ProfessorProfile from "./SMIS/ProfessorProfile";
-import ChatIcon from "@material-ui/icons/Chat";
-import CloseIcon from "@material-ui/icons/Close";
 
 const drawerWidth = 240;
 
@@ -212,6 +212,8 @@ export default function ProfessorLayout({}) {
             <Route path="/profile" element={<ProfessorProfile />} />
             <Route path="/attendance" element={<Attendance/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
+            <Route path="/passed-exam" element={<ProfessorExamApplications/>}/>
+
 
           </Routes>
         }

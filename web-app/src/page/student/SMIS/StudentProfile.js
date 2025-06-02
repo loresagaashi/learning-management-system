@@ -98,6 +98,22 @@ const StudentProfile = () => {
         }}
       />
     </Grid>
+    <Grid item xs={12}>
+      <Typography variant="subtitle2">StudentID</Typography>
+      <TextField
+        fullWidth
+        value={user?.user.studentId}
+        variant="outlined"
+        margin="dense"
+        disabled
+        InputProps={{
+          style: {
+            color: 'black',
+            backgroundColor: 'white',
+          },
+        }}
+      />
+    </Grid>
   
     <Grid item xs={12}>
       <Typography variant="subtitle2">Enrollment Date</Typography>

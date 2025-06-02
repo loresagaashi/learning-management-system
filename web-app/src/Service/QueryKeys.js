@@ -20,5 +20,7 @@ export const QueryKeys = {
   STUDENT_GROUPS: "STUDENT_GROUPS",
   GENERATIONS: "GENERATIONS",
   SEMESTER: "SEMESTER",
+    EXAM: "EXAM",
+
   USER_BY_EMAIL: (email) => "USER_" + email,
 };

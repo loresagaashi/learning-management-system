@@ -1,93 +1,69 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Grid,
-  Typography,
-  Paper,
-  CircularProgress,
-  TextField,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
-import useUser from '../../../hooks/useUser';
-
-const useStyles = makeStyles((theme) => ({
-  gradesContainer: {
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(5),
-  },
-  card: {
-    borderRadius: '1rem',
-    width: '100%',
-    maxWidth: '1000px',
-    padding: theme.spacing(5),
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
-  },
-  gradesSection: {
-    padding: theme.spacing(4),
-  },
-  gradeItem: {
-    marginBottom: theme.spacing(3),
-  },
-}));
+import axios from "axios";
+import { useEffect, useState } from "react";
+import useUser from "../../../hooks/useUser";
 
 const StudentGrades = () => {
-  const classes = useStyles();
-  const { user } = useUser();
-  const [grades, setGrades] = useState([]);
+  const [examGrades, setExamGrades] = useState([]);
+  const [averageGrade, setAverageGrade] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useUser();
+  const userId = user?.user?.id;
 
   useEffect(() => {
-    if (!user?.user.id) {
-      console.error("No student ID found");
-      return;
-    }
+    if (!userId) return;
 
-    // Fetch the student's grades
-    axios.get(`/students/${user?.user.id}/grades`)
-      .then(response => {
-        setGrades(response.data);
-        setLoading(false);
+    axios
+      .get(`http://localhost:8080/exam-applications/passed/${userId}`)
+      .then((response) => {
+        const data = response.data;
+        if (Array.isArray(data.passedExams)) {
+          setExamGrades(data.passedExams);
+          setAverageGrade(data.averageGrade);
+        } else {
+          console.error("Expected passedExams to be an array, got:", data.passedExams);
+          setExamGrades([]);
+        }
       })
-      .catch(error => {
-        console.error("Error fetching grades:", error);
-        setLoading(false);
-      });
-  }, [user]);
+      .catch((error) => {
+        console.error("Error fetching exam grades:", error);
+        setExamGrades([]);
+      })
+      .finally(() => setLoading(false));
+  }, [userId]);
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  if (loading) return <p className="text-center">Loading exams...</p>;
 
   return (
-    <section className={classes.gradesContainer}>
-      <Paper elevation={3} className={classes.card}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Typography variant="h5"><b>Student Grades</b></Typography>
-            <hr />
-            {grades.length === 0 ? (
-              <Typography>No grades available.</Typography>
-            ) : (
-              grades.map((grade) => (
-                <Grid item xs={12} key={grade.id} className={classes.gradeItem}>
-                  <Paper elevation={3} style={{ padding: '20px' }}>
-                    <Typography variant="h6">Lecture: {grade?.lecture?.name}</Typography>
-                    <Typography variant="body2">Date: {grade?.lecture?.lectureDate}</Typography>
-                    <Typography variant="body2">Topic: {grade?.lecture?.topic}</Typography>
-                    <Typography variant="body2">Grade: {grade?.grade}</Typography>
-                  </Paper>
-                </Grid>
-              ))
-            )}
-          </Grid>
-        </Grid>
-      </Paper>
-    </section>
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold mb-2">Exam Grades</h2>
+      {averageGrade !== null && (
+        <p className="text-lg font-medium mb-4 text-gray-700">
+          Average Grade: <span className="font-bold text-blue-600">{averageGrade}</span>
+        </p>
+      )}
+      {examGrades.length === 0 ? (
+        <p className="text-center text-gray-500">No exams attended yet.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+            <thead className="bg-gray-100 text-gray-700">
+              <tr>
+                <th className="px-4 py-2 text-left">Course Name</th>
+                <th className="px-4 py-2 text-left">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {examGrades.map((examGrade, index) => (
+                <tr key={index} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-2">{examGrade.courseName}</td>
+                  <td className="px-4 py-2">{examGrade.grade}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 };
 
