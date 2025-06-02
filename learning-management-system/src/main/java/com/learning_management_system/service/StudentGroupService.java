@@ -1,9 +1,13 @@
 package com.learning_management_system.service;
 
+import com.learning_management_system.data.studentGroup.StudentGroup1;
+import com.learning_management_system.data.studentGroup.StudentGroupDTO;
 import com.learning_management_system.model.StudentGroup;
 import com.learning_management_system.repository.StudentGroupRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class StudentGroupService extends BasicServiceOperations<StudentGroupRepository, StudentGroup> {
@@ -20,6 +24,24 @@ public class StudentGroupService extends BasicServiceOperations<StudentGroupRepo
         int capacity = group.getCapacity() != null ? group.getCapacity() : 0;
 
         return Math.max(capacity - assignedStudents, 0);
+    }
+
+    public List<StudentGroupDTO> getGroupsByGenerationAndSemester(String generationName, Long semesterId) {
+        return studentGroupRepository.findGroupsByGenerationNameAndSemesterId(generationName, semesterId);
+    }
+    public List<StudentGroupDTO> getGroupsByGeneration(String generationName) {
+        return studentGroupRepository.findGroupsByGenerationName(generationName);
+    }
+
+    public List<StudentGroup1> getAllStudentGroups() {
+        List<StudentGroup1> groups = studentGroupRepository.findAllGroupsWithoutStudents();
+
+//        for (StudentGroup group : groups) {
+//            List<Long> studentIds = studentGroupRepository.findStudentIdsByGroupId(group.getId());
+//            group.setStudentIds(studentIds);
+//        }
+
+        return groups;
     }
 
 }

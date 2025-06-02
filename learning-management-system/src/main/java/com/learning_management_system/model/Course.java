@@ -33,4 +33,9 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 
+    @Column(name = "credits")
+    private Long credits;
+
+    @Column(name = "type")
+    private String type;
 }

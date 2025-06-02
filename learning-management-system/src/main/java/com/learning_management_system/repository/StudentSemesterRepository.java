@@ -1,5 +1,6 @@
 package com.learning_management_system.repository;
 
+import com.learning_management_system.data.studentSemester.StudentSemesterDTO;
 import com.learning_management_system.model.Generation;
 import com.learning_management_system.model.Semester;
 import com.learning_management_system.model.Student;
@@ -24,5 +25,9 @@ public interface StudentSemesterRepository extends JpaRepository<StudentSemester
 
     @Query("SELECT ss FROM StudentSemester ss JOIN FETCH ss.student JOIN FETCH ss.semester WHERE ss.student.id = :studentId")
     List<StudentSemester> findByStudentId(@Param("studentId") Long studentId);
+
+    @Query("SELECT new com.learning_management_system.data.studentSemester.StudentSemesterDTO(s.semester.id, s.semester.name, s.registrationDate,s.semester.season,s.semester.startDate) " +
+            "FROM StudentSemester s WHERE s.student.id = :studentId")
+    List<StudentSemesterDTO> findStudentSemestersDTOByStudentId(@Param("studentId") Long studentId);
 
 }

@@ -1,10 +1,8 @@
-package com.learning_management_system.data.studentGropu;
+package com.learning_management_system.data.studentGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

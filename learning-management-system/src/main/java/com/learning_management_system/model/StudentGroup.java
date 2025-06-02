@@ -20,6 +20,10 @@ public class StudentGroup extends BaseEntity {
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
+    @ManyToOne
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
+
     @OneToMany(mappedBy = "group")
     private List<Student> students;
 }

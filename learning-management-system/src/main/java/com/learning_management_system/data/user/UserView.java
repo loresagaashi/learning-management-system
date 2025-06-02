@@ -18,5 +18,6 @@ public class UserView {
     private String email;
     private String phoneNumber;
     private LocalDate birthDate;
+    private Long semesterId;
 
 }

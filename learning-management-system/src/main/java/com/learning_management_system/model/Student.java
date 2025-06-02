@@ -36,6 +36,12 @@ public class Student extends UserAccount {
     @JsonBackReference("student-group")
     private StudentGroup group;
 
+
+    @ManyToOne
+    @JoinColumn(name = "active_semester_id")
+    @JsonIgnore
+    private Semester activeSemester;
+
     @Enumerated(EnumType.STRING) // Enum mapping to string in the database
     private Gender gender; // M for Male, F for Female
 

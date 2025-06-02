@@ -1,5 +1,6 @@
 package com.learning_management_system.service;
 
+import com.learning_management_system.data.studentSemester.StudentSemesterDTO;
 import com.learning_management_system.model.Semester;
 import com.learning_management_system.model.Student;
 import com.learning_management_system.model.StudentSemester;
@@ -35,6 +36,8 @@ public class StudentSemesterService {
             throw new IllegalStateException("Student is already registered in this semester.");
         }
 
+        student.setActiveSemester(semester);
+
         StudentSemester studentSemester = new StudentSemester();
         studentSemester.setStudent(student);
         studentSemester.setSemester(semester);
@@ -48,4 +51,8 @@ public class StudentSemesterService {
     public List<StudentSemester> getStudentSemestersByStudentId(Long studentId) {
         return studentSemesterRepository.findByStudentId(studentId);
     }
+    public List<StudentSemesterDTO> getStudentSemestersDTOByStudentId(Long studentId) {
+        return studentSemesterRepository.findStudentSemestersDTOByStudentId(studentId);
+    }
+
 }

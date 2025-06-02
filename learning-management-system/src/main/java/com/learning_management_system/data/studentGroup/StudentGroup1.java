@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentGroup {
+public class StudentGroup1 {
     private Long id;
     private String name;
     private Integer capacity;

@@ -165,5 +165,11 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
     public List<StudentDTO> getStudentsByGeneration(Long generationId) {
         return repository.findAllByGenerationId(generationId);
     }
+
+    public boolean isStudentAssignedToGroup(Long studentId, Long groupId) {
+        return studentRepository.findById(studentId)
+                .map(student -> student.getGroup() != null && student.getGroup().getId().equals(groupId))
+                .orElse(false);
+    }
 }
 

@@ -28,7 +28,8 @@ public interface ExamApplicationRepository extends JpaRepository<ExamApplication
                     e.title,
                     c.name,
                     e.dateTime,
-                    e.location
+                    e.location,
+                    ea.grade
                 )
                 FROM ExamApplication ea
                 JOIN ea.exam e
@@ -46,7 +47,8 @@ public interface ExamApplicationRepository extends JpaRepository<ExamApplication
                     c.name,
                     CONCAT(s.firstName, ' ', s.lastName),
                     ea.grade,
-                    ea.status
+                    ea.status,
+                    ea.student.id
                 )
                 FROM ExamApplication ea
                 JOIN ea.exam e

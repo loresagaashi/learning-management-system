@@ -16,14 +16,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class StudentSemester extends BaseEntity {
 
     @ManyToOne(optional = false)
-    // @JoinColumn(name = "student_id")
-    // @JsonIgnoreProperties({"studentSemesters"})
-    @JsonIgnore
+    @JoinColumn(name = "student_id")
+  //  @JsonIgnoreProperties({"studentSemesters"})
+   // @JsonIgnore
     private Student student;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "semester_id")
-    @JsonIgnoreProperties({"studentSemesters"})
+    //@JsonIgnoreProperties({"studentSemesters"})
     private Semester semester;
 
     private LocalDateTime registrationDate;

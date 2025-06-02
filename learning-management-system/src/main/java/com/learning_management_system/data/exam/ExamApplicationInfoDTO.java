@@ -15,4 +15,5 @@ public class ExamApplicationInfoDTO {
     private String studentFullName;
     private Double grade;
     private ExamStatus status;
+    private Long studentId;
 }
