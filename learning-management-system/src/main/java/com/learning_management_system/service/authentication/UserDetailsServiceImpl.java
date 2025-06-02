@@ -120,7 +120,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     user.getLastName(),
                     user.getEmail(),
                     user.getPhoneNumber(),
-                    user.getBirthDate()
+                    user.getBirthDate(),
+                    user.getSemesterId()
             );
         } else {
             throw new NotFoundApiException(HttpStatus.NOT_FOUND);

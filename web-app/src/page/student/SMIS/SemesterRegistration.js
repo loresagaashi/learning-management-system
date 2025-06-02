@@ -1,180 +1,117 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Typography,
-  CircularProgress,
-  Alert,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import { SemesterService } from "../../../service/SemesterService";
-import { useQuery } from "react-query";
-import { QueryKeys } from "../../../service/QueryKeys";
-import { StudentSemesterService } from "../../../service/StudentSemesterService";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import useUser from "../../../hooks/useUser";
 
-const semesterService = new SemesterService();
-const studentSemesterService = new StudentSemesterService();
-
 const SemesterRegistration = () => {
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
+  const { user } = useUser();
+  const studentId = user?.user?.studentId;
+  const userId=user?.user?.id;
+
+  const [semesterList, setSemesterList] = useState([]);
+  const [selectedSemesterId, setSelectedSemesterId] = useState("");
   const [registeredSemesters, setRegisteredSemesters] = useState([]);
 
-  const { user } = useUser();
-  const studentId = user?.user?.id; // or user?.user?.studentId
+  const generationNameFromStudentId = (id) => {
+    const idStr = String(id);
+    if (!idStr || idStr.length < 4) return null;
+    return `${idStr.substring(0, 2)}/${idStr.substring(2, 4)}`;
+  };
 
-  const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
-    semesterService.findAll()
-  );
+  const generationName = generationNameFromStudentId(studentId);
+
+  // 1. Load Semesters by Generation
   useEffect(() => {
-    if (user && user.user?.id) {
-      studentSemesterService
-        .findByStudentId(user?.user?.id)
-        .then((res) => {
-          setRegisteredSemesters(res);
-          console.log("Fetched registered semesters:", res);
+    if (generationName) {
+      axios
+        .post("http://localhost:8080/semester/by-generation", {
+          generationName,
         })
-        .catch(() => {
-          setError("Failed to load registered semesters.");
-        });
+        .then((res) => setSemesterList(res.data))
+        .catch((err) => console.error("Failed to fetch semesters", err));
     }
-  }, [user]);
+  }, [generationName]);
 
-  // const uniqueSemestersMap = new Map();
-  // registeredSemesters.forEach((reg) => {
-  //   if (!uniqueSemestersMap.has(reg.semester.id)) {
-  //     uniqueSemestersMap.set(reg.semester.id, reg);
-  //   }
-  // });
-  // const uniqueRegisteredSemesters = Array.from(uniqueSemestersMap.values());
+  // 2. Load Student Registered Semesters
+  const fetchRegisteredSemesters = () => {
+    if (!studentId) return;
 
+    axios
+      .get(
+        `http://localhost:8080/student-semester/semesters-by-studentId?studentId=${userId}`
+      )
+      .then((res) => setRegisteredSemesters(res.data))
+      .catch((err) =>
+        console.error("Failed to fetch registered semesters", err)
+      );
+  };
+
+  useEffect(() => {
+    fetchRegisteredSemesters();
+  }, [studentId]);
+
+  // 3. Register Student in Semester
   const handleRegister = () => {
-    if (!selectedSemester) {
-      setError("Please select a semester.");
-      return;
-    }
+    if (!selectedSemesterId || !studentId) return;
 
-    if (!studentId) {
-      setError("User not logged in or student ID missing.");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-    setMessage(null);
-
-    studentSemesterService
-      .register(studentId, selectedSemester)
+    axios
+      .post(
+        `http://localhost:8080/student-semester/register?studentId=${userId}&semesterId=${selectedSemesterId}`
+      )
       .then(() => {
-        setMessage("Successfully registered in the semester.");
-        // 🔁 Re-fetch registered semesters
-        return studentSemesterService.findByStudentId(studentId);
+        alert("Successfully registered!");
+        fetchRegisteredSemesters();
       })
-      .then((res) => {
-        console.log("Full response:", res);
-        setRegisteredSemesters(res || []);
-      })
-
       .catch((err) => {
-        setError(err.response?.data || "Registration failed.");
-      })
-      .finally(() => setSubmitting(false));
+        alert("Registration failed.");
+        console.error(err);
+      });
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Register in a Semester
-      </Typography>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-      {message && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          {message}
-        </Alert>
-      )}
-
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel id="semester-label">Select Semester</InputLabel>
-        <Select
-          labelId="semester-label"
-          value={selectedSemester}
-          label="Select Semester"
-          onChange={(e) => setSelectedSemester(e.target.value)}
-        >
-          {Array.isArray(allSemesters) && allSemesters.length > 0 ? (
-            allSemesters.map((semester) => (
-              <MenuItem key={semester.id} value={semester.id}>
-                {semester.name} ({semester.season})
-              </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>No semesters available</MenuItem>
-          )}
-        </Select>
-      </FormControl>
-
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={handleRegister}
-        disabled={submitting}
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
+      <h2>Register in a Semester</h2>
+      <select
+        value={selectedSemesterId}
+        onChange={(e) => setSelectedSemesterId(e.target.value)}
+        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       >
-        {submitting ? "Registering..." : "Register"}
-      </Button>
+        <option value="">Select Semester</option>
+        {semesterList.map((semester) => (
+          <option key={semester.id} value={semester.id}>
+            {semester.name}
+          </option>
+        ))}
+      </select>
+      <button
+        onClick={handleRegister}
+        style={{
+          backgroundColor: "#007bff",
+          color: "white",
+          padding: "10px 20px",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        REGISTER
+      </button>
 
-      {/* Show registered semesters below */}
-      {/* Show registered semesters below */}
-      <Box mt={4}>
-        <Typography variant="h6" gutterBottom>
-          Registered Semesters
-        </Typography>
-        {Array.isArray(registeredSemesters) ? (
-          registeredSemesters.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
-              You haven't registered in any semester yet.
-            </Typography>
-          ) : (
-            <List>
-              {registeredSemesters.map((registration) => (
-                <ListItem key={registration.id}>
-                  <ListItemText
-                    primary={
-                      registration.semester
-                        ? `${registration.semester.name} (${registration.semester.season})`
-                        : "No semester data"
-                    }
-                    secondary={
-                      registration.registrationDate
-                        ? `Registered on: ${new Date(registration.registrationDate).toLocaleDateString()}`
-                        : "No date"
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          )
+      <div style={{ marginTop: "30px" }}>
+        <h3>Lista e regjistrimeve të semestrave</h3>
+        {registeredSemesters.length === 0 ? (
+          <p>You haven't registered in any semester yet.</p>
         ) : (
-          <Typography variant="body2" color="text.secondary">
-            Loading or no data available.
-          </Typography>
+          <ul>
+  {registeredSemesters.map((sem) => (
+    <li key={sem.semesterId}>
+      {sem.semesterName} - {new Date(sem.registrationDate).toLocaleDateString()} - {sem.season} 
+       {/* {new Date(sem.startDate).toLocaleDateString()} */}
+    </li>
+  ))}
+</ul>
+
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 

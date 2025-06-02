@@ -1,5 +1,3 @@
-import React from "react";
-import PersonIcon from "@material-ui/icons/Person";
 import {
   List,
   ListItem,
@@ -7,33 +5,33 @@ import {
   ListItemText,
   useTheme,
 } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
-import AppMenuItem from "./AppMenuItem";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import DescriptionIcon from '@material-ui/icons/Description';
+import EmailIcon from '@material-ui/icons/Email';
+import EventIcon from '@material-ui/icons/Event';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import GroupIcon from '@material-ui/icons/Group';
+import HowToRegIcon from "@material-ui/icons/HowToReg";
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import ListAltIcon from "@material-ui/icons/ListAlt";
+import LocationCityIcon from '@material-ui/icons/LocationCity';
+import MenuBookIcon from "@material-ui/icons/MenuBook";
+import PaymentIcon from '@material-ui/icons/Payment';
+import PersonIcon from "@material-ui/icons/Person";
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import SchoolIcon from '@material-ui/icons/School';
+import StarIcon from "@material-ui/icons/Star";
+import { useNavigate } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
-import SchoolIcon from '@material-ui/icons/School';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import EventIcon from '@material-ui/icons/Event';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ListAltIcon from "@material-ui/icons/ListAlt";
-import PaymentIcon from '@material-ui/icons/Payment';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
-import HowToRegIcon from "@material-ui/icons/HowToReg";
-import StarIcon from "@material-ui/icons/Star";
-import MenuBookIcon from "@material-ui/icons/MenuBook";
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import EmailIcon from '@material-ui/icons/Email';
-import GroupIcon from '@material-ui/icons/Group';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import TextsmsIcon from '@material-ui/icons/Textsms';
-import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import AppMenuItem from "./AppMenuItem";
 
 const appMenuItems = [
   {
@@ -81,6 +79,26 @@ const appMenuItems = [
     Icon: DateRangeIcon,
     link: "/admin/generations",
   },
+     {
+    name: "View Schedule",
+    Icon: LocationCityIcon,
+    link: "/admin/view-schedule",
+  },  
+  {
+    name: "Semesters",
+    Icon: MenuBookIcon,
+    link: "/admin/semester",
+  },
+  {
+    name: "Add Schedules",
+    Icon: QueryBuilderIcon,
+    link: "/admin/schedules",
+  },
+  {
+    name: "Exams",
+    Icon: LibraryBooksIcon,
+    link: "/admin/exams",
+  },
   {
     name: "Materials",
     Icon: LibraryBooksIcon,
@@ -125,16 +143,6 @@ const appMenuItems = [
     name: "Orientations",
     Icon: MenuBookIcon,
     link: "/admin/orientations",
-  },
-  {
-    name: "Semesters",
-    Icon: MenuBookIcon,
-    link: "/admin/semester",
-  },
-  {
-    name: "Schedules",
-    Icon: QueryBuilderIcon,
-    link: "/admin/schedules",
   },
   {
     name: "Enrollments",

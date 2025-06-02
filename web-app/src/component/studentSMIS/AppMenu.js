@@ -1,5 +1,3 @@
-import React from "react";
-import PersonIcon from "@material-ui/icons/Person";
 import {
   List,
   ListItem,
@@ -7,20 +5,18 @@ import {
   ListItemText,
   useTheme,
 } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import BallotIcon from '@material-ui/icons/Ballot';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import DashboardIcon from "@material-ui/icons/Dashboard";
+import GradeIcon from '@material-ui/icons/Grade';
+import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
+import SchoolIcon from '@material-ui/icons/School';
+import { useNavigate } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
-import SchoolIcon from '@material-ui/icons/School';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import GradeIcon from '@material-ui/icons/Grade';
-import BallotIcon from '@material-ui/icons/Ballot';
-import TextsmsIcon from '@material-ui/icons/Textsms';
-import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
-import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 
 const appMenuItems = [
    {
@@ -34,12 +30,12 @@ const appMenuItems = [
       link: "/student/profile",
     },
     {
-      name: "Exams",
+      name: "Provimet e paraqitura",
       Icon: BallotIcon,
       link: "/student/exams",
     },
     {
-      name: "Grades",
+      name: "Transkripta",
       Icon: GradeIcon,
       link: "/student/grades",
     },
@@ -62,6 +58,11 @@ const appMenuItems = [
       name: "Schedule",
       Icon: QueryBuilderIcon,
       link: "/student/schedules",
+    },
+    {
+      name: "Paraqit Provimet",
+      Icon: PeopleOutlineIcon,
+      link: "/student/registred-exam",
     },
 ];
 

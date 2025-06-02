@@ -41,5 +41,12 @@ public class ScheduleController extends BasicControllerOperations<ScheduleServic
         return ResponseEntity.ok(schedule);
     }
 
+    @GetMapping("/groups/{groupId}/schedule")
+    public ResponseEntity<List<ScheduleDTO>> getScheduleForGroup(@PathVariable Long groupId) {
+        List<ScheduleDTO> schedule = scheduleService.getScheduleForGroup(groupId);
+        return ResponseEntity.ok(schedule);
+    }
+
+
 
 }

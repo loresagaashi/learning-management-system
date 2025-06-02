@@ -37,6 +37,11 @@ const appMenuItems = [
     Icon: SchoolIcon,
     link: "/professor/attendance",
   },
+  {
+    name: "Vendos Notat",
+    Icon: SchoolIcon,
+    link: "/professor/passed-exam",
+  },
   // {
   //   name: "Chat",
   //   Icon: TextsmsIcon,

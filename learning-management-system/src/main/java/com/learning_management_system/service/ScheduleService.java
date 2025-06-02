@@ -44,9 +44,15 @@ public class ScheduleService extends BasicServiceOperations<ScheduleRepository, 
         Semester semester = semesterRepository.findById(request.getSemesterId())
                 .orElseThrow(() -> new EntityNotFoundException("Semester not found"));
 
+        // Krijo StudentGroupSemester nëse nuk ekziston
         StudentGroupSemester groupSemester = studentGroupSemesterRepository
                 .findByGroupAndSemester(group, semester)
-                .orElseThrow(() -> new EntityNotFoundException("GroupSemester not found"));
+                .orElseGet(() -> {
+                    StudentGroupSemester newGroupSemester = new StudentGroupSemester();
+                    newGroupSemester.setGroup(group);
+                    newGroupSemester.setSemester(semester);
+                    return studentGroupSemesterRepository.save(newGroupSemester);
+                });
 
         for (ScheduleEntryRequest entry : request.getScheduleEntries()) {
             Schedule schedule = new Schedule();
@@ -73,23 +79,36 @@ public class ScheduleService extends BasicServiceOperations<ScheduleRepository, 
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
-        // Merr semestrin aktiv ku studenti është regjistruar (mund të ketë logjikë për "latest")
-        StudentSemester studentSemester = studentSemesterRepository.findTopByStudentOrderByRegistrationDateDesc(student)
-                .orElseThrow(() -> new EntityNotFoundException("Student is not registered in any semester"));
-
-        Semester semester = studentSemester.getSemester();
+//        StudentSemester studentSemester = studentSemesterRepository.findTopByStudentOrderByRegistrationDateDesc(student)
+//                .orElseThrow(() -> new EntityNotFoundException("Student is not registered in any semester"));
 
         StudentGroup group = student.getGroup();
+
+        StudentGroupSemester groupSemester = studentGroupSemesterRepository
+                .findTopByGroupOrderBySemester_RegistrationDateDesc(group)
+                .orElseThrow(() -> new EntityNotFoundException("No semester found for this group"));
+        Semester semester = groupSemester.getSemester();
         if (group == null) {
             throw new IllegalStateException("Student is not assigned to any group");
         }
 
-        StudentGroupSemester groupSemester = studentGroupSemesterRepository
-                .findByGroupAndSemester(group, semester)
-                .orElseThrow(() -> new EntityNotFoundException("GroupSemester not found for student"));
-
         return scheduleRepository.findScheduleForGroupAndSemester(group.getId(), semester.getId());
     }
+
+    public List<ScheduleDTO> getScheduleForGroup(Long groupId) {
+        StudentGroup group = studentGroupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
+
+
+        StudentGroupSemester groupSemester = studentGroupSemesterRepository
+                .findTopByGroupOrderBySemester_RegistrationDateDesc(group)
+                .orElseThrow(() -> new EntityNotFoundException("No semester found for this group"));
+
+        Semester semester = groupSemester.getSemester();
+
+        return scheduleRepository.findScheduleForGroupAndSemester(groupId, semester.getId());
+    }
+
 
 
 

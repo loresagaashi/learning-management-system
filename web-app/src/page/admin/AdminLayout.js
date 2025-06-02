@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { useTheme, makeStyles, Button, AppBar, Badge, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Badge, Button, CssBaseline, Divider, Drawer, IconButton, makeStyles, Toolbar, Typography, useTheme } from '@material-ui/core';
+import ChatIcon from "@material-ui/icons/Chat";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import CloseIcon from "@material-ui/icons/Close";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ChatComponent from "../../component/ChatComponent";
 import AppMenu from "../../component/dashboard/AppMenu";
@@ -16,8 +17,11 @@ import CoursesView from "./courses/CoursesView";
 import AdminDashboard from "./dashboard/AdminDashboard";
 import SendEmailForm from "./emails/SendEmailForm";
 import EnrollmentView from "./enrollments/EnrollmentView";
+import ExamView from './exams/ExamView';
 import FeedbackView from "./feedbacks/FeedbackView";
+import GenerationView from "./generations/GenerationView";
 import GradeView from "./grades/GradeView";
+import StudentGroups from "./groups/StudentGroups";
 import LecturesView from "./lectures/LecturesView";
 import LogView from "./logs/LogView";
 import MaterialsView from "./materials/MaterialsView";
@@ -25,14 +29,11 @@ import OrientationView from "./orientations/OrientationView";
 import PaymentView from "./payments/PaymentView";
 import ProfessorView from "./professors/ProfessorView";
 import ReportView from "./reports/ReportView";
+import AdminViewSchedule from "./schedules/AdminViewSchedule";
 import ScheduleView from "./schedules/ScheduleView";
+import SemesterView from "./semesters/SemesterView";
 import StudentView from "./students/StudentView";
 import SubmissionView from "./submissions/SubmissionView";
-import StudentGroups from "./groups/StudentGroups";
-import GenerationView from "./generations/GenerationView";
-import SemesterView from "./semesters/SemesterView";
-import ChatIcon from "@material-ui/icons/Chat";
-import CloseIcon from "@material-ui/icons/Close";
 
 const drawerWidth = 240;
 
@@ -250,6 +251,10 @@ export default function AdminLayout({}) {
             <Route path="/student-groups" element={<StudentGroups/>}/>
             <Route path="/generations" element={<GenerationView/>}/>
             <Route path="/semester" element={<SemesterView/>}/>
+            <Route path="/view-schedule" element={<AdminViewSchedule/>}/>
+           <Route path="/exams" element={<ExamView/>}/>
+
+
 
           </Routes>
         }

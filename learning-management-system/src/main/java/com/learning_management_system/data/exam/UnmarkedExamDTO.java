@@ -15,4 +15,5 @@ public class UnmarkedExamDTO {
     private String courseName;
     private LocalDateTime dateTime;
     private String location;
+    private Double grade;
 }

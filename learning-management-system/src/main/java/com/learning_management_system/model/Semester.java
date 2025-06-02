@@ -30,7 +30,11 @@ public class Semester extends BaseEntity {
     @JoinColumn(name = "generation_id")
     private Generation generation;
 
+    @Column(name = "active")
+    private Boolean active=true ;
+
+
     @OneToMany(mappedBy = "semester")
-    @JsonManagedReference("semester-studentsemesters")
+    //@JsonManagedReference("semester-studentsemesters")
     private List<StudentSemester> studentSemesters;
 }

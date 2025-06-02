@@ -37,9 +37,9 @@ public class ExamApplicationService {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundException("Student not found"));
 
-        if (!student.getCourses().contains(exam.getCourse())) {
-            throw new IllegalArgumentException("Student is not registered in the course");
-        }
+//        if (!student.getCourses().contains(exam.getCourse())) {
+//            throw new IllegalArgumentException("Student is not registered in the course");
+//        }
 
 //        boolean hasSchedule = scheduleRepository.existsByGroupSemesterGroupIdAndCourseIdAndProfessorId(
 //                student.getGroup().getId(),

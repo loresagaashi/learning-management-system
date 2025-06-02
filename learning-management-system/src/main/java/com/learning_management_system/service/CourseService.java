@@ -41,6 +41,6 @@ public class CourseService extends BasicServiceOperations<CourseRepository, Cour
     }
 
     public List<CourseDTO> getUnpassedCourses(Long studentId) {
-        return courseRepository.findUnpassedOrUnattemptedCoursesByStudentId(studentId);
+        return courseRepository.findUnpassedCoursesByStudentId(studentId);
     }
 }

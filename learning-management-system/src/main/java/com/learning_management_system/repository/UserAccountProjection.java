@@ -9,4 +9,5 @@ public interface UserAccountProjection {
     String getEmail();
     String getPhoneNumber();
     LocalDate getBirthDate();
+    Long getSemesterId();
 }

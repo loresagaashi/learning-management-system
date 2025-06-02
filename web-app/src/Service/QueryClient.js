@@ -1,25 +1,26 @@
 import { QueryClient } from "react-query";
-import { QueryKeys } from "./QueryKeys";
 import { AdminService } from "./AdminService";
-import { StudentService } from "./StudentService";
-import { CourseService } from "./CourseService";
-import { LectureService } from "./LectureService";
-import { MaterialService } from "./MaterialService";
 import { AssignmentService } from "./AssignmentService";
-import { SubmissionService } from "./SubmissionService";
-import { GradeService } from "./GradeService";
-import { ReportService } from "./ReportService";
-import { LogService } from "./LogService";
-import { PaymentService } from "./PaymentService";
-import { OrientationService } from "./OrientationService";
-import { ScheduleService } from "./ScheduleService";
-import { FeedbackService } from "./FeedbackService";
-import { EnrollmentService } from "./EnrollmentService";
-import { ProfessorService } from "./ProfessorService";
 import { CityService } from "./CityService";
-import { StudentGroupService } from "./StudentGroupService";
+import { CourseService } from "./CourseService";
+import { EnrollmentService } from "./EnrollmentService";
+import { ExamService } from "./ExamService";
+import { FeedbackService } from "./FeedbackService";
 import { GenerationService } from "./GenerationService";
+import { GradeService } from "./GradeService";
+import { LectureService } from "./LectureService";
+import { LogService } from "./LogService";
+import { MaterialService } from "./MaterialService";
+import { OrientationService } from "./OrientationService";
+import { PaymentService } from "./PaymentService";
+import { ProfessorService } from "./ProfessorService";
+import { QueryKeys } from "./QueryKeys";
+import { ReportService } from "./ReportService";
+import { ScheduleService } from "./ScheduleService";
 import { SemesterService } from "./SemesterService";
+import { StudentGroupService } from "./StudentGroupService";
+import { StudentService } from "./StudentService";
+import { SubmissionService } from "./SubmissionService";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +55,7 @@ export const setQueryDefaults = () => {
   const studentGroupsService = new StudentGroupService();
   const generationService = new GenerationService();
   const semesterService = new SemesterService();
+  const examService = new ExamService();
 
   queryClient.setQueryDefaults(QueryKeys.ADMIN, {
     queryFn: () => adminsService.findAll(),
@@ -113,6 +115,9 @@ export const setQueryDefaults = () => {
     queryFn: () => generationService.findAll(),
   });
   queryClient.setQueryDefaults(QueryKeys.SEMESTER, {
-    queryFn: () => generationService.findAll(),
+    queryFn: () => semesterService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.EXAM, {
+    queryFn: () => examService.findAll(),
   });
 };

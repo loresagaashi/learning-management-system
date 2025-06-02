@@ -1,22 +1,23 @@
-import { useState } from "react";
-import { useTheme, makeStyles, Button, AppBar, Badge, CssBaseline, Divider, Drawer, IconButton, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Badge, Button, CssBaseline, Divider, Drawer, IconButton, makeStyles, Toolbar, Typography, useTheme } from '@material-ui/core';
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ChatComponent from "../../component/ChatComponent";
 import AppMenu from "../../component/studentSMIS/AppMenu";
 import useUser from "../../hooks/useUser";
+import SemesterRegistration from "./SMIS/SemesterRegistration";
 import StudentExam from "./SMIS/StudentExams";
 import StudentGrades from "./SMIS/StudentGrades";
 import StudentProfile from "./SMIS/StudentProfile";
-import SemesterRegistration from "./SMIS/SemesterRegistration";
-// import StudentScheduleView from "./SMIS/StudentScheduleView";
+//import StudentScheduleView from "./SMIS/StudentScheduleView";
 import ChatIcon from "@material-ui/icons/Chat";
 import CloseIcon from "@material-ui/icons/Close";
+import StudentExamRegistration from '../admin/exams/StudentExamRegistration';
 import GroupRegister from "./SMIS/GroupRegister";
+import StudentSchedulePage from './SMIS/StudentSchedulePage';
 
 const drawerWidth = 240;
 
@@ -216,8 +217,9 @@ export default function StudentLayout({}) {
             <Route path="/exams" element={<StudentExam/>}/>
             <Route path="/chat" element={<ChatComponent/>}/>
             <Route path="/semester" element={<SemesterRegistration/>}/>
-            {/* <Route path="/assign-to-group" element={<GroupRegister/>}/> */}
-            {/* <Route path="/schedules" element={<StudentScheduleView/>}/> */}
+            <Route path="/assign-to-group" element={<GroupRegister/>}/>
+            <Route path="/registred-exam" element={<StudentExamRegistration/>}/>
+            <Route path="/schedules" element={<StudentSchedulePage/>}/>
 
           </Routes>
         }

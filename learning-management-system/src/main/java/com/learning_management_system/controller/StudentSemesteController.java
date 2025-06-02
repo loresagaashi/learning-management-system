@@ -1,5 +1,6 @@
 package com.learning_management_system.controller;
 
+import com.learning_management_system.data.studentSemester.StudentSemesterDTO;
 import com.learning_management_system.model.Semester;
 import com.learning_management_system.model.StudentSemester;
 import com.learning_management_system.repository.StudentSemesterRepository;
@@ -33,10 +34,16 @@ public class StudentSemesteController {
         }
     }
 
-    @GetMapping("/semesters-by-studentId")
-    public ResponseEntity<List<StudentSemester>> getSemestersByStudentId(@RequestParam Long studentId) {
+    @GetMapping("/semesters-by-studentId1")
+    public ResponseEntity<List<StudentSemester>> getSemestersByStudentId1(@RequestParam Long studentId) {
         List<StudentSemester> studentSemesters = studentSemesterService.getStudentSemestersByStudentId(studentId);
         return ResponseEntity.ok(studentSemesters);
     }
+    @GetMapping("/semesters-by-studentId")
+    public ResponseEntity<List<StudentSemesterDTO>> getSemestersByStudentId(@RequestParam Long studentId) {
+        List<StudentSemesterDTO> studentSemesters = studentSemesterService.getStudentSemestersDTOByStudentId(studentId);
+        return ResponseEntity.ok(studentSemesters);
+    }
+
 
 }

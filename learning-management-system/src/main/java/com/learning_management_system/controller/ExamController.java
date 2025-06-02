@@ -1,7 +1,10 @@
 package com.learning_management_system.controller;
 
 import com.learning_management_system.data.exam.ExamGradeDTO;
+import com.learning_management_system.model.Enrollment;
 import com.learning_management_system.model.Exam;
+import com.learning_management_system.service.EmailService;
+import com.learning_management_system.service.EnrollmentService;
 import com.learning_management_system.service.ExamService;
 import com.learning_management_system.service.GradeService;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/exams")
-public class ExamController {
+@RequestMapping("/exams")
+public class ExamController extends BasicControllerOperations<ExamService, Exam> {
 
     private final GradeService gradeService;
 
-    public ExamController(GradeService gradeService) {
+    public ExamController(ExamService service,GradeService gradeService) {
+        super(service);
         this.gradeService = gradeService;
     }
 
@@ -28,4 +32,3 @@ public class ExamController {
         return ResponseEntity.ok(examGrades);
     }
 }
-

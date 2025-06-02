@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import useUser from "../../../hooks/useUser";
+
 
 const StudentExam = ({ studentId }) => {
   const [examGrades, setExamGrades] = useState([]);
   const [loading, setLoading] = useState(true);
-
+const { user } = useUser();
+  //const studentId = user?.user?.studentId;
+  const userId = user?.user?.id;
   useEffect(() => {
     axios
-      .get(`/api/exams/students/${studentId}/exam-grades`)
+      .get(`http://localhost:8080/exam-applications/unmarked/${userId}`)
       .then((response) => {
         setExamGrades(response.data);
       })
@@ -31,7 +35,9 @@ const StudentExam = ({ studentId }) => {
               <tr>
                 <th className="px-4 py-2 text-left">Course Name</th>
                 <th className="px-4 py-2 text-left">Exam Title</th>
+                <th className="px-4 py-2 text-left">Exam Location</th>
                 <th className="px-4 py-2 text-left">Grade</th>
+
               </tr>
             </thead>
             <tbody>
@@ -39,7 +45,9 @@ const StudentExam = ({ studentId }) => {
                 <tr key={index} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-2">{examGrade.courseName}</td>
                   <td className="px-4 py-2">{examGrade.examTitle}</td>
+                  <td className="px-4 py-2">{examGrade.location}</td>
                   <td className="px-4 py-2">{examGrade.grade}</td>
+
                 </tr>
               ))}
             </tbody>

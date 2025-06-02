@@ -54,4 +54,13 @@ public class StudentController extends BasicControllerOperations<StudentService,
         List<StudentDTO> students = studentService.getStudentsByGeneration(generationId);
         return ResponseEntity.ok(students);
     }
+
+    @GetMapping("/{studentId}/group/{groupId}/check")
+    public ResponseEntity<Boolean> isStudentAssignedToGroup(
+            @PathVariable Long studentId,
+            @PathVariable Long groupId) {
+
+        boolean isAssigned = studentService.isStudentAssignedToGroup(studentId, groupId);
+        return ResponseEntity.ok(isAssigned);
+    }
 }
