@@ -3,6 +3,8 @@ package com.learning_management_system.model;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.learning_management_system.enums.DegreeType;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -22,6 +25,9 @@ public class Generation extends BaseEntity {
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
+
+    @Enumerated(EnumType.STRING)
+    private DegreeType degreeType;
 
     @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

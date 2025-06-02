@@ -106,6 +106,7 @@ const LMSPage = () => {
           <GenerationSelect
             value={selectedGeneration}
             onChange={setSelectedGeneration}
+            degreeType={selectedDegreeLevel}
           />
         );
       case 4:
@@ -113,6 +114,7 @@ const LMSPage = () => {
           <SemesterSelect
             value={selectedSemester}
             onChange={setSelectedSemester}
+            generationName={selectedGeneration}
           />
         );
       case 5:

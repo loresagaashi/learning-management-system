@@ -6,7 +6,7 @@ import {
   MenuItem,
   Typography,
   Box,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../../service/QueryKeys';
@@ -14,34 +14,52 @@ import { GenerationService } from '../../../../service/GenerationService';
 
 const generationService = new GenerationService();
 
-const GenerationSelect = ({ value, onChange }) => {
-  const { data: generations = [], isLoading, isError } = useQuery(
-    QueryKeys.GENERATIONS,
-    () => generationService.findAll()
+const GenerationSelect = ({ value, onChange, degreeType }) => {
+  console.log('GenerationSelect received degreeType:', degreeType);
+  const {
+    data: generations = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery(
+    [QueryKeys.GENERATIONS, degreeType],
+    () => generationService.findByDegreeType(degreeType),
+    {
+      enabled: !!degreeType, // only run if degreeType is truthy
+      retry: 1, // retry once on failure
+      onError: (err) => {
+        console.error('Error fetching generations:', err);
+      }
+    }
   );
 
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Select Generation
+        Select Generation ({degreeType})
       </Typography>
       <FormControl fullWidth variant="outlined">
         <InputLabel id="generation-select-label">Generation</InputLabel>
         <Select
           labelId="generation-select-label"
           id="generation-select"
-          value={value}
+          value={value || null}
           onChange={(e) => onChange(e.target.value)}
           label="Generation"
           disabled={isLoading || isError}
         >
           {isLoading ? (
             <MenuItem disabled>
-              <CircularProgress size={20} />
+              <CircularProgress size={20} sx={{ mr: 1 }} />
               Loading...
             </MenuItem>
           ) : isError ? (
-            <MenuItem disabled>Error loading generations</MenuItem>
+            <MenuItem disabled>
+              <Typography color="error">Error loading generations:</Typography>
+              <Typography variant="caption" color="error">{error?.message || 'Unknown error'}</Typography>
+            </MenuItem>
+          ) : generations.length === 0 ? (
+            <MenuItem disabled>No generations available</MenuItem>
           ) : (
             generations.map((generation) => (
               <MenuItem key={generation.id} value={generation.name}>

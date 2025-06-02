@@ -1,6 +1,6 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
-import { TextFieldTableCell } from "../../../component/TableCells";
+import { EnumSelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
 import { GenerationService } from "../../../service/GenerationService";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -26,6 +26,15 @@ export default function GenerationView() {
       field: "name",
       initialEditValue: defaultName,
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Degree Type",
+      field: "degreeType",
+      editComponent: (props) =>
+        EnumSelectTableCell(props, errorRef, [
+          { value: "BACHELOR", label: "BACHELOR" },
+          { value: "MASTER", label: "MASTER" },
+        ]),
     },
     {
       title: "Start Date",
