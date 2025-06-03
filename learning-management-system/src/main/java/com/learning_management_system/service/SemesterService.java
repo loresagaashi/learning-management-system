@@ -1,6 +1,7 @@
 package com.learning_management_system.service;
 
 import com.learning_management_system.data.semester.SemesterDTO;
+import com.learning_management_system.model.Generation;
 import com.learning_management_system.model.Semester;
 import com.learning_management_system.repository.SemesterRepository;
 import org.springframework.stereotype.Service;
@@ -43,12 +44,24 @@ public class SemesterService extends BasicServiceOperations<SemesterRepository, 
         return super.save(semester);
     }
 
-    public List<SemesterDTO> getSemestersByGenerationName(String generationName) {
-        return semesterRepository.findSemestersByGenerationName(generationName);
+    public List<SemesterDTO> getSemestersByGenerationName(Generation generation) {
+        System.out.println("[SemesterService] Finding semesters for generation: " + (generation != null ? generation.getName() : "null"));
+        List<SemesterDTO> semesters = semesterRepository.findSemestersByGenerationName(generation);
+        if (semesters == null) {
+            System.out.println("[SemesterService] Repository returned null for generation: " + (generation != null ? generation.getName() : "null") + ". Returning empty list.");
+            return java.util.Collections.emptyList();
+        }
+        System.out.println("[SemesterService] Found " + semesters.size() + " semesters for generation: " + (generation != null ? generation.getName() : "null"));
+        return semesters;
     }
 
     public List<SemesterDTO> getAllWithGenerationName() {
         return semesterRepository.findAllWithGenerationName();
     }
+
+    public List<Semester> getSemestersByGenerationId(Long generationId) {
+        return semesterRepository.findByGenerationId(generationId);
+    }
+    
 }
 

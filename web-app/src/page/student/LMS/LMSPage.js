@@ -4,9 +4,9 @@ import DegreeLevelSelect from "./components/DegreeLevelSelect";
 import GenerationSelect from "./components/GenerationSelect";
 import SemesterSelect from "./components/SemesterSelect";
 import CoursesSelect from "./components/CoursesSelect";
-import { 
-  Breadcrumbs, 
-  Typography, 
+import {
+  Breadcrumbs,
+  Typography,
   Link,
   Grid,
   Box,
@@ -110,11 +110,12 @@ const LMSPage = () => {
           />
         );
       case 4:
+        console.log("LMSPage (renderStepContent): Passing to SemesterSelect - generationName:", selectedGeneration?.name);
         return (
           <SemesterSelect
             value={selectedSemester}
             onChange={setSelectedSemester}
-            generationName={selectedGeneration}
+            generationName={selectedGeneration?.name}
           />
         );
       case 5:
@@ -144,7 +145,7 @@ const LMSPage = () => {
         {steps.map((item, index) => {
           const isActive = item.step === step;
           const isPast = item.step < step;
-          
+
           if (isActive) {
             return (
               <Typography key={index} color="text.primary" fontWeight="bold">
@@ -153,10 +154,10 @@ const LMSPage = () => {
             );
           } else if (isPast) {
             return (
-              <Link 
-                key={index} 
-                color="inherit" 
-                href="#" 
+              <Link
+                key={index}
+                color="inherit"
+                href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   setStep(item.step);
@@ -186,11 +187,11 @@ const LMSPage = () => {
         {renderContent()}
       </Box>
       <Box
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
           gap: 2,
-          mt: 4 
+          mt: 4
         }}
       >
         <StyledButton

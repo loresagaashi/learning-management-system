@@ -43,7 +43,7 @@ const GenerationSelect = ({ value, onChange, degreeType }) => {
         <Select
           labelId="generation-select-label"
           id="generation-select"
-          value={value || null}
+          value={value || ""} /* Ensure value is controlled, use empty string for no selection if value is object */
           onChange={(e) => onChange(e.target.value)}
           label="Generation"
           disabled={isLoading || isError}
@@ -62,7 +62,7 @@ const GenerationSelect = ({ value, onChange, degreeType }) => {
             <MenuItem disabled>No generations available</MenuItem>
           ) : (
             generations.map((generation) => (
-              <MenuItem key={generation.id} value={generation.name}>
+              <MenuItem key={generation.id} value={generation}>
                 {generation.name}
               </MenuItem>
             ))

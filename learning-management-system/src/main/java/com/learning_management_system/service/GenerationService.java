@@ -18,4 +18,8 @@ public class GenerationService extends BasicServiceOperations<GenerationReposito
         System.out.println("Found " + generations.size() + " generations");
         return generations;
     }
+
+    public Generation findByName(String name) {
+        return repository.findByName(name);
+    }
 }
