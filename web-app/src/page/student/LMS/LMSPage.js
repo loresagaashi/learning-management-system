@@ -13,12 +13,65 @@ import {
   Paper,
   useTheme,
   useMediaQuery,
-  styled
+  styled,
+  Button
 } from "@mui/material";
+import {
+  makeStyles,
+} from "@material-ui/core";
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../service/QueryKeys';
 import { CourseService } from '../../../service/CourseService';
 
+import useUser from "../../../hooks/useUser"; // if you have user context
+import { useNavigate } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    minHeight: "100vh",
+    padding: theme.spacing(4),
+    background: "linear-gradient(to bottom, #e3f2fd, #ffffff)",
+  },
+  title: {
+    marginBottom: theme.spacing(4),
+    fontWeight: "bold",
+    fontSize: "32px",
+    color: "#333",
+    textAlign: "center",
+  },
+  card: {
+    borderRadius: "16px",
+    background: "linear-gradient(145deg, #dbeeff, #f0faff)",
+    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+  },
+  cardContent: {
+    paddingTop: 0,
+  },
+  loading: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: theme.spacing(10),
+  },
+  icon: {
+    backgroundColor: "#007bff",
+  },
+  appBar: {
+    backgroundColor: "#007bff",
+    marginBottom: theme.spacing(4),
+  },
+  logoutButton: {
+    marginLeft: "auto",
+    color: "#fff",
+  },
+  smisButton: {
+    marginTop: theme.spacing(4),
+    backgroundColor: "#007bff",
+    color: "#fff",
+    "&:hover": {
+      backgroundColor: "#005bb5",
+    },
+  },
+}));
 const courseService = new CourseService();
 
 const StyledContainer = styled(Box)(({ theme }) => ({
@@ -53,6 +106,9 @@ const LMSPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [step, setStep] = useState(1);
+    const { setUser } = useUser(); // if using context
+      const classes = useStyles();
+      const navigate = useNavigate();
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
@@ -72,6 +128,12 @@ const LMSPage = () => {
   // Generations are now fetched from the backend in the GenerationSelect component
   // Semesters are now fetched from the backend in the SemesterSelect component
   // Courses are now fetched from the backend in the CoursesSelect component
+
+  const handleLogOut = () => {
+    localStorage.removeItem("user");
+    setUser?.(null); // clear context if available
+    navigate("/choice/sign-in");
+  };
 
   const handleNext = () => setStep((prev) => Math.min(prev + 1, 5));
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
@@ -123,7 +185,7 @@ const LMSPage = () => {
           <CoursesSelect
             value={selectedCourses}
             onChange={setSelectedCourses}
-            semester={selectedSemester}
+            semester={selectedSemester?.name}
           />
         );
       default:
@@ -140,8 +202,17 @@ const LMSPage = () => {
       { label: "Semester", step: 4 },
       { label: "Courses", step: 5 }
     ];
-
+    const handleLogOut = () => {
+      localStorage.removeItem("user");
+      setUser?.(null); // clear context if available
+      navigate("/choice/sign-in");
+    };
+  
+    const goToSMIS = () => {
+      navigate("/student/smis"); // Redirect to SMIS page
+    };
     return (
+      
       <Breadcrumbs aria-label="breadcrumb">
         {steps.map((item, index) => {
           const isActive = item.step === step;
@@ -181,6 +252,13 @@ const LMSPage = () => {
 
   return (
     <StyledContainer>
+           <Button
+                  color="inherit"
+                  onClick={handleLogOut}
+                  className={classes.logoutButton}
+                >
+                  Log Out
+                </Button>
       <Box sx={{ mb: 4 }}>
         {renderBreadcrumbs()}
       </Box>
