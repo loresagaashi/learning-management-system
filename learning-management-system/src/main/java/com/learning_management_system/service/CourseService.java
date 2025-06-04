@@ -1,13 +1,16 @@
 package com.learning_management_system.service;
 
 import com.learning_management_system.data.course.CourseDTO;
+import com.learning_management_system.data.semester.SemesterDTO;
 import com.learning_management_system.model.Lecture;
+import com.learning_management_system.model.Semester;
 import com.learning_management_system.model.Student;
 import com.learning_management_system.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning_management_system.model.Course;
+import com.learning_management_system.model.Generation;
 import com.learning_management_system.repository.CourseRepository;
 
 import java.util.List;
@@ -42,5 +45,17 @@ public class CourseService extends BasicServiceOperations<CourseRepository, Cour
 
     public List<CourseDTO> getUnpassedCourses(Long studentId) {
         return courseRepository.findUnpassedCoursesByStudentId(studentId);
+    }
+    
+
+        public List<Course> getCoursesBySemesterName(Semester semester) {
+        System.out.println("[SemesterService] Finding semesters for generation: " + (semester != null ? semester.getName() : "null"));
+        List<Course> courses = courseRepository.findCourseBySemesterName(semester);
+        if (courses == null) {
+            System.out.println("[SemesterService] Repository returned null for generation: " + (semester != null ? semester.getName() : "null") + ". Returning empty list.");
+            return java.util.Collections.emptyList();
+        }
+        System.out.println("[SemesterService] Found " + courses.size() + " semesters for generation: " + (semester != null ? semester.getName() : "null"));
+        return courses;
     }
 }

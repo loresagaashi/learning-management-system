@@ -123,6 +123,7 @@ const LMSPage = () => {
           <CoursesSelect
             value={selectedCourses}
             onChange={setSelectedCourses}
+            semester={selectedSemester}
           />
         );
       default:

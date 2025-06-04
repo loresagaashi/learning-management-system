@@ -3,9 +3,13 @@ package com.learning_management_system.repository;
 // import java.util.Optional;
 
 import com.learning_management_system.data.course.CourseDTO;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.learning_management_system.model.Course;
+import com.learning_management_system.model.Generation;
+import com.learning_management_system.model.Semester;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -36,6 +40,7 @@ WHERE s.id = :studentId
 """)
     List<CourseDTO> findUnpassedCoursesByStudentId(@Param("studentId") Long studentId);
 
-
+    @Query("SELECT c FROM Course c WHERE c.semester = :semester")
+    List<Course> findCourseBySemesterName(@Param("semester") Semester semester);
 
 }
