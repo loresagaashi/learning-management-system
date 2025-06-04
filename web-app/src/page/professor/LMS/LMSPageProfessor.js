@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import LectureSelect from "./components/LectureSelect";
+import DegreeLevelSelect from "./components/DegreeLevelSelect";
+import GenerationSelect from "./components/GenerationSelect";
+import SemesterSelect from "./components/SemesterSelect";
+import CoursesSelect from "./components/CoursesSelect";
 import {
-  Container,
+  Breadcrumbs,
   Typography,
-  Card,
-  CardContent,
-  CardHeader,
+  Link,
   Grid,
+  Box,
+  Paper,
+  useTheme,
+  useMediaQuery,
+  styled,
+  Button
+} from "@mui/material";
+import {
   makeStyles,
-  CssBaseline,
-  CircularProgress,
-  Avatar,
-  Button,
-  AppBar,
-  Toolbar,
 } from "@material-ui/core";
-import SchoolIcon from "@material-ui/icons/School";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from 'react-query';
+import { QueryKeys } from '../../../service/QueryKeys';
+import { CourseService } from '../../../service/CourseService';
+
 import useUser from "../../../hooks/useUser"; // if you have user context
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -66,27 +72,62 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+const courseService = new CourseService();
 
-const LMSPageProfessor = () => {
+const StyledContainer = styled(Box)(({ theme }) => ({
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  backgroundColor: theme.palette.background.paper,
+  marginTop: theme.spacing(6),
+}));
+
+const StyledButton = styled(Paper)(({ theme }) => ({
+  px: 2,
+  py: 1,
+  borderRadius: 1,
+  cursor: 'pointer',
+  transition: 'background-color 0.2s',
+  minWidth: 100,
+  textAlign: 'center',
+  '&:hover': {
+    bgcolor: theme.palette.primary.main,
+    color: 'white',
+  },
+  '&:disabled': {
+    bgcolor: theme.palette.action.disabled,
+    cursor: 'not-allowed',
+  },
+}));
+
+const LMSPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [step, setStep] = useState(1);
+  const { setUser } = useUser(); // if using context
   const classes = useStyles();
   const navigate = useNavigate();
-  const { setUser } = useUser(); // if using context
-  const [orientations, setOrientations] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    axios
-      .get("/orientations")
-      .then((res) => {
-        console.log("API Response:", res.data); // Check the structure
-        setOrientations(res.data.orientations); // Correct the path if needed
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch orientations", err);
-        setLoading(false);
-      });
-  }, []);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
+  const [selectedGeneration, setSelectedGeneration] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedCourses, setSelectedCourses] = useState([]);
+
+  const categories = [
+    "Shkenca Kompjuterike dhe Inxhinieri",
+    "Menaxhment, Biznes dhe Ekonomi",
+    "Juridik",
+    "Inxhinieri Ndertimore",
+    "Sisteme te Informacionit",
+    "Mekatronike"
+  ];
+  const degreeLevels = ["Bachelor", "Master"];
+  // Generations are now fetched from the backend in the GenerationSelect component
+  // Semesters are now fetched from the backend in the SemesterSelect component
+  // Courses are now fetched from the backend in the CoursesSelect component
 
   const handleLogOut = () => {
     localStorage.removeItem("user");
@@ -94,80 +135,159 @@ const LMSPageProfessor = () => {
     navigate("/choice/sign-in");
   };
 
-  const goToSMIS = () => {
-    navigate("/professor/smis"); // Redirect to SMIS page
+  const handleNext = () => setStep((prev) => Math.min(prev + 1, 5));
+  const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  const renderContent = () => {
+    switch (step) {
+      case 1:
+        const handleCategoryChange = (category) => {
+          setSelectedCategory(category);
+          handleNext();
+        };
+        return (
+          <LectureSelect
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+            options={categories}
+          />
+        );
+      case 2:
+        const handleDegreeChange = (level) => {
+          setSelectedDegreeLevel(level);
+          handleNext();
+        };
+        return (
+          <DegreeLevelSelect
+            value={selectedDegreeLevel}
+            onChange={handleDegreeChange}
+          />
+        );
+      case 3:
+        return (
+          <GenerationSelect
+            value={selectedGeneration}
+            onChange={setSelectedGeneration}
+            degreeType={selectedDegreeLevel}
+          />
+        );
+      case 4:
+        console.log("LMSPage (renderStepContent): Passing to SemesterSelect - generationName:", selectedGeneration?.name);
+        return (
+          <SemesterSelect
+            value={selectedSemester}
+            onChange={setSelectedSemester}
+            generationName={selectedGeneration?.name}
+          />
+        );
+      case 5:
+        return (
+          <CoursesSelect
+            value={selectedCourses}
+            onChange={setSelectedCourses}
+            semester={selectedSemester?.name}
+          />
+        );
+      default:
+        return <div>All steps completed!</div>;
+    }
+  };
+
+  // Custom breadcrumb navigation based on current step
+  const renderBreadcrumbs = () => {
+    const steps = [
+      { label: "Category", step: 1 },
+      { label: "Degree", step: 2 },
+      { label: "Generation", step: 3 },
+      { label: "Semester", step: 4 },
+      { label: "Courses", step: 5 }
+    ];
+    const handleLogOut = () => {
+      localStorage.removeItem("user");
+      setUser?.(null); // clear context if available
+      navigate("/choice/sign-in");
+    };
+
+    const goToSMIS = () => {
+      navigate("/student/smis"); // Redirect to SMIS page
+    };
+    return (
+
+      <Breadcrumbs aria-label="breadcrumb">
+        {steps.map((item, index) => {
+          const isActive = item.step === step;
+          const isPast = item.step < step;
+
+          if (isActive) {
+            return (
+              <Typography key={index} color="text.primary" fontWeight="bold">
+                {item.label}
+              </Typography>
+            );
+          } else if (isPast) {
+            return (
+              <Link
+                key={index}
+                color="inherit"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setStep(item.step);
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          } else {
+            return (
+              <Typography key={index} color="text.secondary">
+                {item.label}
+              </Typography>
+            );
+          }
+        })}
+      </Breadcrumbs>
+    );
   };
 
   return (
-    <>
-      <CssBaseline />
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6">LMS Portal</Typography>
-          <Button
-            color="inherit"
-            startIcon={<ExitToAppIcon />}
-            onClick={handleLogOut}
-            className={classes.logoutButton}
-          >
-            Log Out
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      <div className={classes.container}>
-        <Container maxWidth="md">
-          <Typography className={classes.title}>
-            Welcome to the LMS Portal
-          </Typography>
-
-          {loading ? (
-            <div className={classes.loading}>
-              <CircularProgress />
-            </div>
-          ) : (
-            <Grid container spacing={3}>
-              {orientations.length === 0 ? (
-                <Typography variant="h6" color="textSecondary">
-                  No orientations available.
-                </Typography>
-              ) : (
-                orientations.map((orientation) => (
-                  <Grid item xs={12} sm={6} md={4} key={orientation.id}>
-                    <Card className={classes.card}>
-                      <CardHeader
-                        avatar={
-                          <Avatar className={classes.icon}>
-                            <SchoolIcon />
-                          </Avatar>
-                        }
-                        title={orientation.name}
-                      />
-                      <CardContent className={classes.cardContent}>
-                        <Typography variant="body2" color="textSecondary">
-                          This orientation includes{" "}
-                          {orientation.courses?.length || 0} course(s).
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              )}
-            </Grid>
-          )}
-
-          {/* Button to go to SMIS */}
-          <Button
-            variant="contained"
-            className={classes.smisButton}
-            onClick={goToSMIS}
-          >
-            Go to SMIS
-          </Button>
-        </Container>
-      </div>
-    </>
+    <StyledContainer>
+      <Button
+        color="inherit"
+        onClick={handleLogOut}
+        className={classes.logoutButton}
+      >
+        Log Out
+      </Button>
+      <Box sx={{ mb: 4 }}>
+        {renderBreadcrumbs()}
+      </Box>
+      <Box sx={{ mb: 4 }}>
+        {renderContent()}
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 2,
+          mt: 4
+        }}
+      >
+        <StyledButton
+          onClick={handleBack}
+          disabled={step === 1}
+        >
+          <Typography variant="button">Back</Typography>
+        </StyledButton>
+        <StyledButton
+          onClick={handleNext}
+          disabled={step === 5}
+        >
+          <Typography variant="button">Next</Typography>
+        </StyledButton>
+      </Box>
+    </StyledContainer>
   );
 };
 
-export default LMSPageProfessor;
+export default LMSPage;
