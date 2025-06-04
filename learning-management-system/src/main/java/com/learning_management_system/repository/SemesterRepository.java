@@ -25,4 +25,5 @@ public interface SemesterRepository extends JpaRepository<Semester, Long> {
         @Query("SELECT s FROM Semester s WHERE s.generation.id = :generationId")
         List<Semester> findByGenerationId(@Param("generationId") Long generationId);
 
+        Semester findByName(String name);
 }

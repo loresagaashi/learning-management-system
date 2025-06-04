@@ -12,10 +12,10 @@ import CourseCard from './CourseCard';
 
 const courseService = new CourseService();
 
-const CoursesSelect = ({ value, onChange }) => {
+const CoursesSelect = ({ value, onChange, semester }) => {
   const { isLoading, isError, data: courses } = useQuery(
-    QueryKeys.COURSES,
-    () => courseService.findAll()
+    QueryKeys.COURSE,
+    () => semester ? courseService.findBySemester(semester) : courseService.findAll()
   );
 
   const handleCourseClick = (courseId) => {

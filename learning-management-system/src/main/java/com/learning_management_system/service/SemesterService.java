@@ -62,6 +62,10 @@ public class SemesterService extends BasicServiceOperations<SemesterRepository, 
     public List<Semester> getSemestersByGenerationId(Long generationId) {
         return semesterRepository.findByGenerationId(generationId);
     }
+
+    public Semester findByName(String name) {
+        return semesterRepository.findByName(name);
+    }
     
 }
 

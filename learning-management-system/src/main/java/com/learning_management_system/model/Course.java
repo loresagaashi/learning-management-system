@@ -38,4 +38,8 @@ public class Course extends BaseEntity {
 
     @Column(name = "type")
     private String type;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 }

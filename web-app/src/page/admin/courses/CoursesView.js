@@ -6,10 +6,12 @@ import { QueryKeys } from "../../../service/QueryKeys";
 import { CourseService } from "../../../service/CourseService";
 import { ProfessorService } from "../../../service/ProfessorService";
 import { OrientationService } from "../../../service/OrientationService";
+import { SemesterService } from "../../../service/SemesterService";
 
 const courseService = new CourseService();
 const professorService = new ProfessorService();
 const orientationService = new OrientationService();
+const semesterService = new SemesterService();
 
 export default function CoursesView({}) {
   const errorRef = useRef();
@@ -19,6 +21,9 @@ export default function CoursesView({}) {
   );
   const { data: allOrientations } = useQuery(QueryKeys.ORIENTATION, () =>
     orientationService.findAll(),
+  );
+  const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
+    semesterService.findAll(),
   );
 
   const columns = [
@@ -53,6 +58,18 @@ export default function CoursesView({}) {
           props,
           errorRef,
           allOrientations?.map((x) => ({ value: x, label: x.name })) || [],
+          "id",
+        ),
+    },
+    {
+      title: "Semester",
+      field: "semester",
+      render: (rowData) => rowData.semester?.name || '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allSemesters?.map((x) => ({ value: x, label: x.name })) || [],
           "id",
         ),
     },
