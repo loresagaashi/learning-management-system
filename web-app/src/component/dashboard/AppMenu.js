@@ -32,6 +32,7 @@ import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "./AppMenuItem";
+import WatchLaterIcon from '@material-ui/icons/WatchLater';
 
 const appMenuItems = [
   {
@@ -86,7 +87,7 @@ const appMenuItems = [
   },
   {
     name: "View Schedule",
-    Icon: LocationCityIcon,
+    Icon: WatchLaterIcon,
     link: "/admin/view-schedule",
   },  
   {
