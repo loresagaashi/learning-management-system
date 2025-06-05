@@ -42,29 +42,29 @@ export default function StudentGroups() {
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-  title: "Generation",
-  field: "generationId",
-  render: (rowData) => rowData.generationName || "N/A",
-  editComponent: (props) =>
-    SelectTableCell(
-      props,
-      errorRef,
-      allGenerations?.data?.map((g) => ({ value: g.id, label: g.name })) || [],
-      "id"
-    ),
-},
-{
-  title: "Semester",
-  field: "semesterId",
-  render: (rowData) => rowData.semesterName || "N/A",
-  editComponent: (props) =>
-    SelectTableCell(
-      props,
-      errorRef,
-      allSemesters?.data?.map((s) => ({ value: s.id, label: s.name })) || [],
-      "id"
-    ),
-},
+      title: "Generation",
+      field: "generationId",
+      render: (rowData) => rowData.generationName || "N/A",
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allGenerations?.data?.map((g) => ({ value: g.id, label: g.name })) || [],
+          "id"
+        ),
+    },
+    {
+      title: "Semester",
+      field: "semesterId",
+      render: (rowData) => rowData.semesterName || "N/A",
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allSemesters?.data?.map((s) => ({ value: s.id, label: s.name })) || [],
+          "id"
+        ),
+    },
 
   ];
 
