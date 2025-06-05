@@ -79,7 +79,12 @@ const appMenuItems = [
     Icon: DateRangeIcon,
     link: "/admin/generations",
   },
-     {
+  {
+    name: "Add Schedules",
+    Icon: QueryBuilderIcon,
+    link: "/admin/schedules",
+  },
+  {
     name: "View Schedule",
     Icon: LocationCityIcon,
     link: "/admin/view-schedule",
@@ -88,11 +93,6 @@ const appMenuItems = [
     name: "Semesters",
     Icon: MenuBookIcon,
     link: "/admin/semester",
-  },
-  {
-    name: "Add Schedules",
-    Icon: QueryBuilderIcon,
-    link: "/admin/schedules",
   },
   {
     name: "Exams",
@@ -119,11 +119,11 @@ const appMenuItems = [
     Icon: AssignmentTurnedInIcon,
     link: "/admin/submissions",
   },
-  {
-    name: "Grades",
-    Icon: InsertDriveFileIcon,
-    link: "/admin/grades",
-  },
+  // {
+  //   name: "Grades",
+  //   Icon: InsertDriveFileIcon,
+  //   link: "/admin/grades",
+  // },
   {
     name: "Reports",
     Icon: DescriptionIcon,

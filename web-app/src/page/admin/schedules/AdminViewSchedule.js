@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Box, Typography, FormControl, InputLabel, Select, MenuItem, Table, TableHead, TableRow, TableCell, TableBody, Paper } from "@mui/material";
 
 const AdminViewSchedule = () => {
   const [generations, setGenerations] = useState([]);
@@ -7,106 +8,124 @@ const AdminViewSchedule = () => {
   const [groups, setGroups] = useState([]);
   const [selectedGroupId, setSelectedGroupId] = useState("");
   const [schedule, setSchedule] = useState([]);
-  const semesterId = 1;
 
   useEffect(() => {
-    axios.get("http://localhost:8080/generations/all")
-      .then(res => setGenerations(res.data))
-      .catch(err => console.error("Error loading generations", err));
+    axios
+      .get("http://localhost:8080/generations/all")
+      .then((res) => setGenerations(res.data))
+      .catch((err) => console.error("Error loading generations", err));
   }, []);
 
   useEffect(() => {
     if (selectedGeneration) {
       axios
-        .get(`http://localhost:8080/student-groups/by-generation?generationName=${selectedGeneration}`)
-        .then(res => setGroups(res.data))
-        .catch(err => console.error("Error loading groups", err));
+        .get(
+          `http://localhost:8080/student-groups/by-generation?generationName=${selectedGeneration}`
+        )
+        .then((res) => setGroups(res.data))
+        .catch((err) => console.error("Error loading groups", err));
     }
   }, [selectedGeneration]);
 
   useEffect(() => {
     if (selectedGroupId) {
       axios
-        .get(`http://localhost:8080/schedules/groups/${selectedGroupId}/schedule`)
-        .then(res => setSchedule(res.data))
-        .catch(err => console.error("Error loading schedule", err));
+        .get(
+          `http://localhost:8080/schedules/groups/${selectedGroupId}/schedule`
+        )
+        .then((res) => setSchedule(res.data))
+        .catch((err) => console.error("Error loading schedule", err));
     }
   }, [selectedGroupId]);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Shikimi i Orarit për Grup</h1>
+    <Box sx={{ maxWidth: 800, mx: "auto", p: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        View Group Schedule
+      </Typography>
 
-      <label className="block mb-2">Zgjidh Gjeneratën:</label>
-      <select
-        value={selectedGeneration}
-        onChange={(e) => {
-          setSelectedGeneration(e.target.value);
-          setSelectedGroupId("");
-          setSchedule([]);
-        }}
-        className="mb-4 border px-3 py-2 rounded w-full"
-      >
-        <option value="">-- Zgjidh Gjeneratën --</option>
-        {generations.map((g) => (
-          <option key={g.id} value={g.name}>
-            {g.name}
-          </option>
-        ))}
-      </select>
+      <FormControl fullWidth sx={{ mb: 3 }}>
+        <InputLabel>Select Generation</InputLabel>
+        <Select
+          value={selectedGeneration}
+          label="Select Generation"
+          onChange={(e) => {
+            setSelectedGeneration(e.target.value);
+            setSelectedGroupId("");
+            setSchedule([]);
+          }}
+        >
+          <MenuItem value="">
+            <em>-- Select Generation --</em>
+          </MenuItem>
+          {generations.map((g) => (
+            <MenuItem key={g.id} value={g.name}>
+              {g.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       {groups.length > 0 && (
-        <>
-          <label className="block mb-2">Zgjidh Grupin:</label>
-          <select
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Select Group</InputLabel>
+          <Select
             value={selectedGroupId}
+            label="Select Group"
             onChange={(e) => setSelectedGroupId(e.target.value)}
-            className="mb-4 border px-3 py-2 rounded w-full"
           >
-            <option value="">-- Zgjidh Grupin --</option>
+            <MenuItem value="">
+              <em>-- Select Group --</em>
+            </MenuItem>
             {groups.map((group) => (
-              <option key={group.id} value={group.id}>
+              <MenuItem key={group.id} value={group.id}>
                 {group.name}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-        </>
+          </Select>
+        </FormControl>
       )}
 
       {schedule.length > 0 && (
-        <div>
-          <h2 className="text-lg font-semibold mb-3">Orari i Grupit</h2>
-          <table className="w-full border border-gray-300 text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-2 border">Dita</th>
-                <th className="p-2 border">Ora Fillimit</th>
-                <th className="p-2 border">Ora Mbarimit</th>
-                <th className="p-2 border">Lënda</th>
-                <th className="p-2 border">Profesori</th>
-                <th className="p-2 border">Salla</th>
-              </tr>
-            </thead>
-            <tbody>
-              {schedule.map((entry, index) => (
-                <tr key={index}>
-                  <td className="p-2 border">{entry.dayOfWeek}</td>
-                  <td className="p-2 border">{entry.startTime}</td>
-                  <td className="p-2 border">{entry.endTime}</td>
-                  <td className="p-2 border">{entry.courseName}</td>
-                  <td className="p-2 border">{entry.professorName}</td>
-                  <td className="p-2 border">{entry.room}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Box mt={4}>
+          <Typography variant="h6" gutterBottom>
+            Group Schedule
+          </Typography>
+          <Paper elevation={3}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Day</TableCell>
+                  <TableCell>Start Time</TableCell>
+                  <TableCell>End Time</TableCell>
+                  <TableCell>Course</TableCell>
+                  <TableCell>Professor</TableCell>
+                  <TableCell>Room</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {schedule.map((entry, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{entry.dayOfWeek}</TableCell>
+                    <TableCell>{entry.startTime}</TableCell>
+                    <TableCell>{entry.endTime}</TableCell>
+                    <TableCell>{entry.courseName}</TableCell>
+                    <TableCell>{entry.professorName}</TableCell>
+                    <TableCell>{entry.room}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Box>
       )}
 
       {selectedGroupId && schedule.length === 0 && (
-        <p className="text-gray-500 mt-4">Ky grup nuk ka ende orar të regjistruar.</p>
+        <Typography mt={4} color="text.secondary">
+          This group does not have a registered schedule yet.
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 
