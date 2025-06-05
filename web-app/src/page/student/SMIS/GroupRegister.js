@@ -1,3 +1,4 @@
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, Alert, Snackbar, List, ListItem, ListItemText, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useUser from "../../../hooks/useUser";
@@ -13,6 +14,9 @@ const GroupRegister = () => {
   const [availableSpots, setAvailableSpots] = useState(null);
   const [schedule, setSchedule] = useState([]);
   const [semesterId, setSemesterId] = useState(null);
+  const [alert, setAlert] = useState({ message: "", severity: "success" });
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Merr semesterId nga getCurrentUser
   useEffect(() => {
@@ -21,7 +25,7 @@ const GroupRegister = () => {
         const currentUser = await getCurrentUser();
         setSemesterId(currentUser?.data.semesterId);
       } catch (err) {
-        console.error("Gabim gjatë marrjes së përdoruesit", err);
+        console.error("Error fetching user", err);
       }
     };
     fetchUserData();
@@ -44,11 +48,12 @@ const GroupRegister = () => {
           `http://localhost:8080/student-groups/by-generation-and-semester?generationName=${generationName}&semesterId=${semesterId}`
         )
         .then((res) => setGroups(res.data))
-        .catch((err) => console.error("Gabim gjatë marrjes së grupeve", err));
+        .catch((err) =>
+          console.error("Error fetching groups", err)
+        );
     }
   }, [generationName, semesterId]);
 
-  // Merr vendet dhe orarin kur zgjidhet grupi
   useEffect(() => {
     if (selectedGroupId) {
       axios
@@ -56,31 +61,40 @@ const GroupRegister = () => {
           `http://localhost:8080/student-groups/group/${selectedGroupId}/available-spots`
         )
         .then((res) => setAvailableSpots(res.data))
-        .catch((err) => console.error("Gabim gjatë marrjes së vendeve", err));
+        .catch((err) =>
+          console.error("Error fetching available spots", err)
+        );
 
       axios
         .get(
           `http://localhost:8080/schedules/groups/${selectedGroupId}/schedule`
         )
         .then((res) => setSchedule(res.data))
-        .catch((err) => console.error("Gabim gjatë marrjes së orarit", err));
+        .catch((err) =>
+          console.error("Error fetching schedule", err)
+        );
     } else {
       setAvailableSpots(null);
       setSchedule([]);
     }
   }, [selectedGroupId]);
 
-  // Kontrollon në backend nëse studenti është tashmë i regjistruar në grup
   const handleAssignGroup = async () => {
     if (!studentId || !selectedGroupId) return;
 
+    setLoading(true);
     try {
       const checkRes = await axios.get(
         `http://localhost:8080/students/${userId}/group/${selectedGroupId}/check`
       );
 
       if (checkRes.data === true) {
-        alert("Tashmë je i regjistruar në këtë grup.");
+        setAlert({
+          message: "You are already registered in this group.",
+          severity: "info",
+        });
+        setOpenSnackbar(true);
+        setLoading(false);
         return;
       }
 
@@ -89,58 +103,95 @@ const GroupRegister = () => {
         groupId: selectedGroupId,
       });
 
-      alert("U regjistrua me sukses!");
+      setAlert({
+        message: "Successfully registered to the group!",
+        severity: "success",
+      });
     } catch (err) {
-      console.error("Gabim gjatë regjistrimit", err);
-      alert("Gabim gjatë regjistrimit.");
+      console.error("Registration error", err);
+      setAlert({
+        message: "An error occurred during registration.",
+        severity: "error",
+      });
+    } finally {
+      setOpenSnackbar(true);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Zgjedhja e Grupit</h1>
+    <Box sx={{ maxWidth: 600, mx: "auto", p: 4 }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Register to a Group
+      </Typography>
 
-      <label className="block mb-2 font-medium">Zgjidh grupin:</label>
-      <select
-        value={selectedGroupId}
-        onChange={(e) => setSelectedGroupId(e.target.value)}
-        className="w-full border rounded px-3 py-2 mb-4"
-      >
-        <option value="">-- Zgjidh një grup --</option>
-        {groups.map((group) => (
-          <option key={group.id} value={group.id}>
-            {group.name}
-          </option>
-        ))}
-      </select>
+      <FormControl fullWidth sx={{ mb: 3 }}>
+        <InputLabel>Select Group</InputLabel>
+        <Select
+          value={selectedGroupId}
+          label="Select Group"
+          onChange={(e) => setSelectedGroupId(e.target.value)}
+        >
+          <MenuItem value="">
+            <em>-- Choose a group --</em>
+          </MenuItem>
+          {groups.map((group) => (
+            <MenuItem key={group.id} value={group.id}>
+              {group.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       {availableSpots !== null && (
-        <p className="mb-4">
-          Vendet e lira: <strong>{availableSpots}</strong>
-        </p>
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Available spots: <strong>{availableSpots}</strong>
+        </Alert>
       )}
 
       {schedule.length > 0 && (
-        <div className="mb-4">
-          <h2 className="font-semibold mb-2">Orari i grupit:</h2>
-          <ul className="list-disc list-inside">
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+            Group Schedule:
+          </Typography>
+          <List dense>
             {schedule.map((item, idx) => (
-              <li key={idx}>
-                {item.dayOfWeek}: {item.startTime} - {item.endTime} ({item.subjectName})
-              </li>
+              <ListItem key={idx}>
+                <ListItemText
+                  primary={`${item.dayOfWeek}: ${item.startTime} - ${item.endTime}`}
+                  secondary={item.subjectName}
+                />
+              </ListItem>
             ))}
-          </ul>
-        </div>
+          </List>
+        </Box>
       )}
 
-      <button
+      <Button
         onClick={handleAssignGroup}
-        disabled={!selectedGroupId}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        variant="contained"
+        color="primary"
+        fullWidth
+        disabled={!selectedGroupId || loading}
+        startIcon={loading && <CircularProgress size={20} />}
       >
-        Regjistrohu në grup
-      </button>
-    </div>
+        Register to Group
+      </Button>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          severity={alert.severity}
+          onClose={() => setOpenSnackbar(false)}
+          sx={{ width: "100%" }}
+        >
+          {alert.message}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 

@@ -17,9 +17,11 @@ import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import MenuBookIcon from "@material-ui/icons/MenuBook";
 
 const appMenuItems = [
-   {
+    {
       name: "GO TO LMS",
       Icon: SchoolIcon,
       link: "/student/lms",
@@ -30,14 +32,14 @@ const appMenuItems = [
       link: "/student/profile",
     },
     {
-      name: "Provimet e paraqitura",
-      Icon: BallotIcon,
-      link: "/student/exams",
+      name: "Submit exams",
+      Icon: LibraryBooksIcon,
+      link: "/student/registred-exam",
     },
     {
-      name: "Transkripta",
-      Icon: GradeIcon,
-      link: "/student/grades",
+      name: "Submitted exams",
+      Icon: BallotIcon,
+      link: "/student/exams",
     },
     // {
     //   name: "Chat",
@@ -46,7 +48,7 @@ const appMenuItems = [
     // },
     {
       name: "Choose Semester",
-      Icon: QueryBuilderIcon,
+      Icon: MenuBookIcon,
       link: "/student/semester",
     },
     {
@@ -60,9 +62,9 @@ const appMenuItems = [
       link: "/student/schedules",
     },
     {
-      name: "Paraqit Provimet",
-      Icon: PeopleOutlineIcon,
-      link: "/student/registred-exam",
+      name: "Transkripta",
+      Icon: GradeIcon,
+      link: "/student/grades",
     },
 ];
 

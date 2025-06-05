@@ -222,19 +222,19 @@ const AdminScheduleCreate = () => {
         </Grid>
       ))}
 
-<Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-  <Button variant="outlined" onClick={handleAddEntry}>
-    + Add Another
-  </Button>
-  <Button
-    variant="contained"
-    color="primary"
-    onClick={handleSubmit}
-    disabled={!selectedGroupId || scheduleEntries.length === 0}
-  >
-    Save Schedule
-  </Button>
-</Box>
+      <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+        <Button variant="outlined" onClick={handleAddEntry}>
+          + Add Another
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={!selectedGroupId || scheduleEntries.length === 0}
+        >
+          Save Schedule
+        </Button>
+      </Box>
 
     </Box>
   );
