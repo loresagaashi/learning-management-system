@@ -30,10 +30,10 @@ import PaymentView from "./payments/PaymentView";
 import ProfessorView from "./professors/ProfessorView";
 import ReportView from "./reports/ReportView";
 import AdminViewSchedule from "./schedules/AdminViewSchedule";
-import ScheduleView from "./schedules/ScheduleView";
 import SemesterView from "./semesters/SemesterView";
 import StudentView from "./students/StudentView";
 import SubmissionView from "./submissions/SubmissionView";
+import AdminScheduleCreate from './schedules/AdminScheduleCreate';
 
 const drawerWidth = 240;
 
@@ -242,7 +242,7 @@ export default function AdminLayout({}) {
             <Route path="/logs" element={<LogView/>}/>
             <Route path="/payments" element={<PaymentView/>}/>
             <Route path="/orientations" element={<OrientationView/>}/>
-            <Route path="/schedules" element={<ScheduleView/>}/>
+            <Route path="/schedules" element={<AdminScheduleCreate/>}/>
             <Route path="/enrollments" element={<EnrollmentView/>}/>
             <Route path="/feedbacks" element={<FeedbackView/>}/>
             <Route path="/cities" element={<CityView/>}/>
