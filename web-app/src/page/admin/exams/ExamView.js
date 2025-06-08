@@ -1,7 +1,10 @@
 import { useRef } from "react";
 import { useQuery } from "react-query";
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
-import { MultipleCheckboxTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
+import {
+  SelectTableCell,
+  TextFieldTableCell
+} from "../../../component/TableCells";
 import { CourseService } from "../../../service/CourseService";
 import { ExamService } from "../../../service/ExamService";
 import { ProfessorService } from "../../../service/ProfessorService";
@@ -15,13 +18,10 @@ export default function ExamView({}) {
   const errorRef = useRef();
 
   const { data: allProfessors } = useQuery(QueryKeys.PROFESSOR, () =>
-    professorService.findAll(),
+    professorService.findAll()
   );
   const { data: allCourse } = useQuery(QueryKeys.COURSE, () =>
-    courseService.findAll(),
-  );
-  const { data: allExams } = useQuery(QueryKeys.EXAM, () =>
-    examService.findAll(),
+    courseService.findAll()
   );
 
   const columns = [
@@ -40,28 +40,34 @@ export default function ExamView({}) {
       field: "dateTime",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
-      {
+    {
       title: "Location",
       field: "location",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-      title: 'Professors',
-      field: 'professor',
-      render: rowData => rowData.professor?.map(x => x.firstName).join(", "),
-      editComponent: props => MultipleCheckboxTableCell(props, allProfessors, item => item.firstName)
-  },
-    
+  title: "Professor",
+  field: "professor",
+  render: (rowData) => rowData.professor?.firstName + " " + rowData.professor?.lastName,
+  editComponent: (props) =>
+    SelectTableCell(
+      props,
+      errorRef,
+      allProfessors?.map((x) => ({ value: x, label: x.firstName + " " + x.lastName })) || [],
+      "id"
+    ),
+}
+,
     {
       title: "Course",
       field: "course",
-      render: (rowData) => rowData.course?.name || '',
+      render: (rowData) => rowData.course?.name || "",
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
           allCourse?.map((x) => ({ value: x, label: x.name })) || [],
-          "id",
+          "id"
         ),
     },
     {
@@ -82,8 +88,8 @@ export default function ExamView({}) {
     <CustomMaterialTable
       title="Manage Exams"
       columns={columns}
-      service={courseService}
-      queryKey={QueryKeys.Exams}
+      service={examService}
+      queryKey={QueryKeys.EXAM}
       errorRef={errorRef}
     />
   );
