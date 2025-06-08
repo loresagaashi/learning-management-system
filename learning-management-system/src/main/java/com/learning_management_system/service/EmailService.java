@@ -80,6 +80,7 @@ public class EmailService {
         variables.put(TemplateWildcards.STUDENT_LAST_NAME, student.getFirstName());
         variables.put(TemplateWildcards.STUDENT_EMAIL, student.getEmail());
         variables.put(TemplateWildcards.STUDENT_ID, student.getStudentId().toString());
+        variables.put(TemplateWildcards.GROUP_NAME,student.getGroup().getName());
         if(student.getBirthDate()!=null){
             variables.put(TemplateWildcards.STUDENT_BIRTH_DATE, student.getBirthDate().toString());
 
@@ -107,6 +108,28 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(professor.getEmail());
+        helper.setSubject(replacedWildCardsDTO.getSubject());
+        helper.setText(replacedWildCardsDTO.getBody(), true);
+
+
+        mailSender.send(message);
+    }
+
+    public void sendAssignToGroupEmailToStudent(Long studentId) throws MessagingException, IOException {
+
+        Student student =studentRepository.findById(studentId).orElseThrow(()->new NotFoundException("student Not Found with this id : "+studentId));
+        Map<String, String> variables = replaceStudentFields(student);
+
+        String subjectTemplate = "Konfirmimi i Zgjedhjes së Grupit";
+        String bodyTemplatePath = "src/main/resources/templates/studentAssignToGroup.html";
+        String bodyTemplate = new String(Files.readAllBytes(Paths.get(bodyTemplatePath)), StandardCharsets.UTF_8);
+
+        ReplacedWildCardsDTO replacedWildCardsDTO = templateUtil.getReplacedWildCards(variables, subjectTemplate, bodyTemplate);
+
+        // Create and send the email
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(student.getEmail());
         helper.setSubject(replacedWildCardsDTO.getSubject());
         helper.setText(replacedWildCardsDTO.getBody(), true);
 

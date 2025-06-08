@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Konfirmimi i Zgjedhjes së Grupit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        p {
+            margin: 15px 0;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+        a.button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            background-color: #2c3e50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a.button:hover {
+            background-color: #34495e;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Përshëndetje <span>#studentFirstName# #studentLastName#</span>,</h1>
+
+    <p>Ju keni zgjedhur me sukses një grup për semestrin e ardhshëm. Më poshtë janë detajet përzgjedhjes suaj:</p>
+
+    <h3>Të dhënat e studentit:</h3>
+    <ul>
+        <li><strong>ID:</strong> <span>#studentId#</span></li>
+        <li><strong>Email:</strong> <span>#studentEmail#</span></li>
+        <li><strong>Numri i telefonit:</strong> <span>#studentPhone#</span></li>
+    </ul>
+
+    <h3>Detajet e grupit të përzgjedhur:</h3>
+    <ul>
+        <li><strong>Emri i grupit:</strong> <span>#groupName#</span></li>
+    </ul>
+
+    <p>Për të parë orarin tuaj të plotë, ju lutemi kyquni ne SMIS:</p>
+<!--    <a href="#scheduleLink#" class="button">Shiko Orarin</a>-->
+
+    <p>Ju dëshirojmë shumë suksese në vitin e ri akademik dhe jemi këtu për të ju mbështetur në çdo hap!</p>
+
+    <p>Me respekt,<br/>Zyra Studentore e Fakultetit</p>
+
+    <div class="footer">
+        <p>Për çdo pyetje apo paqartësi, na kontaktoni në <a href="mailto:support@university.com">support@university.com</a>.</p>
+    </div>
+</div>
+</body>
+</html>
