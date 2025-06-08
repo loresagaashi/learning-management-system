@@ -18,6 +18,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import StudentExamRegistration from '../admin/exams/StudentExamRegistration';
 import GroupRegister from "./SMIS/GroupRegister";
 import StudentSchedulePage from './SMIS/StudentSchedulePage';
+import CourseDetail from './LMS/components/CourseDetail';
 
 const drawerWidth = 240;
 
@@ -220,6 +221,7 @@ export default function StudentLayout({}) {
             <Route path="/assign-to-group" element={<GroupRegister/>}/>
             <Route path="/registred-exam" element={<StudentExamRegistration/>}/>
             <Route path="/schedules" element={<StudentSchedulePage/>}/>
+            <Route path="/course/:courseId" element={<CourseDetail/>}/>
 
           </Routes>
         }
