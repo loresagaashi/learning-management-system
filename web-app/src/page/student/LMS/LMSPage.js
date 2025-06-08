@@ -4,6 +4,8 @@ import DegreeLevelSelect from "./components/DegreeLevelSelect";
 import GenerationSelect from "./components/GenerationSelect";
 import SemesterSelect from "./components/SemesterSelect";
 import CoursesSelect from "./components/CoursesSelect";
+import CourseCard from './components/CourseCard';
+import CourseDetail from './components/CourseDetail';
 import {
   Breadcrumbs,
   Typography,
@@ -118,11 +120,6 @@ const LMSPage = () => {
 
   const categories = [
     "Shkenca Kompjuterike dhe Inxhinieri",
-    "Menaxhment, Biznes dhe Ekonomi",
-    "Juridik",
-    "Inxhinieri Ndertimore",
-    "Sisteme te Informacionit",
-    "Mekatronike"
   ];
   const degreeLevels = ["Bachelor", "Master"];
   // Generations are now fetched from the backend in the GenerationSelect component

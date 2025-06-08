@@ -118,11 +118,6 @@ const LMSPage = () => {
 
   const categories = [
     "Shkenca Kompjuterike dhe Inxhinieri",
-    "Menaxhment, Biznes dhe Ekonomi",
-    "Juridik",
-    "Inxhinieri Ndertimore",
-    "Sisteme te Informacionit",
-    "Mekatronike"
   ];
   const degreeLevels = ["Bachelor", "Master"];
   // Generations are now fetched from the backend in the GenerationSelect component

@@ -18,6 +18,9 @@ import LMSPageProfessor from "../page/professor/LMS/LMSPageProfessor";
 import SMISPageProfessor from "../page/professor/SMIS/SMISPageProfessor";
 import ProfessorLayout from "../page/professor/ProfessorLayout";
 import StudentLayout from "../page/student/StudentLayout";
+import StudentLMSLayout from "../page/student/LMS/StudentLMSLayout";
+import CourseDetail from "../page/student/LMS/components/CourseDetail";
+import ProfessorLMSLayout from "../page/professor/LMS/ProfessorLMSLayout";
 // import CoursesView from "../page/professor/SMIS/CoursesView";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
@@ -48,10 +51,10 @@ const AppRoutes = [
   <Route key={11} path="/student/sign-in" element={<StudentSignIn />} />,
   <Route key={11} path="/professor/sign-in" element={<ProfessorSignIn />} />,
   <Route path="/student/page" element={<StudentPage />} />,
-  <Route path="/student/lms" element={<LMSPage />} />,
+  <Route path="/student/lms/*" element={<StudentLMSLayout />} />,
   <Route path="/student/smis" element={<SMISPage />} />,
 
-  <Route path="/professor/lms" element={<LMSPageProfessor />} />,
+  <Route path="/professor/lms/*" element={<ProfessorLMSLayout />} />,
   <Route path="/professor/smis" element={<SMISPageProfessor />} />,
   <Route path="/forgot-password" element={<ForgotPassword />} />,
   <Route path="/reset-password" element={<ResetPassword />} />,
