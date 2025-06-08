@@ -19,7 +19,7 @@ const SemesterSelect = ({ value, onChange, generationName }) => {
     [QueryKeys.SEMESTER, generationName], // Use generationName in query key
     () => {
       console.log("SemesterSelect: Fetching semesters for generationName:", generationName);
-      return semesterService.findByGenerationName(generationName); // No .then(res => res.data) here, SemesterService already returns data
+      return semesterService.findByGenerationNameGet(generationName); // No .then(res => res.data) here, SemesterService already returns data
     },
     { enabled: !!generationName } // Enable query when generationName is present
   );
