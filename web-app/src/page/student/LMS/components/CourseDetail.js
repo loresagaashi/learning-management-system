@@ -1,12 +1,13 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Typography, 
   Card, 
   CardContent, 
   Grid, 
-  Paper 
+  Paper,
+  Button
 } from '@mui/material';
 import { CourseService } from '../../../../service/CourseService';
 
@@ -45,16 +46,32 @@ const CourseDetail = () => {
     fetchCourseData();
   }, [courseId]);
 
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    localStorage.removeItem('user');
+    navigate('/choice/sign-in');
+  };
+
   if (!course) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        {course.name}
-      </Typography>
-
+    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h4" gutterBottom>
+          {course.name}
+        </Typography>
+        <Button
+          variant="outlined"
+          color="inherit"
+          onClick={handleLogOut}
+          sx={{ textTransform: 'none' }}
+        >
+          Log Out
+        </Button>
+      </Box>
       <Grid container spacing={3}>
         {/* Course Info */}
         <Grid item xs={12} md={8}>
