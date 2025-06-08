@@ -44,15 +44,19 @@ public class SemesterService extends BasicServiceOperations<SemesterRepository, 
         return super.save(semester);
     }
 
-    public List<SemesterDTO> getSemestersByGenerationName(Generation generation) {
+    public List<SemesterDTO> getSemestersByGenerationNameGet(Generation generation) {
         System.out.println("[SemesterService] Finding semesters for generation: " + (generation != null ? generation.getName() : "null"));
-        List<SemesterDTO> semesters = semesterRepository.findSemestersByGenerationName(generation);
+        List<SemesterDTO> semesters = semesterRepository.findSemestersByGenerationNameGet(generation);
         if (semesters == null) {
             System.out.println("[SemesterService] Repository returned null for generation: " + (generation != null ? generation.getName() : "null") + ". Returning empty list.");
             return java.util.Collections.emptyList();
         }
         System.out.println("[SemesterService] Found " + semesters.size() + " semesters for generation: " + (generation != null ? generation.getName() : "null"));
         return semesters;
+    }
+
+    public List<SemesterDTO> getSemestersByGenerationName(String generationName) {
+        return semesterRepository.findSemestersByGenerationName(generationName);
     }
 
     public List<SemesterDTO> getAllWithGenerationName() {

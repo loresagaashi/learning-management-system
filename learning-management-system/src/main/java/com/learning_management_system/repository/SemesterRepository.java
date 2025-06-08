@@ -13,7 +13,11 @@ public interface SemesterRepository extends JpaRepository<Semester, Long> {
 
         @Query("SELECT new com.learning_management_system.data.semester.SemesterDTO(s.id,s.name, s.season, s.startDate, s.endDate,s.generation.name,s.active) " +
                         "FROM Semester s WHERE s.generation = :generation and s.active=true ")
-        List<SemesterDTO> findSemestersByGenerationName(@Param("generation") Generation generation);
+        List<SemesterDTO> findSemestersByGenerationNameGet(@Param("generation") Generation generation);
+
+        @Query("SELECT new com.learning_management_system.data.semester.SemesterDTO(s.id,s.name, s.season, s.startDate, s.endDate,s.generation.name,s.active) " +
+        "FROM Semester s WHERE s.generation.name = :generationName and s.active=true ")
+List<SemesterDTO> findSemestersByGenerationName(@Param("generationName") String generationName);
 
         @Query("SELECT new com.learning_management_system.data.semester.SemesterDTO(" +
                         "s.id, s.name, s.season, s.startDate, s.endDate, g.name ,s.active) " +

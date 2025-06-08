@@ -8,6 +8,7 @@ import com.learning_management_system.service.SemesterService;
 import com.learning_management_system.service.GenerationService;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,15 +34,23 @@ public class SemesterController extends BasicControllerOperations<SemesterServic
         return ResponseEntity.ok(semesterRepository.findAll());
     }
 
+    @PostMapping("/by-generation")
+    public ResponseEntity<List<SemesterDTO>> getSemestersByGeneration(@RequestBody Map<String, String> body) {
+        String generationName = body.get("generationName");
+        List<SemesterDTO> semesters = semesterService.getSemestersByGenerationName(generationName);
+
+        return ResponseEntity.ok(semesters);
+    }
     @GetMapping("/by-generation")
-    public ResponseEntity<List<SemesterDTO>> getSemestersByGeneration(@RequestParam String generationName) {
+    public ResponseEntity<List<SemesterDTO>> getSemestersByGenerationGet(@RequestParam String generationName) {
         Generation generation = generationService.findByName(generationName);
         if (generation == null) {
             return ResponseEntity.notFound().build(); // Or handle as appropriate
         }
-        List<SemesterDTO> semesters = semesterService.getSemestersByGenerationName(generation);
+        List<SemesterDTO> semesters = semesterService.getSemestersByGenerationNameGet(generation);
         return ResponseEntity.ok(semesters);
     }
+
 
     @GetMapping
     public ResponseEntity<List<SemesterDTO>> getAllSemesters() {
