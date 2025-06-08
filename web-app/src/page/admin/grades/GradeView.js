@@ -8,11 +8,11 @@ import { QueryKeys } from "../../../service/QueryKeys";
 import { useQuery } from "react-query";
 import { GradeService } from "../../../service/GradeService";
 import { AssignmentService } from "../../../service/AssignmentService";
-// import { StudentService } from "../../../service/StudentService";
+import { StudentService } from "../../../service/StudentService";
 
 const gradeService = new GradeService();
 const assignmentService = new AssignmentService();
-// const studentService = new StudentService();
+const studentService = new StudentService();
 
 export default function GradeView({}) {
   const errorRef = useRef();
@@ -21,15 +21,15 @@ export default function GradeView({}) {
     assignmentService.findAll()
   );
 
-//   const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
-//     studentService.findAll()
-//   );
+  const { data: allStudents } = useQuery(QueryKeys.STUDENTS, () =>
+    studentService.findAll()
+  );
 
   const columns = [
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Assignment",
@@ -43,23 +43,34 @@ export default function GradeView({}) {
           "id"
         ),
     },
-   //  {
-   //    title: "Student",
-   //    field: "student",
-   //    render: (rowData) => rowData.student?.fullName,
-   //    editComponent: (props) =>
-   //      SelectTableCell(
-   //        props,
-   //        errorRef,
-   //        allStudents?.map((x) => ({ value: x, label: x.fullName })) || [],
-   //        "id"
-   //      ),
-   //  },
+    {
+      title: "Student",
+      field: "student",
+      render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
+        ),
+    },
     {
       title: "Grade",
       field: "grade",
-      type: "numeric",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

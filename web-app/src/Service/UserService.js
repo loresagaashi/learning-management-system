@@ -13,6 +13,20 @@ export class UserService extends BaseService {
       throw { message: error }
       }
   }
+  async studentLogIn(body){
+    try {
+      return await axiosInstance.post('/auth/login', body);
+    } catch (error) {
+      throw { message: error }
+      }
+  }
+  async professorLogIn(body){
+    try {
+      return await axiosInstance.post('/auth/login', body);
+    } catch (error) {
+      throw { message: error }
+      }
+  }
   async clientLogIn(body){
     try {
       return await axiosInstance.post('/auth/login', body);
@@ -22,5 +36,13 @@ export class UserService extends BaseService {
   }
   refreshToken(body) {
     return axiosInstance.post(`/auth/refresh`, body);
+  }
+
+  async forgotPassword(email) {
+    const response = await axiosInstance.post("/auth/forgot-password", { email });
+    return response.data;
+  }
+  async resetPassword(data) {
+    return axiosInstance.post("/auth/reset-password", data).then((res) => res.data);
   }
 }

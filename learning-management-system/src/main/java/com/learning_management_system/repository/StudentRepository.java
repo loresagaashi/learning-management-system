@@ -3,6 +3,7 @@ package com.learning_management_system.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.learning_management_system.data.student.StudentDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -22,5 +23,44 @@ public interface StudentRepository extends JpaRepository<Student,Long>{
     OR LOWER(s.lastName) LIKE LOWER(CONCAT('%', :search, '%')))
     """)
     List<StudentSearchDTO> searchStudents(@Param("search") String search);
+
+    @Query("SELECT COUNT(s) FROM Student s WHERE s.group.id = :groupId")
+    int countStudentsInGroup(@Param("groupId") Long groupId);
+
+    @Query("""
+    SELECT new com.learning_management_system.data.student.StudentDTO(
+        s.id,
+        CONCAT(s.firstName, ' ', s.lastName),
+        s.email,
+        g.generation.id,
+        g.generation.name,
+        g.id,
+        g.name
+    )
+    FROM Student s
+    JOIN s.group g
+    WHERE g.id = :groupId AND g.generation.id = :generationId
+""")
+    List<StudentDTO> findByGenerationIdAndGroupId(@Param("generationId") Long generationId,
+                                                  @Param("groupId") Long groupId);
+
+        @Query("""
+        SELECT new com.learning_management_system.data.student.StudentDTO(
+            s.id,
+            CONCAT(s.firstName, ' ', s.lastName),
+            s.email,
+            g.generation.id,
+            g.generation.name,
+            g.id,
+            g.name
+        )
+        FROM Student s
+        JOIN s.group g
+        WHERE g.generation.id = :generationId
+    """)
+        List<StudentDTO> findAllByGenerationId(@Param("generationId") Long generationId);
+
+
+    List<Student> findByCoursesId(Long courseId);
 
 }

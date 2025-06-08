@@ -7,7 +7,7 @@ import com.learning_management_system.model.Assignment;
 import com.learning_management_system.service.AssignmentService;
 
 @RestController
-@RequestMapping("/assignment")
+@RequestMapping("/assignments")
 public class AssignmentController extends BasicControllerOperations<AssignmentService, Assignment> {
 
    public AssignmentController(AssignmentService service) {

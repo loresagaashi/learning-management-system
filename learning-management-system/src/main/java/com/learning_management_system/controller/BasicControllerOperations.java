@@ -36,7 +36,7 @@ public abstract class BasicControllerOperations<S extends BasicServiceOperations
   }
 
   @PostMapping
-  public E create(@RequestBody @Validated({ Default.class, Create.class }) E entity) {
+  public E create(@RequestBody E entity) {
     return service.save(entity);
   }
 

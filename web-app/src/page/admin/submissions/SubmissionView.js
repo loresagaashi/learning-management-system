@@ -7,14 +7,14 @@ import {
 import { QueryKeys } from "../../../service/QueryKeys";
 import { SubmissionService } from "../../../service/SubmissionService";
 import { AssignmentService } from "../../../service/AssignmentService";
-// import { StudentService } from "../../../service/StudentService";
 import { useQuery } from "react-query";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import { StudentService } from "../../../service/StudentService";
 
 const submissionService = new SubmissionService();
 const assignmentService = new AssignmentService();
-// const studentService = new StudentService();
+const studentService = new StudentService();
 
 export default function SubmissionView({}) {
   const errorRef = useRef();
@@ -23,15 +23,15 @@ export default function SubmissionView({}) {
     assignmentService.findAll()
   );
 
-  //   const { data: allStudents } = useQuery(QueryKeys.STUDENT, () =>
-  //     studentService.findAll()
-  //   );
+  const { data: allStudents } = useQuery(QueryKeys.STUDENTS, () =>
+    studentService.findAll()
+  );
 
   const columns = [
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Assignment",
@@ -45,18 +45,18 @@ export default function SubmissionView({}) {
           "id"
         ),
     },
-    //  {
-    //    title: "Student",
-    //    field: "student",
-    //    render: (rowData) => rowData.student?.name,
-    //    editComponent: (props) =>
-    //      SelectTableCell(
-    //        props,
-    //        errorRef,
-    //        allStudents?.map((x) => ({ value: x, label: x.name })) || [],
-    //        "id"
-    //      ),
-    //  },
+    {
+      title: "Student",
+      field: "student",
+      render: (rowData) => rowData.student ? `${rowData.student.firstName} ${rowData.student.lastName}` : '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allStudents?.map((x) => ({ value: x, label: `${x.firstName} ${x.lastName}` })) || [],
+          "id",
+        ),
+    },
     {
       title: "Submission Date",
       type: "date",
@@ -82,6 +82,18 @@ export default function SubmissionView({}) {
           onChange={(event) => props.onChange(event.target.files[0]?.name)}
         />
       ),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

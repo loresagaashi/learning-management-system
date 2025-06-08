@@ -25,7 +25,7 @@ export default function AssignmentView() {
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never"
     },
     {
       title: "Course",
@@ -64,6 +64,18 @@ export default function AssignmentView() {
           />
         </MuiPickersUtilsProvider>
       ),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
     },
   ];
 

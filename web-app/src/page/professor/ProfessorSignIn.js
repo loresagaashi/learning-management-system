@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import Checkbox from "@material-ui/core/Checkbox";
+import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import LoadingButton from "../../component/LoadingButton";
 import ValidTextField from "../../component/common/ValidTextField";
-import { UserService } from "../../service/UserService";
 import useUser from "../../hooks/useUser";
 import { QueryKeys } from "../../service/QueryKeys";
-import LoadingButton from "../../component/LoadingButton";
+import { UserService } from "../../service/UserService";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -78,12 +78,22 @@ export default function ProfessorSignIn({
     error,
   } = useMutation(
     QueryKeys.USER_BY_EMAIL(userAccount.email),
-    (user) => userService.login(user),
+    (user) => userService.professorLogIn(user),
     {
       onSuccess: (data) => {
         if (data?.user?.type === "Professor") {
           setUser(data);
-          !!onSuccess ? onSuccess(data) : navigate("/professor/page");
+          if (data?.accessToken) {
+            localStorage.setItem('token', data.accessToken);
+          }
+          const destination = localStorage.getItem("destination");
+          if (destination === "lms") {
+            navigate("/professor/lms");
+          } else if (destination === "smis") {
+            navigate("/professor/smis");
+          } else {
+            navigate("/student/page"); // fallback
+          }
         } else {
           setErrorMessage(true);
         }

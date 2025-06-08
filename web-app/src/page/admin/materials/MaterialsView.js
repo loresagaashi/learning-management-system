@@ -12,47 +12,51 @@ import { MaterialService } from "../../../service/MaterialService";
 const materialService = new MaterialService();
 const lectureService = new LectureService();
 
-
 export default function MaterialsView({}) {
   const errorRef = useRef();
 
-  const { data: allCourses } = useQuery(QueryKeys.LECTURE, () =>
+  const { data: allLectures } = useQuery(QueryKeys.LECTURE, () =>
     lectureService.findAll()
   );
+
   const columns = [
     {
       title: "Id",
       field: "id",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      editable: "never",
     },
     {
       title: "Lecture",
-      field: "lecture",
-      render: (rowData) => rowData.lecture?.name,
+      field: "lectureId",  // Field to display lecture name
+      render: (rowData) => rowData.lecture?.name,  // Show lecture name
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allCourses?.map((x) => ({ value: x, label: x.name })) || [],
-          "id"
+          allLectures?.map((x) => ({ value: x.id, label: x.name })) || [],  // Populate lecture options with name
+          "lectureId" // Store lecture ID in the final object
         ),
     },
     {
-        title: 'File Url',
-        field: 'fileUrl',
-        editComponent: props => (
-          <input
-            type={"file"}
-            onChange={event => props.onChange(event.target.files[0].name)}
-          />
-        )
-      },
+      title: 'File Url',
+      field: 'fileUrl',
+      editComponent: props => (
+        <input
+          type={"file"}
+          onChange={event => props.onChange(event.target.files[0].name)}
+        />
+      )
+    },
     {
       title: "Description",
       field: "description",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
   ];
+
+  const handleSave = async (material) => {
+    await materialService.saveMaterialWithLecture(material);
+  };
 
   return (
     <CustomMaterialTable
@@ -61,6 +65,7 @@ export default function MaterialsView({}) {
       service={materialService}
       queryKey={QueryKeys.MATERIAL}
       errorRef={errorRef}
+      onSave={handleSave}
     />
   );
 }

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import com.amazonaws.services.kms.model.NotFoundException;
@@ -78,6 +80,7 @@ public class EmailService {
         variables.put(TemplateWildcards.STUDENT_LAST_NAME, student.getFirstName());
         variables.put(TemplateWildcards.STUDENT_EMAIL, student.getEmail());
         variables.put(TemplateWildcards.STUDENT_ID, student.getStudentId().toString());
+        variables.put(TemplateWildcards.GROUP_NAME,student.getGroup().getName());
         if(student.getBirthDate()!=null){
             variables.put(TemplateWildcards.STUDENT_BIRTH_DATE, student.getBirthDate().toString());
 
@@ -112,6 +115,28 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendAssignToGroupEmailToStudent(Long studentId) throws MessagingException, IOException {
+
+        Student student =studentRepository.findById(studentId).orElseThrow(()->new NotFoundException("student Not Found with this id : "+studentId));
+        Map<String, String> variables = replaceStudentFields(student);
+
+        String subjectTemplate = "Konfirmimi i Zgjedhjes së Grupit";
+        String bodyTemplatePath = "src/main/resources/templates/studentAssignToGroup.html";
+        String bodyTemplate = new String(Files.readAllBytes(Paths.get(bodyTemplatePath)), StandardCharsets.UTF_8);
+
+        ReplacedWildCardsDTO replacedWildCardsDTO = templateUtil.getReplacedWildCards(variables, subjectTemplate, bodyTemplate);
+
+        // Create and send the email
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(student.getEmail());
+        helper.setSubject(replacedWildCardsDTO.getSubject());
+        helper.setText(replacedWildCardsDTO.getBody(), true);
+
+
+        mailSender.send(message);
+    }
+
     private static Map<String, String> replaceprofessorFields(Professor professor) {
         Map<String, String> variables = new HashMap<>();
 
@@ -127,6 +152,32 @@ public class EmailService {
 
         return variables;
     }
+    public Map<String, String> replaceUserFields(Object user) {
+        Map<String, String> variables = new HashMap<>();
+
+        if (user instanceof Student) {
+            Student student = (Student) user;
+            variables.put(TemplateWildcards.USER_FIRST_NAME, student.getFirstName());
+            variables.put(TemplateWildcards.USER_LAST_NAME, student.getLastName());
+            variables.put(TemplateWildcards.USER_EMAIL, student.getEmail());
+            variables.put(TemplateWildcards.USER_ID, student.getId().toString());
+            // Add any student-specific fields if needed
+
+        } else if (user instanceof Professor) {
+            Professor professor = (Professor) user;
+            variables.put(TemplateWildcards.USER_FIRST_NAME, professor.getFirstName());
+            variables.put(TemplateWildcards.USER_LAST_NAME, professor.getLastName());
+            variables.put(TemplateWildcards.USER_EMAIL, professor.getEmail());
+            variables.put(TemplateWildcards.USER_ID, professor.getId().toString());
+            // Add any professor-specific fields if needed
+        }
+
+        // Add common fields for password reset
+        variables.put(TemplateWildcards.REQUEST_TIME, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        return variables;
+    }
+
 
 
 

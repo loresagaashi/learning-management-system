@@ -12,10 +12,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserView {
+    private Long userId;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
     private LocalDate birthDate;
+    private Long semesterId;
 
 }

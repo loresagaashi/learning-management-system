@@ -1,33 +1,37 @@
 import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
 import { useRef } from "react";
-import { SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
+import { useQuery } from "react-query";
+import { MultipleCheckboxTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
-import DateFnsUtils from "@date-io/date-fns";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import LockIcon from "@material-ui/icons/Lock";
-// import { StudentService } from "../../../service/StudentService";
 import { CourseService } from "../../../service/CourseService";
+import { ProfessorService } from "../../../service/ProfessorService";
+import { OrientationService } from "../../../service/OrientationService";
+import { SemesterService } from "../../../service/SemesterService";
 
 const courseService = new CourseService();
-//masi qe te shtohet profesori dhe orientation
-// const professorsService = new ProfessorService();
-// const orientationsService = new OrientationService();
+const professorService = new ProfessorService();
+const orientationService = new OrientationService();
+const semesterService = new SemesterService();
 
 export default function CoursesView({}) {
   const errorRef = useRef();
 
-//   const { data: allProfessors } = useQuery(QueryKeys.PROFESSOR, () =>
-//     professorsService.findAll(),
-//   );
-//   const { data: allOrientations } = useQuery(QueryKeys.ORIENTATION, () =>
-//     orientationsService.findAll(),
-//   );
+  const { data: allProfessors } = useQuery(QueryKeys.PROFESSOR, () =>
+    professorService.findAll(),
+  );
+  const { data: allOrientations } = useQuery(QueryKeys.ORIENTATION, () =>
+    orientationService.findAll(),
+  );
+  const { data: allSemesters } = useQuery(QueryKeys.SEMESTER, () =>
+    semesterService.findAll(),
+  );
+
   const columns = [
     {
-        title: "Id",
-        field: "id",
-        editComponent: (props) => TextFieldTableCell(props, errorRef),
-      },
+      title: "Id",
+      field: "id",
+      editable: "never",
+    },
     {
       title: "Name",
       field: "name",
@@ -38,34 +42,49 @@ export default function CoursesView({}) {
       field: "description",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
- 
-  
-         //masi qe te shtohet Profesori
-    //   {
-    //     title: "Professor",
-    //     field: "professor",
-    //     render: (rowData) => rowData.professor?.name,
-    //     editComponent: (props) =>
-    //       SelectTableCell(
-    //         props,
-    //         errorRef,
-    //         allProfessors?.map((x) => ({ value: x, label: x.name })) || [],
-    //         "id",
-    //       ),
-    //   },
-    //masi qe te shtohet Orientation
-    // {
-    //     title: "Orientation",
-    //     field: "orientation",
-    //     render: (rowData) => rowData.orientation?.name,
-    //     editComponent: (props) =>
-    //       SelectTableCell(
-    //         props,
-    //         errorRef,
-    //         allOrinetations?.map((x) => ({ value: x, label: x.name })) || [],
-    //         "id",
-    //       ),
-    //   },
+    {
+      title: 'Professors',
+      field: 'professor',
+      render: rowData => rowData.professor?.map(x => x.firstName).join(", "),
+      editComponent: props => MultipleCheckboxTableCell(props, allProfessors, item => item.firstName)
+  },
+    
+    {
+      title: "Orientation",
+      field: "orientation",
+      render: (rowData) => rowData.orientation?.name || '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allOrientations?.map((x) => ({ value: x, label: x.name })) || [],
+          "id",
+        ),
+    },
+    {
+      title: "Semester",
+      field: "semester",
+      render: (rowData) => rowData.semester?.name || '',
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allSemesters?.map((x) => ({ value: x, label: x.name })) || [],
+          "id",
+        ),
+    },
+    {
+      title: "Created On",
+      field: "createdOn",
+      type: "date",
+      editable: "never",
+    },
+    {
+      title: "Updated On",
+      field: "updatedOn",
+      type: "date",
+      editable: "never",
+    },
   ];
 
   return (

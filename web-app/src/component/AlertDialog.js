@@ -114,7 +114,7 @@ function AlertDialog({ open, onClose, onConfirmDelete }) {
           onClose={handleSnackbarClose}
           severity="success"
         >
-          Item successfully deleted!
+          Delete was successful!
         </MuiAlert>
       </Snackbar>
       <Snackbar

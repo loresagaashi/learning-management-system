@@ -1,17 +1,36 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_URL = "http://localhost:8080/api/chat";
 
+const api = axios.create({
+  baseURL: 'http://localhost:8080',
+});
 export const getChatHistory = (senderId, recipientId) => {
-  return axios.get(`${API_URL}/history`, {
-    params: { senderId, recipientId }
+  const params = new URLSearchParams();
+  params.append('senderId', senderId);  // Explicitly append
+  params.append('recipientId', recipientId);
+
+  return api.get(`/api/chat/history`, {
+    params: params,  // Pass URLSearchParams instead of object
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+};
+export const sendChatMessage = (message) => {
+  return api.post(`/api/chat/send`, message, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
   });
 };
 
-export const saveMessage = (senderId, recipientId, content) => {
-  return axios.post(`${API_URL}/send`, {
+export const markMessagesAsRead = (senderId, recipientId) => {
+  return api.post(`/api/chat/mark-as-read`, {
     senderId,
-    recipientId,
-    content
+    recipientId
+  }, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
   });
 };

@@ -34,4 +34,5 @@ export class BaseService {
   validateOnUpdate(data) {
     return axiosInstance.put(`${this.requestMapping}/validate`, data);
   }
+  
 }

@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
 
-    @Query(value = "SELECT first_name as firstName, last_name as lastName, email, phone_number as phoneNumber, birth_date as birthDate FROM student WHERE email = :email " +
+    @Query(value = "SELECT id as userId, first_name as firstName, last_name as lastName, email, phone_number as phoneNumber, birth_date as birthDate , active_semester_id as semesterId FROM student WHERE email = :email " +
             "UNION " +
-            "SELECT first_name, last_name, email, phone_number, birth_date FROM professor WHERE email = :email " +
+            "SELECT id as userId, first_name as firstName, last_name as lastName, email, phone_number as phoneNumber, birth_date as birthDate , NULL as semesterId FROM professor WHERE email = :email " +
             "UNION " +
-            "SELECT first_name, last_name, email, phone_number, birth_date FROM admin WHERE email = :email",
+            "SELECT id as userId, first_name as firstName, last_name as lastName, email, phone_number as phoneNumber, birth_date as birthDate , NULL as semesterId FROM admin WHERE email = :email",
             nativeQuery = true)
     Optional<UserAccountProjection> findByEmail(@Param("email") String email);
 

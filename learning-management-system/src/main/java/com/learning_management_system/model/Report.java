@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
 @Setter
@@ -17,10 +18,12 @@ public class Report {
     @Id
     private String id;
 
-    private Date reportDate;
+    private LocalDate reportDate;
 
     private String performance;
 
-    @DocumentReference(lazy = true)
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Student student;
+    private Long studentId;
 }

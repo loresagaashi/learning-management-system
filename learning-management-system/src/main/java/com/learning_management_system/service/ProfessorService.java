@@ -2,7 +2,10 @@ package com.learning_management_system.service;
 
 import com.learning_management_system.data.professor.ProfessorSearchDTO;
 import com.learning_management_system.data.student.StudentSearchDTO;
+import com.learning_management_system.model.Course;
+import com.learning_management_system.repository.CourseRepository;
 import jakarta.mail.MessagingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,8 @@ public class ProfessorService extends BasicServiceOperations<ProfessorRepository
    private final PasswordEncoder passwordEncoder;
    private final ProfessorRepository professorRepository;
    private final EmailService emailService;
+    @Autowired
+    private CourseRepository courseRepository;
 
     public ProfessorService(ProfessorRepository repository, PasswordEncoder passwordEncoder, ProfessorRepository professorRepository, EmailService emailService) {
         super(repository);
@@ -38,9 +43,12 @@ public class ProfessorService extends BasicServiceOperations<ProfessorRepository
         } else {
             Professor user = repository.findById(entity.getId())
                     .orElseThrow(() -> new EntityNotFoundException("No entity found with id: " + entity.getId()));
-            entity.setPassword(user.getPassword());
+            if (!passwordEncoder.matches(entity.getPassword(), user.getPassword())) {
+                entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+            } else {
+                entity.setPassword(user.getPassword());
+            }
         }
-
         Professor savedProfessor = super.save(entity);
 
         // Send welcome email only for new professors
@@ -95,5 +103,8 @@ public class ProfessorService extends BasicServiceOperations<ProfessorRepository
 
     public List<ProfessorSearchDTO> getProfessors(String search) {
         return professorRepository.searchProfessors(search);
+    }
+    public List<Course> getCoursesByProfessor(Long professorId) {
+        return courseRepository.findByProfessorId(professorId);
     }
 }

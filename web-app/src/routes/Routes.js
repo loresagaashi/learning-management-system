@@ -9,6 +9,19 @@ import AdminLayout from "../page/admin/AdminLayout";
 import SignInChoicePage from "../page/SignInChoicePage";
 import StudentSignIn from "../page/student/StudentSignIn";
 import ProfessorSignIn from "../page/professor/ProfessorSignIn";
+import StudentPage from "../page/student/StudentPage";
+import LMSPage from "../page/student/LMS/LMSPage";
+import SMISPage from "../page/student/SMIS/SMISPage";
+import ForgotPassword from "../page/ForgotPassword";
+import ResetPassword from "../page/ResetPassword";
+import LMSPageProfessor from "../page/professor/LMS/LMSPageProfessor";
+import SMISPageProfessor from "../page/professor/SMIS/SMISPageProfessor";
+import ProfessorLayout from "../page/professor/ProfessorLayout";
+import StudentLayout from "../page/student/StudentLayout";
+import StudentLMSLayout from "../page/student/LMS/StudentLMSLayout";
+import CourseDetail from "../page/student/LMS/components/CourseDetail";
+import ProfessorLMSLayout from "../page/professor/LMS/ProfessorLMSLayout";
+// import CoursesView from "../page/professor/SMIS/CoursesView";
 // import ClientProfile from "../page/client/ClientProfile";
 // import PaymentSuccess from "../component/PaymentSuccess";
 
@@ -30,11 +43,23 @@ const AppRoutes = [
   // <Route key={2} path="/client/home" element={<ClientLayout />} />,
   // Admin routes
   <Route key={11} path="/admin/*" element={<PrivateRoute element={AdminLayout}/>} />,
+  <Route key={11} path="/professor/*" element={<PrivateRoute element={ProfessorLayout}/>} />,
+  <Route key={11} path="/student/*" element={<PrivateRoute element={StudentLayout}/>} />,
   // // Other routes
   <Route key={11} path="/admin/sign-in" element={<AdminSignIn />} />,
   <Route key={11} path="/choice/sign-in" element={<SignInChoicePage />} />,
   <Route key={11} path="/student/sign-in" element={<StudentSignIn />} />,
   <Route key={11} path="/professor/sign-in" element={<ProfessorSignIn />} />,
+  <Route path="/student/page" element={<StudentPage />} />,
+  <Route path="/student/lms/*" element={<StudentLMSLayout />} />,
+  <Route path="/student/smis" element={<SMISPage />} />,
+
+  <Route path="/professor/lms/*" element={<ProfessorLMSLayout />} />,
+  <Route path="/professor/smis" element={<SMISPageProfessor />} />,
+  <Route path="/forgot-password" element={<ForgotPassword />} />,
+  <Route path="/reset-password" element={<ResetPassword />} />,
+  // <Route path="/professor/courses" element={<CoursesView />} />,
+ 
   // <Route key={11} path="/client/sign-in" element={<ClientSignIn />} />,
   // <Route key={11} path="/client/sign-up" element={<ClientSignUp />} />,
   // <Route key={11} path="/client/profile" element={<ClientProfile />} />,

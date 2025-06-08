@@ -7,7 +7,7 @@ import com.learning_management_system.model.Submission;
 import com.learning_management_system.service.SubmissionService;
 
 @RestController
-@RequestMapping("/submission")
+@RequestMapping("/submissions")
 public class SubmissionController extends BasicControllerOperations<SubmissionService, Submission> {
 
    public SubmissionController(SubmissionService service) {

@@ -1,38 +1,39 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
-import MenuIcon from "@material-ui/icons/Menu";
+import { AppBar, Badge, Button, CssBaseline, Divider, Drawer, IconButton, makeStyles, Toolbar, Typography, useTheme } from '@material-ui/core';
+import ChatIcon from "@material-ui/icons/Chat";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import CloseIcon from "@material-ui/icons/Close";
+import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import AppMenu from "../../component/dashboard/AppMenu";
+import React, { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-
+import ChatComponent from "../../component/ChatComponent";
+import AppMenu from "../../component/dashboard/AppMenu";
 import useUser from "../../hooks/useUser";
-
-import DarkModeIcon from '@material-ui/icons/Brightness4';
-import LightModeIcon from '@material-ui/icons/Brightness7';
-import {
-  useTheme,
-} from "@material-ui/core";
-import AdminDashboard from "./dashboard/AdminDashboard";
-// import StudentsView from "./students/StudentsView";
-import CoursesView from "./courses/CoursesView";
-import MaterialsView from "./materials/MaterialsView";
-import LecturesView from "./lectures/LecturesView";
+import AdminView from "./admins/AdminView";
 import AssignmentView from "./assignments/AssignmentView";
-import SubmissionView from "./submissions/SubmissionView";
+import CityView from "./cities/CityView";
+import CoursesView from "./courses/CoursesView";
+import AdminDashboard from "./dashboard/AdminDashboard";
+import SendEmailForm from "./emails/SendEmailForm";
+import EnrollmentView from "./enrollments/EnrollmentView";
+import ExamView from './exams/ExamView';
+import FeedbackView from "./feedbacks/FeedbackView";
+import GenerationView from "./generations/GenerationView";
 import GradeView from "./grades/GradeView";
-import ReportView from "./reports/ReportView";
+import StudentGroups from "./groups/StudentGroups";
+import LecturesView from "./lectures/LecturesView";
 import LogView from "./logs/LogView";
+import MaterialsView from "./materials/MaterialsView";
+import OrientationView from "./orientations/OrientationView";
 import PaymentView from "./payments/PaymentView";
+import ProfessorView from "./professors/ProfessorView";
+import ReportView from "./reports/ReportView";
+import AdminViewSchedule from "./schedules/AdminViewSchedule";
+import SemesterView from "./semesters/SemesterView";
+import StudentView from "./students/StudentView";
+import SubmissionView from "./submissions/SubmissionView";
+import AdminScheduleCreate from './schedules/AdminScheduleCreate';
 
 const drawerWidth = 240;
 
@@ -114,6 +115,39 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  chatButton: {
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    zIndex: 1000,
+    "&:hover": {
+      backgroundColor: "#005bb5",
+    },
+  },
+  chatOverlay: {
+    position: "fixed",
+    bottom: 80,
+    right: 20,
+    width: 400,
+    maxHeight: "70vh",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    zIndex: 1500,
+    overflow: "auto",
+  },
+  chatHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "8px 12px",
+    backgroundColor: "#007bff",
+    color: "white",
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
 }));
 
 export default function AdminLayout({}) {
@@ -122,6 +156,11 @@ export default function AdminLayout({}) {
   const location = useLocation();
   const { user } = useUser();
   const theme = useTheme();
+  const [chatOpen, setChatOpen] = useState(false);
+  
+  const toggleChat = () => {
+    setChatOpen((prev) => !prev);
+  };
 
   function handleDrawerOpen() {
     setOpen(true);
@@ -190,19 +229,59 @@ export default function AdminLayout({}) {
         {user?.user?.type === 'Admin' &&
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard/>}/>
-            {/* <Route path="/students" element={<StudentsView/>}/> */}
+            <Route path="/admins" element={<AdminView/>}/>
+            <Route path="/students" element={<StudentView/>}/>
+            <Route path="/professors" element={<ProfessorView/>}/>
             <Route path="/courses" element={<CoursesView/>}/>
             <Route path="/materials" element={<MaterialsView/>}/>
             <Route path="/lectures" element={<LecturesView/>}/>
-            <Route path="/assignment" element={<AssignmentView/>}/>
-            <Route path="/submission" element={<SubmissionView/>}/>
-            <Route path="/grade" element={<GradeView/>}/>
-            <Route path="/report" element={<ReportView/>}/>
-            <Route path="/log" element={<LogView/>}/>
+            <Route path="/assignments" element={<AssignmentView/>}/>
+            <Route path="/submissions" element={<SubmissionView/>}/>
+            <Route path="/grades" element={<GradeView/>}/>
+            <Route path="/reports" element={<ReportView/>}/>
+            <Route path="/logs" element={<LogView/>}/>
             <Route path="/payments" element={<PaymentView/>}/>
+            <Route path="/orientations" element={<OrientationView/>}/>
+            <Route path="/schedules" element={<AdminScheduleCreate/>}/>
+            <Route path="/enrollments" element={<EnrollmentView/>}/>
+            <Route path="/feedbacks" element={<FeedbackView/>}/>
+            <Route path="/cities" element={<CityView/>}/>
+            <Route path="/emails/sendEmail" element={<SendEmailForm/>}/>
+            <Route path="/chat" element={<ChatComponent/>}/>
+            <Route path="/student-groups" element={<StudentGroups/>}/>
+            <Route path="/generations" element={<GenerationView/>}/>
+            <Route path="/semester" element={<SemesterView/>}/>
+            <Route path="/view-schedule" element={<AdminViewSchedule/>}/>
+           <Route path="/exams" element={<ExamView/>}/>
+
+
 
           </Routes>
         }
+        {!chatOpen && (
+            <Button
+              variant="contained"
+              className={classes.chatButton}
+              startIcon={<ChatIcon />}
+              onClick={toggleChat}
+            >
+              Chat
+            </Button>
+          )}
+
+          {chatOpen && (
+            <div className={classes.chatOverlay}>
+              <div className={classes.chatHeader}>
+                <Typography variant="subtitle1">Chat</Typography>
+                <div>
+                  <IconButton size="small" onClick={() => setChatOpen(false)}>
+                    <CloseIcon style={{ color: "white" }} />
+                  </IconButton>
+                </div>
+              </div>
+              <ChatComponent onClose={() => setChatOpen(false)} />
+            </div>
+          )}
       </main>
     </div>
   );

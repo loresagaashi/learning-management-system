@@ -11,10 +11,16 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Schedule extends BaseEntity {
     
+//    @ManyToOne
+//    @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_schedule_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
+//    private Student student;
+//    @ManyToOne
+//    @JoinColumn(name = "group_id", nullable = false, foreignKey = @ForeignKey(name = "fk_schedule_group"))
+//    private StudentGroup group;
     @ManyToOne
-    @JoinColumn(name = "student_id", nullable = true, foreignKey = @ForeignKey(name = "fk_schedule_student", foreignKeyDefinition = "FOREIGN KEY (student_id) REFERENCES Student(id) ON DELETE RESTRICT"))
-    private Student student;
-    
+    @JoinColumn(name = "group_semester_id", nullable = false)
+    private StudentGroupSemester groupSemester;
+
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_schedule_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
     private Course course;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Typography,
@@ -50,14 +50,49 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInChoicePage() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [isRoleChosen, setIsRoleChosen] = useState(false);
+  const [role, setRole] = useState("");
 
+  // Check if the user is logged in (you can adjust this based on your auth state)
+  const isLoggedIn = false; // Set this according to your authentication state logic
+
+  useEffect(() => {
+    // Redirect if logged in (if needed, this logic can be more complex)
+    if (isLoggedIn) {
+      navigate("/dashboard"); // Adjust based on your app's redirect logic
+    }
+  }, [isLoggedIn, navigate]);
+
+  // Handle the role selection (Student or Professor)
   const handleStudentSignIn = () => {
-    navigate("/student/sign-in");
+    setRole("student");
+    setIsRoleChosen(true);
   };
 
   const handleProfessorSignIn = () => {
-    navigate("/professor/sign-in");
+    setRole("professor");
+    setIsRoleChosen(true);
   };
+
+  // Handle the destination (Moodle or SMIS)
+  const handleLMSRedirect = () => {
+    localStorage.setItem("destination", "lms");
+    if (role === "student") {
+      navigate("/student/sign-in");
+    } else if (role === "professor") {
+      navigate("/professor/sign-in");
+    }
+  };
+  
+  const handleSMISRedirect = () => {
+    localStorage.setItem("destination", "smis");
+    if (role === "student") {
+      navigate("/student/sign-in");
+    } else if (role === "professor") {
+      navigate("/professor/sign-in");
+    }
+  };
+  
 
   return (
     <div className={classes.container}>
@@ -65,22 +100,46 @@ export default function SignInChoicePage() {
         <CssBaseline />
         <div className={classes.formContainer}>
           <Typography component="h1" variant="h5" className={classes.title}>
-            Sign In
+            {isRoleChosen
+              ? "Where would you like to go?"
+              : "Sign In"}
           </Typography>
-          <Button
-            variant="contained"
-            className={classes.button}
-            onClick={handleStudentSignIn}
-          >
-            As a Student
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.button}
-            onClick={handleProfessorSignIn}
-          >
-            As a Professor
-          </Button>
+
+          {!isRoleChosen ? (
+            <>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={handleStudentSignIn}
+              >
+                As a Student
+              </Button>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={handleProfessorSignIn}
+              >
+                As a Professor
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={handleLMSRedirect}
+              >
+                Go to LMS
+              </Button>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={handleSMISRedirect}
+              >
+                Go to SMIS
+              </Button>
+            </>
+          )}
         </div>
       </Container>
     </div>

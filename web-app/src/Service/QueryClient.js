@@ -1,16 +1,26 @@
 import { QueryClient } from "react-query";
-import { QueryKeys } from "./QueryKeys";
 import { AdminService } from "./AdminService";
-// import { StudentService } from "./StudentService";
-import { CourseService } from "./CourseService";
-import { LectureService } from "./LectureService";
-import { MaterialService } from "./MaterialService";
 import { AssignmentService } from "./AssignmentService";
-import { SubmissionService } from "./SubmissionService";
+import { CityService } from "./CityService";
+import { CourseService } from "./CourseService";
+import { EnrollmentService } from "./EnrollmentService";
+import { ExamService } from "./ExamService";
+import { FeedbackService } from "./FeedbackService";
+import { GenerationService } from "./GenerationService";
 import { GradeService } from "./GradeService";
-import { ReportService } from "./ReportService";
+import { LectureService } from "./LectureService";
 import { LogService } from "./LogService";
+import { MaterialService } from "./MaterialService";
+import { OrientationService } from "./OrientationService";
 import { PaymentService } from "./PaymentService";
+import { ProfessorService } from "./ProfessorService";
+import { QueryKeys } from "./QueryKeys";
+import { ReportService } from "./ReportService";
+import { ScheduleService } from "./ScheduleService";
+import { SemesterService } from "./SemesterService";
+import { StudentGroupService } from "./StudentGroupService";
+import { StudentService } from "./StudentService";
+import { SubmissionService } from "./SubmissionService";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +36,8 @@ export const queryClient = new QueryClient({
 
 export const setQueryDefaults = () => {
   const adminsService = new AdminService();
-  // const studentsService = new StudentService();
+  const studentsService = new StudentService();
+  const professorService = new ProfessorService();
   const courseService = new CourseService();
   const lectureService = new LectureService();
   const materialService = new MaterialService();
@@ -36,13 +47,25 @@ export const setQueryDefaults = () => {
   const reportService = new ReportService();
   const logService = new LogService();
   const paymentService = new PaymentService();
+  const orientationService = new OrientationService();
+  const scheduleService = new ScheduleService();
+  const feedbackService = new FeedbackService();
+  const enrollmentService = new EnrollmentService();
+  const cityService = new CityService();
+  const studentGroupsService = new StudentGroupService();
+  const generationService = new GenerationService();
+  const semesterService = new SemesterService();
+  const examService = new ExamService();
 
-  queryClient.setQueryDefaults(QueryKeys.ADMINS, {
+  queryClient.setQueryDefaults(QueryKeys.ADMIN, {
     queryFn: () => adminsService.findAll(),
   });
-  // queryClient.setQueryDefaults(QueryKeys.STUDENTS, {
-  //   queryFn: () => studentsService.findAll(),
-  // });
+  queryClient.setQueryDefaults(QueryKeys.STUDENTS, {
+    queryFn: () => studentsService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.PROFESSOR, {
+    queryFn: () => professorService.findAll(),
+  });
   queryClient.setQueryDefaults(QueryKeys.COURSE, {
     queryFn: () => courseService.findAll(),
   });
@@ -69,5 +92,32 @@ export const setQueryDefaults = () => {
   });
   queryClient.setQueryDefaults(QueryKeys.PAYMENT, {
     queryFn: () => paymentService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.ORIENTATION, {
+    queryFn: () => orientationService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.SCHEDULE, {
+    queryFn: () => scheduleService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.FEEDBACK, {
+    queryFn: () => feedbackService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.ENROLLMENT, {
+    queryFn: () => enrollmentService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.CITY, {
+    queryFn: () => cityService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.STUDENT_GROUPS, {
+    queryFn: () => studentGroupsService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.GENERATIONS, {
+    queryFn: () => generationService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.SEMESTER, {
+    queryFn: () => semesterService.findAll(),
+  });
+  queryClient.setQueryDefaults(QueryKeys.EXAM, {
+    queryFn: () => examService.findAll(),
   });
 };

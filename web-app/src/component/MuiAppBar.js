@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import useUser from "../hooks/useUser";
-import useDarkMode from "../hooks/useDarkMode";
+// import useDarkMode from "../hooks/useDarkMode";
 import DarkModeIcon from "@material-ui/icons/Brightness4";
 import LightModeIcon from "@material-ui/icons/Brightness7";
 
@@ -70,7 +70,7 @@ export default function MuiAppBar() {
   const classes = useStyles();
   const { user, setUser } = useUser();
   const navigate = useNavigate();
-  const toggleDarkMode = useDarkMode();
+  // const toggleDarkMode = useDarkMode();
   const theme = useTheme();
 
   function handleLogOut() {
@@ -83,7 +83,7 @@ export default function MuiAppBar() {
   return (
     <>
       <AppBar position="static" elevation={0} className={classes.appBar}>
-        <IconButton color="inherit" onClick={toggleDarkMode}>
+        <IconButton color="inherit">
           {theme.palette.type === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
         <Typography
