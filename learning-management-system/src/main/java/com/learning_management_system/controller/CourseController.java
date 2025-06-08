@@ -63,5 +63,10 @@ public class CourseController extends BasicControllerOperations<CourseService,Co
         List<Course> courses = courseService.getCoursesBySemesterName(semester);
         return ResponseEntity.ok(courses);
     }
-    
+    @GetMapping("/{courseId}/professors")
+    public ResponseEntity<List<String>> getProfessorNames(@PathVariable Long courseId) {
+        List<String> professorNames = courseService.getCourseWithProfessorNames(courseId);
+        return ResponseEntity.ok(professorNames);
+    }
+
 }

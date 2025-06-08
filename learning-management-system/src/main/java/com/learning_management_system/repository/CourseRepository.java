@@ -19,6 +19,15 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findByProfessorId(Long professorId);
 
     @Query("""
+    SELECT c, p
+    FROM Course c
+    JOIN c.professor p
+    WHERE c.id = :courseId
+""")
+List<Object[]> findCourseWithProfessors(@Param("courseId") Long courseId);
+
+
+    @Query("""
 SELECT DISTINCT new com.learning_management_system.data.course.CourseDTO(
     c.id,
     c.name,
