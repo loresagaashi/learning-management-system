@@ -19,6 +19,7 @@ public abstract class TemplateWildcards {
     public final static String STUDENT_DEPARTMENT = "studentName";
     public final static String STUDENT_ADVISOR = "studentName";
 
+    public final static String GROUP_NAME = "groupName";
 
 
 

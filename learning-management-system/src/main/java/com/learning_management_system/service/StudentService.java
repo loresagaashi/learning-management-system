@@ -116,7 +116,7 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
         return studentRepository.searchStudents(search);
     }
 
-    public Student assignToGroup(Long studentId, Long groupId) {
+    public Student assignToGroup(Long studentId, Long groupId) throws MessagingException, IOException {
         Student student = repository.findById(studentId)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
@@ -150,6 +150,11 @@ public class StudentService extends BasicServiceOperations<StudentRepository, St
         }
 
         student.setGroup(group);
+        try {
+            emailService.sendAssignToGroupEmailToStudent(studentId);
+        }catch (MessagingException | IOException e) {
+            throw new RuntimeException("Failed to send assign to group email", e);
+        }
         return repository.save(student);
     }
 
