@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import LectureSubmissions from './LectureSubmissions';
 import { 
   Box, 
   Typography, 
@@ -21,15 +22,9 @@ import {
   ListItemText,
   ListItemIcon,
   Drawer
-} from '@material-ui/core';
+} from '@mui/material';
 import { CourseService } from '../../../../service/CourseService';
 import { LectureService } from '../../../../service/LectureService';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import MenuIcon from '@material-ui/icons/Menu';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import UserContext from '../../../../context/UserContext';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../../service/QueryKeys';
@@ -45,6 +40,12 @@ export default function ProfessorCourseDetail() {
   const [course, setCourse] = React.useState(null);
   const [professors, setProfessors] = React.useState([]);
   const [lectures, setLectures] = React.useState([]);
+  const defaultLectures = Array.from({ length: 12 }, (_, i) => ({
+    id: `default-${i + 1}`,
+    name: `Lecture ${i + 1}`,
+    description: '',
+    materials: []
+  }));
   const [students, setStudents] = React.useState([]);
   const [homeworkSubmissions, setHomeworkSubmissions] = React.useState([]);
   const [selectedLecture, setSelectedLecture] = React.useState(null);
@@ -57,6 +58,8 @@ export default function ProfessorCourseDetail() {
   const [courses, setCourses] = React.useState([]);
   const [selectedCourse, setSelectedCourse] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  const combinedLectures = [...defaultLectures, ...lectures];
 
   const fetchCourseData = async () => {
     try {
@@ -160,11 +163,11 @@ export default function ProfessorCourseDetail() {
     return <div>Loading...</div>;
   }
 
-  const handleAddLecture = () => {
-    setSelectedLecture(null);
-    setLectureName('');
-    setLectureDescription('');
-    setLectureMaterials([]);
+  const handleAddLecture = (lecture) => {
+    setSelectedLecture(lecture);
+    setLectureName(lecture.name);
+    setLectureDescription(lecture.description);
+    setLectureMaterials(lecture.materials || []);
     setOpenLectureDialog(true);
   };
 
@@ -276,16 +279,8 @@ export default function ProfessorCourseDetail() {
   };
 
   return (
-    <Box style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <Box style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', height: '100vh', overflowY: 'auto' }}>
       <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Button
-          variant="outlined"
-          color="inherit"
-          startIcon={<MenuIcon />}
-          onClick={() => setDrawerOpen(true)}
-        >
-          Courses
-        </Button>
         <Typography variant="h4" gutterBottom>
           {course?.name || 'Select a Course'}
         </Typography>
@@ -315,7 +310,6 @@ export default function ProfessorCourseDetail() {
               selected={courseId === course.id}
             >
               <ListItemIcon>
-                <AssignmentIcon />
               </ListItemIcon>
               <ListItemText primary={course.name} />
             </ListItem>
@@ -353,11 +347,11 @@ export default function ProfessorCourseDetail() {
                   <Card key={course.id} onClick={() => navigate(`/professor/lms/course/${course.id}`)}>
                     <CardContent>
                       <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <AssignmentIcon />
                         <Typography variant="body1">
                           {course.name}
                         </Typography>
                       </Box>
+
                     </CardContent>
                   </Card>
                 ))}
@@ -375,14 +369,13 @@ export default function ProfessorCourseDetail() {
                 </Typography>
                 <Button
                   variant="contained"
-                  startIcon={<AddIcon />}
                   onClick={handleAddLecture}
                 >
                   Add Lecture
                 </Button>
               </Box>
-              <Box style={{ maxHeight: '400px', overflow: 'auto' }}>
-                {lectures.map((lecture) => (
+              <Box>
+                {combinedLectures.map((lecture) => (
                   <Card key={lecture.id} style={{ marginBottom: '8px' }}>
                     <CardContent>
                       <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -390,16 +383,17 @@ export default function ProfessorCourseDetail() {
                           {lecture.name}
                         </Typography>
                         <Box>
-                          <IconButton onClick={() => handleEditLecture(lecture)}>
-                            <EditIcon />
+                          <IconButton onClick={() => handleAddLecture(lecture)}>
                           </IconButton>
-                          <IconButton onClick={() => handleDeleteLecture(lecture.id)}>
-                            <DeleteIcon />
+                          <IconButton
+                            onClick={() => navigate(`/professor/lms/course/${courseId}/lecture/${lecture.id}/submissions`)}
+                            color="primary"
+                          >
                           </IconButton>
                         </Box>
                       </Box>
                       <Typography variant="body1" color="text.secondary">
-                        {lecture.description}
+                        {lecture.description || 'Click to add lecture'}
                       </Typography>
                       <Box style={{ marginTop: '16px' }}>
                         <Typography variant="subtitle1">Materials:</Typography>
@@ -420,6 +414,17 @@ export default function ProfessorCourseDetail() {
                               {sub.student.firstName} {sub.student.lastName} - {sub.submissionDate}
                             </Typography>
                           ))}
+                      </Box>
+                      <Box style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            navigate(`/professor/lms/course/${courseId}/lecture/${lecture.id}/submissions`);
+                          }}
+                        >
+                          View Submissions
+                        </Button>
                       </Box>
                     </CardContent>
                   </Card>
@@ -445,7 +450,6 @@ export default function ProfessorCourseDetail() {
                       <Button
                         key={lecture.id}
                         variant="outlined"
-                        startIcon={<CloudUploadIcon />}
                         onClick={() => handleUploadHomework(student.id, lecture.id)}
                         size="small"
                         style={{ marginTop: '4px', width: '100%' }}
@@ -510,7 +514,6 @@ export default function ProfessorCourseDetail() {
               <label htmlFor="material-upload">
                 <Button
                   variant="outlined"
-                  startIcon={<CloudUploadIcon />}
                   component="span"
                   style={{ marginTop: '8px' }}
                 >
