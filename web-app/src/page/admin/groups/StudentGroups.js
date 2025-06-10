@@ -43,29 +43,29 @@ export default function StudentGroups() {
     },
     {
       title: "Generation",
-      field: "generationId",
-      render: (rowData) => rowData.generationName || "N/A",
+      field: "generation", // optional, just for filtering/sorting
+      render: (rowData) => rowData.generationName || '',
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allGenerations?.data?.map((g) => ({ value: g.id, label: g.name })) || [],
+          allGenerations?.map((g) => ({ value: g, label: g.name })) || [],
           "id"
         ),
     },
     {
       title: "Semester",
-      field: "semesterId",
-      render: (rowData) => rowData.semesterName || "N/A",
+      field: "semester", // optional
+      render: (rowData) => rowData.semesterName || '',
       editComponent: (props) =>
         SelectTableCell(
           props,
           errorRef,
-          allSemesters?.data?.map((s) => ({ value: s.id, label: s.name })) || [],
+          allSemesters?.map((x) => ({ value: x, label: x.name })) || [],
           "id"
         ),
     },
-
+    
   ];
 
   return (
