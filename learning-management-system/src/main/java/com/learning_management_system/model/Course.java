@@ -39,7 +39,7 @@ public class Course extends BaseEntity {
     @Column(name = "type")
     private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "semester_id")
     private Semester semester;
 }
