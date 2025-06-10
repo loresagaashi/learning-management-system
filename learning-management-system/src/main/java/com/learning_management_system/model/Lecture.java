@@ -1,6 +1,7 @@
 package com.learning_management_system.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,6 +18,8 @@ public class Lecture extends BaseEntity {
     private String name;
     private LocalDate lectureDate;
     private String topic;
+
+    private List<Material> materials;
 
 
 }
