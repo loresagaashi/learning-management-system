@@ -1,6 +1,7 @@
-import { Box, Button, Grid, Stack, MenuItem, Select, TextField, Typography, Alert, FormControl, InputLabel } from "@mui/material";
+import { Box, Button, Grid, MenuItem, Select, TextField, Typography, Alert, FormControl, InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AdminScheduleCreate = () => {
   const [generations, setGenerations] = useState([]);
@@ -21,6 +22,8 @@ const AdminScheduleCreate = () => {
   ]);
   const [existingSchedule, setExistingSchedule] = useState([]);
   const [hasExistingSchedule, setHasExistingSchedule] = useState(false);
+  const [groupError, setGroupError] = useState(false);
+  const navigate = useNavigate();
 
   const semesterId = 2;
 
@@ -34,7 +37,18 @@ const AdminScheduleCreate = () => {
     if (selectedGeneration) {
       axios
         .get(`http://localhost:8080/student-groups/by-generation?generationName=${selectedGeneration}`)
-        .then((res) => setGroups(res.data));
+        .then((res) => {
+          setGroups(res.data);
+          setGroupError(res.data.length === 0);
+          console.log("GROUPS DATA:", res.data);
+        })
+        .catch(() => {
+          setGroups([]);
+          setGroupError(true);
+        });
+    } else {
+      setGroups([]);
+      setGroupError(false);
     }
   }, [selectedGeneration]);
 
@@ -73,6 +87,10 @@ const AdminScheduleCreate = () => {
     updatedEntries[index][field] = value;
     setScheduleEntries(updatedEntries);
   };
+  const handleRemoveEntry = (indexToRemove) => {
+    const updatedEntries = scheduleEntries.filter((_, index) => index !== indexToRemove);
+    setScheduleEntries(updatedEntries);
+  };
 
   const handleSubmit = () => {
     axios
@@ -81,7 +99,10 @@ const AdminScheduleCreate = () => {
         semesterId: semesterId,
         scheduleEntries,
       })
-      .then(() => alert("Schedule registered successfully!"))
+      .then(() => {
+        alert("Schedule registered successfully!");
+        navigate("/admin/view-schedule");
+      })
       .catch(() => alert("Error while registering schedule."));
   };
 
@@ -106,6 +127,12 @@ const AdminScheduleCreate = () => {
           ))}
         </Select>
       </FormControl>
+
+      {groupError && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          No groups found for the selected generation.
+        </Alert>
+      )}
 
       {groups.length > 0 && (
         <FormControl fullWidth margin="normal">
@@ -218,6 +245,17 @@ const AdminScheduleCreate = () => {
               onChange={(e) => handleChangeEntry(index, "room", e.target.value)}
               fullWidth
             />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => handleRemoveEntry(index)}
+              disabled={scheduleEntries.length === 1}
+              fullWidth
+            >
+              Remove
+            </Button>
           </Grid>
         </Grid>
       ))}
