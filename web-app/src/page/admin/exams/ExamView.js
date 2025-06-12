@@ -9,6 +9,9 @@ import { CourseService } from "../../../service/CourseService";
 import { ExamService } from "../../../service/ExamService";
 import { ProfessorService } from "../../../service/ProfessorService";
 import { QueryKeys } from "../../../service/QueryKeys";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { format, parseISO } from 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
 
 const courseService = new CourseService();
 const professorService = new ProfessorService();
@@ -38,7 +41,21 @@ export default function ExamView({}) {
     {
       title: "DateTime",
       field: "dateTime",
-      editComponent: (props) => TextFieldTableCell(props, errorRef),
+      render: (rowData) => rowData.dateTime ? format(new Date(rowData.dateTime), 'dd/MM/yyyy HH:mm') : '',
+      editComponent: (props) => (
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <DateTimePicker
+            value={props.value ? new Date(props.value) : null}
+            onChange={(newValue) => props.onChange(newValue)}
+            inputVariant="outlined"
+            format="yyyy-MM-dd HH:mm"
+            ampm={false}
+            showTodayButton
+            autoOk
+            error={Boolean(props.helperText)}
+          />
+        </MuiPickersUtilsProvider>
+      ),
     },
     {
       title: "Location",
@@ -46,18 +63,17 @@ export default function ExamView({}) {
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-  title: "Professor",
-  field: "professor",
-  render: (rowData) => rowData.professor?.firstName + " " + rowData.professor?.lastName,
-  editComponent: (props) =>
-    SelectTableCell(
-      props,
-      errorRef,
-      allProfessors?.map((x) => ({ value: x, label: x.firstName + " " + x.lastName })) || [],
-      "id"
-    ),
-}
-,
+      title: "Professor",
+      field: "professor",
+      render: (rowData) => rowData.professor?.firstName + " " + rowData.professor?.lastName,
+      editComponent: (props) =>
+        SelectTableCell(
+          props,
+          errorRef,
+          allProfessors?.map((x) => ({ value: x, label: x.firstName + " " + x.lastName })) || [],
+          "id"
+        ),
+    },
     {
       title: "Course",
       field: "course",
