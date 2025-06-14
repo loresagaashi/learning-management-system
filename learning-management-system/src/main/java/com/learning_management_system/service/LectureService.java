@@ -1,5 +1,7 @@
 package com.learning_management_system.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.learning_management_system.model.Lecture;
@@ -11,4 +13,8 @@ public class LectureService extends BasicServiceOperations<LectureRepository, Le
     public LectureService(LectureRepository repository){
         super(repository);
     }
+    public List<Lecture> findByCourseId(Long courseId) {
+        return repository.findByCourseId(courseId);
+    }
+    
 }
