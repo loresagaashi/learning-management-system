@@ -19,7 +19,4 @@ public class Lecture extends BaseEntity {
     private LocalDate lectureDate;
     private String topic;
 
-    // private List<Material> materials;
-
-
 }

@@ -38,12 +38,17 @@ export default function MaterialsView({}) {
         ),
     },
     {
-      title: 'File Url',
+      title: 'File',
       field: 'fileUrl',
+      render: rowData => rowData.fileUrl ? (
+        <a href={rowData.fileUrl} target="_blank" rel="noopener noreferrer">
+          {rowData.fileUrl.split('/').pop()}
+        </a>
+      ) : '—',
       editComponent: props => (
         <input
-          type={"file"}
-          onChange={event => props.onChange(event.target.files[0].name)}
+          type="file"
+          onChange={event => props.onChange(event.target.files[0])}
         />
       )
     },
