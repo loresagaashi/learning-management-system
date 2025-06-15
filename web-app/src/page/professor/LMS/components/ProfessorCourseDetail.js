@@ -87,51 +87,10 @@ export default function ProfessorCourseDetail() {
   }
 };
 
-
   const { isLoading, isError, data: allCourses } = useQuery(
     QueryKeys.COURSE,
     () => courseService.findAll()
   );
-
-  React.useEffect(() => {
-    const fetchCourseData = async () => {
-      try {
-        setLoading(true);
-        if (!courseId && courses?.length > 0) {
-          const firstCourse = allCourses[0];
-          navigate(`/professor/lms/course/${firstCourse.id}`);
-          return;
-        }
-
-        // Fetch course details
-        const courseResponse = await courseService.findById(courseId);
-        setCourse(courseResponse);
-        setSelectedCourse(courseResponse);
-
-        // Fetch professors
-        const professorsResponse = await courseService.getProfessorsByCourse(courseId);
-        setProfessors(professorsResponse || []);
-
-        // Fetch lectures
-        const lecturesResponse = await lectureService.getLecturesByCourse(courseId);
-        setLectures(lecturesResponse || []);
-
-        // // Fetch students
-        // const studentsResponse = await courseService.getStudentsByCourse(courseId);
-        // setStudents(studentsResponse || []);
-
-        // // Fetch homework submissions
-        // const submissionsResponse = await courseService.getHomeworkSubmissions(courseId);
-        // setHomeworkSubmissions(submissionsResponse || []);
-      } catch (error) {
-        console.error('Error fetching course data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourseData();
-  }, [courseId, courses, navigate]);
 
   React.useEffect(() => {
     fetchCourseData();
