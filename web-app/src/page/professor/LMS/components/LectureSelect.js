@@ -7,28 +7,9 @@ import {
   CardMedia,
   styled
 } from '@mui/material';
-
-// Category data with images and descriptions
-const categoryData = {
-  "Shkenca Kompjuterike dhe Inxhinieri": {
-    image: 'https://images.pexels.com/photos/270366/pexels-photo-270366.jpeg'
-  },
-  "Menaxhment, Biznes dhe Ekonomi": {
-    image: 'https://images.pexels.com/photos/209224/pexels-photo-209224.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
-  "Juridik": {
-    image: 'https://images.pexels.com/photos/5668473/pexels-photo-5668473.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
-  "Inxhinieri Ndertimore": {
-    image: 'https://images.pexels.com/photos/32277924/pexels-photo-32277924/free-photo-of-workers-climbing-high-steel-scaffolding-structure.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
-  "Sisteme te Informacionit": {
-    image: 'https://images.pexels.com/photos/9951077/pexels-photo-9951077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  },
-  "Mekatronike": {
-    image: 'https://images.pexels.com/photos/8294620/pexels-photo-8294620.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
-  }
-};
+import { QueryKeys } from '../../../../service/QueryKeys';
+import { OrientationService } from '../../../../service/OrientationService';
+import { useQuery } from 'react-query';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: '100%',
@@ -54,40 +35,51 @@ const StyledCardContent = styled(CardContent)(({ theme }) => ({
   },
 }));
 
-const LectureSelect = ({ value, onChange, options }) => {
+const orientationService = new OrientationService();
+
+const LectureSelect = ({ value, onChange }) => {
   const [selectedCategory, setSelectedCategory] = useState(value);
+
+  const { data: allOrientations = [], isLoading, isError } = useQuery(QueryKeys.ORIENTATION, 
+    () => orientationService.findAll()
+  );
+
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isError) return <Typography>Error loading orientations.</Typography>;
 
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
         Select Category
       </Typography>
-      <Box sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 2,
-        mt: 2,
-        '@media (max-width: 768px)': {
-          gridTemplateColumns: 'repeat(2, 1fr)',
-        },
-        '@media (max-width: 480px)': {
-          gridTemplateColumns: '1fr',
-        },
-      }}>
-        {options.map((option) => (
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 2,
+          mt: 2,
+          '@media (max-width: 768px)': {
+            gridTemplateColumns: 'repeat(2, 1fr)',
+          },
+          '@media (max-width: 480px)': {
+            gridTemplateColumns: '1fr',
+          },
+        }}
+      >
+        {allOrientations.map((orientation) => (
           <StyledCard
-            key={option}
-            className={selectedCategory === option ? 'Mui-selected' : ''}
+            key={orientation.id}
+            className={selectedCategory === orientation.name ? 'Mui-selected' : ''}
             onClick={() => {
-              setSelectedCategory(option);
-              onChange(option);
+              setSelectedCategory(orientation.name);
+              onChange(orientation.name);
             }}
           >
             <CardMedia
               component="img"
               height="140"
-              image={categoryData[option]?.image || '/default-category-image.jpg'}
-              alt={option}
+              image = 'https://images.pexels.com/photos/270366/pexels-photo-270366.jpeg'
+              alt={orientation.name}
               sx={{
                 objectFit: 'cover',
                 borderRadius: '4px',
@@ -95,7 +87,7 @@ const LectureSelect = ({ value, onChange, options }) => {
             />
             <StyledCardContent>
               <Typography variant="h6" component="div">
-                {option}
+                {orientation.name}
               </Typography>
             </StyledCardContent>
           </StyledCard>
