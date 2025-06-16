@@ -12,31 +12,41 @@ export default function CustomMaterialTable({
   service,
   columns,
   errorRef,
-  disableDeleteAction 
+  disableDeleteAction,
+  onError,
 }) {
   const theme = useTheme();
-  const { isLoading, data, refetch } = useQuery(queryKey, () =>
-    service.findAll(),
-  );
+  const { isLoading, data, refetch } = useQuery(queryKey, () => service.findAll());
+
   const { mutateAsync: createRecord } = useMutation(
     (payload) => service.create(payload),
     {
       onSuccess: onSuccessReset,
-      onError: (e) => (errorRef.current = e),
-    },
+      onError: (error) => {
+        if (errorRef) errorRef.current = error;
+        if (onError) onError(error);
+      },
+    }
   );
   const { mutateAsync: updateRecord } = useMutation(
     (payload) => service.update(payload),
     {
       onSuccess: onSuccessReset,
-      onError: (e) => (errorRef.current = e),
-    },
+      onError: (error) => {
+        if (errorRef) errorRef.current = error;
+        if (onError) onError(error);
+      },
+    }
   );
+
   const { mutateAsync: deleteRecord } = useMutation(
     (payload) => service.delete(payload),
     {
       onSuccess: onSuccessReset,
-      onError: (e) => (errorRef.current = e),
+      onError: (error) => {
+        if (errorRef) errorRef.current = error;
+        if (onError) onError(error);
+      },
     }
   );
 
@@ -48,8 +58,26 @@ export default function CustomMaterialTable({
   }
 
   function resetErrors() {
-    errorRef.current = null;
+    if (errorRef) errorRef.current = null;
   }
+
+  const handleRowAdd = async (newData) => {
+    try {
+      await createRecord(newData);
+    } catch (error) {
+      if (onError) onError(error);
+      return Promise.reject(error);
+    }
+  };
+
+  const handleRowUpdate = async (newData, oldData) => {
+    try {
+      await updateRecord(newData);
+    } catch (error) {
+      if (onError) onError(error);
+      return Promise.reject(error);
+    }
+  };
 
   const handleDelete = (id) => {
     setSelectedItemId(id);
@@ -61,7 +89,7 @@ export default function CustomMaterialTable({
       setSelectedItemId(null);
       return true;
     } catch (error) {
-      console.error("Error deleting record:", error);
+      if (onError) onError(error);
       return false;
     }
   };
@@ -70,57 +98,51 @@ export default function CustomMaterialTable({
     setSelectedItemId(null);
   };
 
-  const actions = disableDeleteAction ? [] : [
-    {
-      icon: DeleteIcon,
-      tooltip: "Delete",
-      onClick: (event, rowData) => handleDelete(rowData.id),
-    },
-  ];
+  const actions = disableDeleteAction
+    ? []
+    : [
+        {
+          icon: DeleteIcon,
+          tooltip: "Delete",
+          onClick: (event, rowData) => handleDelete(rowData.id),
+        },
+      ];
 
   return (
     <>
-    <MaterialTable
-      style={{
-        margin: "2em",
-      }}
-      isLoading={isLoading}
-      localization={{
-        header: {
-          actions: "",
-        },
-      }}
-      title={
-        <Typography
-          variant={"h4"}
-          style={{
-            whiteSpace: "normal",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            padding: "0.5em",
-          }}
-        >
-          {title}
-        </Typography>
-      }
-      columns={columns}
-      data={data}
-      options={{
-        actionsColumnIndex: -1,
-        pageSize: 10,
-        headerStyle: {
-          backgroundColor: "transparent",
-        },
-        paginationType: "stepped",
-      }}
-      editable={{
-        onRowAdd: createRecord,
-        onRowUpdate: updateRecord,
-        onRowUpdateCancelled: resetErrors,
-        onRowAddCancelled: resetErrors,
-      }}
-      actions={actions} 
-    />
+      <MaterialTable
+        style={{ margin: "2em" }}
+        isLoading={isLoading}
+        localization={{ header: { actions: "" } }}
+        title={
+          <Typography
+            variant={"h4"}
+            style={{
+              whiteSpace: "normal",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              padding: "0.5em",
+            }}
+          >
+            {title}
+          </Typography>
+        }
+        columns={columns}
+        data={data}
+        options={{
+          actionsColumnIndex: -1,
+          pageSize: 10,
+          headerStyle: { backgroundColor: "transparent" },
+          paginationType: "stepped",
+        }}
+        editable={{
+          onRowAdd: handleRowAdd,
+          onRowUpdate: handleRowUpdate,
+          onRowUpdateCancelled: resetErrors,
+          onRowAddCancelled: resetErrors,
+        }}
+        actions={actions}
+      />
       <AlertDialog
         open={Boolean(selectedItemId)}
         onClose={handleCloseDialog}

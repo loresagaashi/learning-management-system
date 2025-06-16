@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -31,7 +29,7 @@ public class Semester extends BaseEntity {
     private Generation generation;
 
     @Column(name = "active")
-    private Boolean active=true ;
+    private Boolean active;
 
 
     @OneToMany(mappedBy = "semester")

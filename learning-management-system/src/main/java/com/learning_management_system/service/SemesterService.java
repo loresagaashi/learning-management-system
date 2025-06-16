@@ -26,7 +26,7 @@ public class SemesterService extends BasicServiceOperations<SemesterRepository, 
             long activeCount = semesterRepository.countByGenerationAndActiveIsTrue(semester.getGeneration());
             if (semester.getId() == null) {
                 if (activeCount >= 1) {
-                    throw new IllegalStateException("Mund të jenë vetëm 1 semestre aktive për këtë gjeneratë.");
+                    throw new IllegalStateException("There can only be one active semester for this generation.");
                 }
             } else {
 
@@ -36,7 +36,7 @@ public class SemesterService extends BasicServiceOperations<SemesterRepository, 
                     boolean isActive = semester.getActive();
 
                     if (!wasActive && isActive && activeCount >= 1) {
-                        throw new IllegalStateException("Mund të jenë vetëm 1 semestre aktive për këtë gjeneratë.");
+                        throw new IllegalStateException("There can only be one active semester for this generation.");
                     }
                 }
             }
