@@ -34,14 +34,7 @@ public class StudentGroupService extends BasicServiceOperations<StudentGroupRepo
     }
 
     public List<StudentGroup1> getAllStudentGroups() {
-        List<StudentGroup1> groups = studentGroupRepository.findAllGroupsWithoutStudents();
-
-//        for (StudentGroup group : groups) {
-//            List<Long> studentIds = studentGroupRepository.findStudentIdsByGroupId(group.getId());
-//            group.setStudentIds(studentIds);
-//        }
-
-        return groups;
+        return studentGroupRepository.findAllGroupsWithoutStudents();
     }
 
 }

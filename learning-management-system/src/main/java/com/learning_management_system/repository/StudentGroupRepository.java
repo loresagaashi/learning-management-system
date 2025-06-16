@@ -28,12 +28,13 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long
     @Query("SELECT new com.learning_management_system.data.studentGroup.StudentGroup1(" +
             "sg.id, sg.name, sg.capacity, " +
             "g.id, g.name, " +
-            "s.id, s.name, " +
-            "NULL)" +
-            " FROM StudentGroup sg " +
+            "s.id, s.name, s.season, s.startDate, s.endDate, g.name, s.active) " +
+            "FROM StudentGroup sg " +
             "JOIN sg.generation g " +
             "LEFT JOIN sg.semester s")
     List<StudentGroup1> findAllGroupsWithoutStudents();
+
+
 
 
     @Query("SELECT s.id FROM Student s WHERE s.group.id = :groupId")
