@@ -1,6 +1,7 @@
 package com.learning_management_system.controller;
 
 import com.learning_management_system.data.semester.SemesterDTO;
+import com.learning_management_system.data.semester.SemesterDTO1;
 import com.learning_management_system.model.Semester;
 import com.learning_management_system.model.Generation;
 import com.learning_management_system.repository.SemesterRepository;
@@ -53,7 +54,7 @@ public class SemesterController extends BasicControllerOperations<SemesterServic
 
 
     @GetMapping
-    public ResponseEntity<List<SemesterDTO>> getAllSemesters() {
+    public ResponseEntity<List<SemesterDTO1>> getAllSemesters() {
         return ResponseEntity.ok(semesterService.getAllWithGenerationName());
     }
 

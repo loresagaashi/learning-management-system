@@ -1,6 +1,7 @@
 package com.learning_management_system.repository;
 
 import com.learning_management_system.data.semester.SemesterDTO;
+import com.learning_management_system.data.semester.SemesterDTO1;
 import com.learning_management_system.model.Generation;
 import com.learning_management_system.model.Semester;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,10 +20,12 @@ public interface SemesterRepository extends JpaRepository<Semester, Long> {
         "FROM Semester s WHERE s.generation.name = :generationName and s.active=true ")
 List<SemesterDTO> findSemestersByGenerationName(@Param("generationName") String generationName);
 
-        @Query("SELECT new com.learning_management_system.data.semester.SemesterDTO(" +
-                        "s.id, s.name, s.season, s.startDate, s.endDate, g.name ,s.active) " +
-                        "FROM Semester s JOIN s.generation g order by s.id desc ")
-        List<SemesterDTO> findAllWithGenerationName();
+        @Query("SELECT new com.learning_management_system.data.semester.SemesterDTO1(" +
+                "s.id, s.name, s.season, s.startDate, s.endDate, " +
+                "g.id, g.name, s.active) " +
+                "FROM Semester s JOIN s.generation g ORDER BY s.id DESC")
+        List<SemesterDTO1> findAllWithGenerationName();
+
 
         long countByGenerationAndActiveIsTrue(Generation generation);
 
