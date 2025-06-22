@@ -2,21 +2,33 @@ import { BaseService } from "./BaseService";
 
 export class LectureService extends BaseService {
   constructor() {
-    super("/lectures");  // matches backend controller @RequestMapping("/lectures")
+    super("/lectures");
   }
 
   // Get all lectures by courseId
   getLecturesByCourse(courseId) {
-    // Assuming backend GET /lectures/course/{courseId}
     return this.client.get(`${this.requestMapping}/course/${courseId}`)
       .then(res => res.data);
   }
 
-  // Create new lecture (example)
+  // Create new lecture with course association
   createLecture(lectureData) {
-    return this.client.post(this.requestMapping, lectureData)
+    return this.client.post(`${this.requestMapping}/create`, lectureData)
       .then(res => res.data);
   }
 
-  // Add other methods as needed...
+  // Update existing lecture
+  updateLecture(lectureData) {
+    return this.client.put(`${this.requestMapping}/${lectureData.id}`, lectureData)
+      .then(res => res.data);
+  }
+
+  // Delete lecture
+  deleteLecture(lectureId) {
+    return this.client.delete(`${this.requestMapping}/${lectureId}`)
+      .then(res => res.data);
+  }
 }
+
+
+

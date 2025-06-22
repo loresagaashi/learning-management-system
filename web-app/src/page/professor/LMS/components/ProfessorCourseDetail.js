@@ -41,12 +41,10 @@ export default function ProfessorCourseDetail() {
   const [professors, setProfessors] = React.useState([]);
   const [lectures, setLectures] = React.useState([]);
   const [students, setStudents] = React.useState([]);
-  const [homeworkSubmissions, setHomeworkSubmissions] = React.useState([]);
   const [selectedLecture, setSelectedLecture] = React.useState(null);
   const [openLectureDialog, setOpenLectureDialog] = React.useState(false);
   const [lectureName, setLectureName] = React.useState('');
   const [lectureDescription, setLectureDescription] = React.useState('');
-  const [lectureMaterials, setLectureMaterials] = React.useState([]);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [courses, setCourses] = React.useState([]);
@@ -122,13 +120,9 @@ export default function ProfessorCourseDetail() {
     if (lectureOrEvent) {
       setSelectedLecture(lectureOrEvent);
       setLectureName(lectureOrEvent.name);
-      setLectureDescription(lectureOrEvent.description);
-      setLectureMaterials(lectureOrEvent.materials || []);
     } else {
       setSelectedLecture(null);
       setLectureName('');
-      setLectureDescription('');
-      setLectureMaterials([]);
     }
   
     setOpenLectureDialog(true);
@@ -138,8 +132,6 @@ export default function ProfessorCourseDetail() {
   const handleEditLecture = (lecture) => {
     setSelectedLecture(lecture);
     setLectureName(lecture.name);
-    setLectureDescription(lecture.description);
-    setLectureMaterials(lecture.materials || []);
     setOpenLectureDialog(true);
   };
 
@@ -155,15 +147,6 @@ export default function ProfessorCourseDetail() {
     }
   };
 
-  const handleAddMaterial = () => {
-    setLectureMaterials([...lectureMaterials, { name: '', url: '' }]);
-  };
-
-  const handleMaterialChange = (index, field, value) => {
-    const materials = [...lectureMaterials];
-    materials[index][field] = value;
-    setLectureMaterials(materials);
-  };
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -172,41 +155,21 @@ export default function ProfessorCourseDetail() {
     }
   };
 
-  const handleUploadMaterial = async () => {
-    if (!selectedFile) return;
-
-    try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      formData.append('courseId', courseId);
-
-      const response = await courseService.uploadMaterial(formData);
-      
-      // Add the uploaded material to the list
-      setLectureMaterials(prevMaterials => [
-        ...prevMaterials,
-        {
-          name: selectedFile.name,
-          url: response.url // Assuming the backend returns a URL for the uploaded file
-        }
-      ]);
-      
-      setSelectedFile(null);
-    } catch (error) {
-      console.error('Error uploading material:', error);
-    }
-  };
 
   const handleSaveLecture = async () => {
+    if (!lectureName.trim()) {
+      alert('Please enter a lecture name');
+      return;
+    }
+
     try {
       setLoading(true);
-  
+      
       const lectureData = {
-        id: selectedLecture?.id,   // may be undefined if new
+        id: selectedLecture?.id,
         name: lectureName,
-        description: lectureDescription,
-        materials: lectureMaterials,
-        courseId: courseId
+        course: { id: parseInt(courseId, 10) },
+        lectureDate: new Date().toISOString()
       };
   
       if (lectureData.id) {
@@ -215,35 +178,19 @@ export default function ProfessorCourseDetail() {
         await lectureService.createLecture(lectureData);
       }
   
-      await fetchCourseData(); // refresh the data
+      // Reset form and refresh data
+      setLectureName('');
+      setSelectedLecture(null);
+      await fetchCourseData();
       setOpenLectureDialog(false);
     } catch (error) {
       console.error('Error saving lecture:', error);
+      alert('Failed to save lecture. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-  
-  const handleUploadHomework = async (studentId, lectureId) => {
-    try {
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.onchange = async (e) => {
-        const file = e.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('studentId', studentId);
-        formData.append('lectureId', lectureId);
-        formData.append('courseId', courseId);
 
-        await courseService.uploadHomework(formData);
-        await fetchCourseData();
-      };
-      fileInput.click();
-    } catch (error) {
-      console.error('Error uploading homework:', error);
-    }
-  };
 
   return (
     <Box style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', height: '100vh', overflowY: 'auto' }}>
@@ -310,7 +257,7 @@ export default function ProfessorCourseDetail() {
                 Other Courses
               </Typography>
               <Box style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '16px' }}>
-                {allCourses?.map((course) => (
+              {(Array.isArray(allCourses) ? allCourses : []).map((course) => (
                   <Card key={course.id} onClick={() => navigate(`/professor/lms/course/${course.id}`)}>
                     <CardContent>
                       <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -362,42 +309,12 @@ export default function ProfessorCourseDetail() {
                       <Typography variant="body1" color="text.secondary">
                         {lecture.description || 'Click to add lecture'}
                       </Typography>
-                      <Box style={{ marginTop: '16px' }}>
-                        <Typography variant="subtitle1">Materials:</Typography>
-                        {lecture.materials?.map((material, index) => (
-                          <Typography key={index} variant="body2" color="text.secondary">
-                            <a href={material.url} target="_blank" rel="noopener noreferrer">
-                              {material.name}
-                            </a>
-                          </Typography>
-                        ))}
-                      </Box>
-                      <Box style={{ marginTop: '16px' }}>
-                        <Typography variant="subtitle1">Homework Submissions:</Typography>
-                        {homeworkSubmissions
-                          .filter(sub => sub.lectureId === lecture.id)
-                          .map(sub => (
-                            <Typography key={sub.id} variant="body2" color="text.secondary">
-                              {sub.student.firstName} {sub.student.lastName} - {sub.submissionDate}
-                            </Typography>
-                          ))}
-                      </Box>
-                      <Box style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            navigate(`/professor/lms/course/${courseId}/lecture/${lecture.id}/submissions`);
-                          }}
-                        >
-                          View Submissions
-                        </Button>
-                      </Box>
+                    
                     </CardContent>
                   </Card>
                 ))}
               </Box>
-            </CardContent>
+              </CardContent>
           </Card>
         </Box>
 
@@ -413,17 +330,6 @@ export default function ProfessorCourseDetail() {
                     <Typography variant="body2" color="text.secondary" style={{ fontSize: '0.875rem' }}>
                       {student.firstName} {student.lastName}
                     </Typography>
-                    {lectures.map((lecture) => (
-                      <Button
-                        key={lecture.id}
-                        variant="outlined"
-                        onClick={() => handleUploadHomework(student.id, lecture.id)}
-                        size="small"
-                        style={{ marginTop: '4px', width: '100%' }}
-                      >
-                        Upload Homework
-                      </Button>
-                    ))}
                   </Box>
                 ))}
               </Box>
@@ -445,59 +351,7 @@ export default function ProfessorCourseDetail() {
               onChange={(e) => setLectureName(e.target.value)}
               margin="normal"
             />
-            <TextField
-              fullWidth
-              label="Description"
-              multiline
-              rows={4}
-              value={lectureDescription}
-              onChange={(e) => setLectureDescription(e.target.value)}
-              margin="normal"
-            />
-            <Box style={{ marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {lectureMaterials.map((material, index) => (
-                <Box key={index} style={{ width: '100%', marginBottom: '8px' }}>
-                  <TextField
-                    fullWidth
-                    label="Material Name"
-                    value={material.name}
-                    onChange={(e) => handleMaterialChange(index, 'name', e.target.value)}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Material URL"
-                    value={material.url}
-                    onChange={(e) => handleMaterialChange(index, 'url', e.target.value)}
-                    style={{ marginTop: '8px' }}
-                  />
-                </Box>
-              ))}
-              <input
-                type="file"
-                id="material-upload"
-                style={{ display: 'none' }}
-                onChange={handleFileSelect}
-              />
-              <label htmlFor="material-upload">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  style={{ marginTop: '8px' }}
-                >
-                  {selectedFile ? selectedFile.name : 'Upload Material'}
-                </Button>
-              </label>
-              {selectedFile && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUploadMaterial}
-                  style={{ marginTop: '8px' }}
-                >
-                  Upload
-                </Button>
-              )}
-            </Box>
+            
           </Box>
         </DialogContent>
         <DialogActions>
