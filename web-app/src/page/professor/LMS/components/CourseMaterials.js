@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box, CircularProgress } from '@mui/material';
+import { Card, CardContent, Typography, CircularProgress } from '@material-ui/core';
 
 export default function CourseMaterials({ courses, courseId, navigate }) {
   // Ensure courses is always an array
@@ -16,7 +16,7 @@ export default function CourseMaterials({ courses, courseId, navigate }) {
             No other courses available
           </Typography>
         ) : (
-          <Box style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '16px' }}>
             {safeCourses.map((course) => (
               <Card 
                 key={course.id} 
@@ -24,15 +24,15 @@ export default function CourseMaterials({ courses, courseId, navigate }) {
                 style={{ cursor: 'pointer', '&:hover': { boxShadow: 3 } }}
               >
                 <CardContent>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Typography variant="body1">
                       {course.name || 'Unnamed Course'}
                     </Typography>
-                  </Box>
+                  </div>
                 </CardContent>
               </Card>
             ))}
-          </Box>
+          </div>
         )}
       </CardContent>
     </Card>

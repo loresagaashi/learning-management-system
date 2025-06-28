@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,5 +29,8 @@ public class Material {
     private String fileUrl;
 
     private String description;
+
+    @CreatedDate
+    private LocalDateTime createdOn;
 
 }

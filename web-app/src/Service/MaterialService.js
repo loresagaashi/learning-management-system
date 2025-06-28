@@ -17,4 +17,12 @@ export class MaterialService extends BaseService {
     const response = await axios.post(`${this.baseUrl}/save`, material);
     return response.data;
   }
+  
+  async getMaterialsByLecture(lectureId) {
+    return this.client.get(`${this.requestMapping}/lecture/${lectureId}`);
+  }
+  
+  async deleteMaterial(materialId) {
+    return this.client.delete(`${this.requestMapping}/${materialId}`);
+  }
 }
