@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,23 +44,10 @@ public class LectureController extends BasicControllerOperations<LectureService,
                     .body(error);
         }
     }
-
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<Lecture>> getLecturesByCourse(@PathVariable Long courseId) {
-        List<Lecture> lectures = service.findByCourseId(courseId);
-        return ResponseEntity.ok(lectures);
-    }
+public ResponseEntity<List<Lecture>> getLecturesByCourse(@PathVariable Long courseId) {
+    List<Lecture> lectures = service.findByCourseId(courseId);
+    return ResponseEntity.ok(lectures);
+}
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createLecture(@RequestBody Lecture lecture) {
-        try {
-            // The course association is handled in the service layer
-            Lecture createdLecture = service.save(lecture);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdLecture);
-        } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Failed to create lecture: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-        }
-    }
 }
