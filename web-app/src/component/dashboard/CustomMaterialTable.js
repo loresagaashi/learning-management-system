@@ -61,7 +61,13 @@ export default function CustomMaterialTable({
   
   if (data && typeof data === 'object') {
     console.log('CustomMaterialTable - data keys:', Object.keys(data));
-    console.log('CustomMaterialTable - data length:', data.length);
+    if (Array.isArray(data)) {
+      console.log('CustomMaterialTable - data length:', data.length);
+      if (data.length > 0) {
+        console.log('CustomMaterialTable - first item:', data[0]);
+        console.log('CustomMaterialTable - first item keys:', Object.keys(data[0]));
+      }
+    }
   }
 
   // Parse data if it's a string, otherwise use as-is
@@ -75,41 +81,8 @@ export default function CustomMaterialTable({
       console.error('CustomMaterialTable - failed to parse data:', parseError);
       console.error('CustomMaterialTable - data string length:', data.length);
       console.error('CustomMaterialTable - data string preview:', data.substring(0, 200));
-      
-      // Try to extract course information using regex patterns
-      try {
-        console.log('CustomMaterialTable - attempting regex extraction...');
-        
-        // Extract course objects using regex
-        const coursePattern = /"id":(\d+),"name":"([^"]+)","description":"([^"]+)"/g;
-        const courses = [];
-        let match;
-        
-        while ((match = coursePattern.exec(data)) !== null) {
-          const course = {
-            id: parseInt(match[1]),
-            name: match[2],
-            description: match[3],
-            // Add default values for other required fields
-            createdOn: new Date().toISOString(),
-            updatedOn: new Date().toISOString(),
-            professor: [],
-            orientation: { name: '' },
-            semester: { name: '' }
-          };
-          courses.push(course);
-        }
-        
-        if (courses.length > 0) {
-          console.log('CustomMaterialTable - successfully extracted courses via regex:', courses.length);
-          parsedData = courses;
-        } else {
-          throw new Error('No courses found via regex extraction');
-        }
-      } catch (fallbackError) {
-        console.error('CustomMaterialTable - regex extraction also failed:', fallbackError);
-        parsedData = [];
-      }
+      // If parsing fails, set to empty array instead of trying regex extraction
+      parsedData = [];
     }
   }
 
@@ -163,8 +136,26 @@ export default function CustomMaterialTable({
 
   const handleRowAdd = async (newData) => {
     try {
+      console.log('CustomMaterialTable - handleRowAdd - newData:', newData);
+      console.log('CustomMaterialTable - handleRowAdd - newData type:', typeof newData);
+      console.log('CustomMaterialTable - handleRowAdd - newData keys:', Object.keys(newData));
+      
+      // Log specific fields that might be causing issues
+      if (newData.professor) {
+        console.log('CustomMaterialTable - handleRowAdd - professor:', newData.professor);
+        console.log('CustomMaterialTable - handleRowAdd - professor type:', typeof newData.professor);
+        console.log('CustomMaterialTable - handleRowAdd - professor isArray:', Array.isArray(newData.professor));
+      }
+      if (newData.orientation) {
+        console.log('CustomMaterialTable - handleRowAdd - orientation:', newData.orientation);
+      }
+      if (newData.semester) {
+        console.log('CustomMaterialTable - handleRowAdd - semester:', newData.semester);
+      }
+      
       await createRecord(newData);
     } catch (error) {
+      console.error('CustomMaterialTable - handleRowAdd - error:', error);
       if (onError) onError(error);
       return Promise.reject(error);
     }
@@ -172,8 +163,27 @@ export default function CustomMaterialTable({
 
   const handleRowUpdate = async (newData, oldData) => {
     try {
+      console.log('CustomMaterialTable - handleRowUpdate - newData:', newData);
+      console.log('CustomMaterialTable - handleRowUpdate - oldData:', oldData);
+      console.log('CustomMaterialTable - handleRowUpdate - newData type:', typeof newData);
+      console.log('CustomMaterialTable - handleRowUpdate - newData keys:', Object.keys(newData));
+      
+      // Log specific fields that might be causing issues
+      if (newData.professor) {
+        console.log('CustomMaterialTable - handleRowUpdate - professor:', newData.professor);
+        console.log('CustomMaterialTable - handleRowUpdate - professor type:', typeof newData.professor);
+        console.log('CustomMaterialTable - handleRowUpdate - professor isArray:', Array.isArray(newData.professor));
+      }
+      if (newData.orientation) {
+        console.log('CustomMaterialTable - handleRowUpdate - orientation:', newData.orientation);
+      }
+      if (newData.semester) {
+        console.log('CustomMaterialTable - handleRowUpdate - semester:', newData.semester);
+      }
+      
       await updateRecord(newData);
     } catch (error) {
+      console.error('CustomMaterialTable - handleRowUpdate - error:', error);
       if (onError) onError(error);
       return Promise.reject(error);
     }

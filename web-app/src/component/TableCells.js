@@ -47,8 +47,12 @@ export const SelectTableCell = (props, errorRef, menuItems, equalOn) => {
       fullWidth
       sx={{ m: 1, minWidth: 120 }}
       error={errorRef.current && errorRef.current[props.columnDef.field]}
-      value={value || {}}
-      onChange={(e) => props.onChange(e.target.value)}
+      value={value || ""}
+      onChange={(e) => {
+        // For foreign key relationships, we need to send the full object
+        // The backend expects the complete entity object, not just the ID
+        props.onChange(e.target.value);
+      }}
       label={props.columnDef.title}
     >
       {menuItems.map((item, i) => (
