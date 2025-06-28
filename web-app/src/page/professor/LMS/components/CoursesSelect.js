@@ -41,7 +41,8 @@ const CoursesSelect = ({ value, onChange, semester }) => {
         </Typography>
       ) : (
         <Grid container spacing={3} sx={{ mt: 2 }}>
-          {courses.map((course) => (
+             {Array.isArray(courses) &&
+    courses.map((course) => (
             <Grid item xs={12} sm={6} md={4} key={course.id}>
               <CourseCard
                 course={course}
