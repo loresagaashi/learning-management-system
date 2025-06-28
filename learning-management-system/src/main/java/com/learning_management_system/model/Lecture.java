@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,5 +19,10 @@ public class Lecture extends BaseEntity {
     private String name;
     private LocalDate lectureDate;
     private String topic;
+
+    // Transient field to hold materials for JSON serialization
+    @Transient
+    @JsonIgnore
+    private List<Material> materials;
 
 }

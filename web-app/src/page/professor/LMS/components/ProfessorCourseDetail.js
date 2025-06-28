@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LectureSubmissions from './LectureSubmissions';
-import { 
-  Box, 
+import {
+  Box,
   Typography, 
   Card, 
   CardContent, 
@@ -21,17 +21,24 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Drawer
-} from '@mui/material';
+  Drawer,
+  Snackbar,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@material-ui/core';
 import { CourseService } from '../../../../service/CourseService';
 import { LectureService } from '../../../../service/LectureService';
 import UserContext from '../../../../context/UserContext';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../../service/QueryKeys';
 import CoursesSelect from './CoursesSelect';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import FileUploadComponent from '../../../../component/FileUploadComponent';
+import MaterialsList from '../../../../component/MaterialsList';
 
-const lectureService = new LectureService();
 const courseService = new CourseService();
+const lectureService = new LectureService();
 
 export default function ProfessorCourseDetail() {
   const { courseId } = useParams();
@@ -46,11 +53,13 @@ export default function ProfessorCourseDetail() {
   const [openLectureDialog, setOpenLectureDialog] = React.useState(false);
   const [lectureName, setLectureName] = React.useState('');
   const [lectureDescription, setLectureDescription] = React.useState('');
-  const [lectureMaterials, setLectureMaterials] = React.useState([]);
-  const [selectedFile, setSelectedFile] = React.useState(null);
+  const [selectedFiles, setSelectedFiles] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [selectedCourse, setSelectedCourse] = React.useState(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [lectureMaterials, setLectureMaterials] = React.useState({});
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 
   const combinedLectures = [...lectures];
 
@@ -85,11 +94,26 @@ export default function ProfessorCourseDetail() {
       console.log('Raw lectures response:', lecturesResponse); // Debug log
       console.log('Fetched lectures:', lecturesResponse); // Debug log
       setLectures(lecturesResponse || []);
+      
+      // Fetch materials for each lecture
+      const materialsMap = {};
+      for (const lecture of lecturesResponse) {
+        try {
+          const materials = await lectureService.getMaterialsByLecture(lecture.id);
+          materialsMap[lecture.id] = materials;
+        } catch (error) {
+          console.error(`Error fetching materials for lecture ${lecture.id}:`, error);
+          materialsMap[lecture.id] = [];
+        }
+      }
+      setLectureMaterials(materialsMap);
 
       // Optionally fetch students, submissions...
     } catch (error) {
       console.error('Error fetching course data:', error);
       console.error('Error details:', error.response?.data); // Debug log
+      setError('Failed to load course data');
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
     }
@@ -104,144 +128,109 @@ export default function ProfessorCourseDetail() {
     navigate('/choice/sign-in');
   };
 
-  if (loading) {
-    return (
-      <Box style={{ padding: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (!course) {
-    return <div>Loading...</div>;
-  }
-
-  const handleAddLecture = (lectureOrEvent) => {
-    // Ignore event object if passed instead of lecture
-    if (lectureOrEvent?.nativeEvent || lectureOrEvent?.target) {
-      lectureOrEvent = null;
-    }
-  
-    if (lectureOrEvent) {
-      setSelectedLecture(lectureOrEvent);
-      setLectureName(lectureOrEvent.name);
-      setLectureDescription(lectureOrEvent.description);
-      setLectureMaterials(lectureOrEvent.materials || []);
-    } else {
-      setSelectedLecture(null);
-      setLectureName('');
-      setLectureDescription('');
-      setLectureMaterials([]);
-    }
-  
+  const handleAddLecture = () => {
+    setSelectedLecture(null);
+    setLectureName('');
+    setLectureDescription('');
+    setSelectedFiles([]);
+    setError(null);
     setOpenLectureDialog(true);
   };
-  
 
-  const handleEditLecture = (lecture) => {
+  const handleEditLecture = async (lecture) => {
     setSelectedLecture(lecture);
     setLectureName(lecture.name);
-    setLectureDescription(lecture.description);
-    setLectureMaterials(lecture.materials || []);
+    setLectureDescription(lecture.topic || '');
+    setSelectedFiles([]);
+    setError(null);
     setOpenLectureDialog(true);
   };
 
   const handleDeleteLecture = async (lectureId) => {
     try {
       setLoading(true);
-      await lectureService.deleteLecture(lectureId);
+      await lectureService.delete(lectureId);
       await fetchCourseData();
     } catch (error) {
       console.error('Error deleting lecture:', error);
+      setError('Failed to delete lecture');
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleAddMaterial = () => {
-    setLectureMaterials([...lectureMaterials, { name: '', url: '' }]);
-  };
-
-  const handleMaterialChange = (index, field, value) => {
-    const materials = [...lectureMaterials];
-    materials[index][field] = value;
-    setLectureMaterials(materials);
-  };
-
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-    }
-  };
-
-  const handleUploadMaterial = async () => {
-    if (!selectedFile) return;
-
-    try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      formData.append('courseId', courseId);
-
-      const response = await courseService.uploadMaterial(formData);
-      
-      // Add the uploaded material to the list
-      setLectureMaterials(prevMaterials => [
-        ...prevMaterials,
-        {
-          name: selectedFile.name,
-          url: response.url // Assuming the backend returns a URL for the uploaded file
-        }
-      ]);
-      
-      setSelectedFile(null);
-    } catch (error) {
-      console.error('Error uploading material:', error);
     }
   };
 
   const handleSaveLecture = async () => {
     try {
       setLoading(true);
-  
-      const lectureData = {
-        id: selectedLecture?.id,   // may be undefined if new
-        name: lectureName,
-        topic: lectureDescription,
-        courseId: courseId
-      };
-  
-      console.log('Saving lecture data:', lectureData); // Debug log
-  
-      if (lectureData.id) {
-        await lectureService.updateLecture(lectureData);
-        console.log('Lecture updated successfully'); // Debug log
-      } else {
-        const createdLecture = await lectureService.createLecture(lectureData);
-        console.log('Lecture created successfully:', createdLecture); // Debug log
-        
-        // Test if we can fetch the created lecture by ID
-        if (createdLecture && createdLecture.id) {
-          console.log('Testing fetch of created lecture by ID:', createdLecture.id);
-          try {
-            const fetchedLecture = await lectureService.getLectureById(createdLecture.id);
-            console.log('Successfully fetched created lecture:', fetchedLecture);
-          } catch (fetchError) {
-            console.error('Failed to fetch created lecture by ID:', fetchError);
+      setError(null);
+
+      if (selectedLecture) {
+        // Update existing lecture - send the full lecture object with course
+        const lectureData = {
+          id: selectedLecture.id,
+          name: lectureName,
+          topic: lectureDescription,
+          course: course // Send the full course object instead of courseId
+        };
+
+        await lectureService.update(lectureData);
+        console.log('Lecture updated successfully');
+
+        // If there are new materials to upload, upload them
+        if (selectedFiles.length > 0) {
+          console.log('Uploading additional materials for existing lecture');
+          for (const fileItem of selectedFiles) {
+            const formData = new FormData();
+            formData.append('file', fileItem.file);
+            formData.append('lectureId', selectedLecture.id);
+            formData.append('description', fileItem.description || '');
+            
+            await lectureService.uploadMaterialForLecture(formData);
           }
+          console.log('Additional materials uploaded successfully');
+        }
+      } else {
+        // Create new lecture with materials
+        if (selectedFiles.length > 0) {
+          // Create lecture with materials
+          const formData = new FormData();
+          formData.append('name', lectureName);
+          formData.append('topic', lectureDescription);
+          formData.append('courseId', courseId);
+
+          // Add files and descriptions
+          selectedFiles.forEach((fileItem, index) => {
+            formData.append('files', fileItem.file);
+            formData.append('descriptions', fileItem.description || '');
+          });
+
+          await lectureService.createLectureWithMaterials(formData);
+          console.log('Lecture created with materials successfully');
+        } else {
+          // Create lecture without materials
+          const lectureData = {
+            name: lectureName,
+            topic: lectureDescription,
+            course: course // Send the full course object
+          };
+
+          await lectureService.create(lectureData);
+          console.log('Lecture created successfully');
         }
       }
-  
-      console.log('Refreshing course data...'); // Debug log
-      await fetchCourseData(); // refresh the data
+
+      await fetchCourseData();
       setOpenLectureDialog(false);
     } catch (error) {
       console.error('Error saving lecture:', error);
+      setError('Failed to save lecture');
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleUploadHomework = async (studentId, lectureId) => {
     try {
       const fileInput = document.createElement('input');
@@ -262,6 +251,30 @@ export default function ProfessorCourseDetail() {
       console.error('Error uploading homework:', error);
     }
   };
+
+  const handleFilesChange = (files) => {
+    setSelectedFiles(files);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  if (loading && !course) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box p={3}>
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', height: '100vh', overflowY: 'auto' }}>
@@ -309,13 +322,13 @@ export default function ProfessorCourseDetail() {
               <Typography variant="h6" gutterBottom>
                 Course Information
               </Typography>
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body1" color="textSecondary">
                 {course?.description || 'Select a course to view details'}
               </Typography>
               
               <Box style={{ marginTop: '16px' }}>
                 <Typography variant="subtitle1">Professors:</Typography>
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body1" color="textSecondary">
                   {professors.length > 0 ? professors.join(', ') : 'No professors'}
                 </Typography>
               </Box>
@@ -362,63 +375,56 @@ export default function ProfessorCourseDetail() {
               <Box>
                 {console.log('Rendering lectures, combinedLectures:', combinedLectures)} {/* Debug log */}
                 {combinedLectures.length === 0 ? (
-                  <Typography variant="body1" color="text.secondary" style={{ textAlign: 'center', padding: '20px' }}>
+                  <Typography variant="body1" color="textSecondary" style={{ textAlign: 'center', padding: '20px' }}>
                     No lectures found. Click "Add Lecture" to create your first lecture.
                   </Typography>
                 ) : (
                   combinedLectures.map((lecture) => (
-                    <Card key={lecture.id} style={{ marginBottom: '8px' }}>
-                      <CardContent>
-                        <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <Accordion key={lecture.id} style={{ marginBottom: '8px' }}>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
                           <Typography variant="h6">
                             {lecture.name}
                           </Typography>
                           <Box>
-                            <IconButton onClick={() => handleAddLecture(lecture)}>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditLecture(lecture);
+                              }}
+                            >
+                              <EditIcon />
                             </IconButton>
                             <IconButton
-                              onClick={() => navigate(`/professor/lms/course/${courseId}/lecture/${lecture.id}/submissions`)}
-                              color="primary"
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteLecture(lecture.id);
+                              }}
+                              color="secondary"
                             >
+                              <DeleteIcon />
                             </IconButton>
                           </Box>
                         </Box>
-                        <Typography variant="body1" color="text.secondary">
-                          {lecture.topic || 'Click to add lecture topic'}
-                        </Typography>
-                        <Box style={{ marginTop: '16px' }}>
-                          <Typography variant="subtitle1">Materials:</Typography>
-                          {lecture.materials?.map((material, index) => (
-                            <Typography key={index} variant="body2" color="text.secondary">
-                              <a href={material.url} target="_blank" rel="noopener noreferrer">
-                                {material.name}
-                              </a>
-                            </Typography>
-                          ))}
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box width="100%">
+                          <Typography variant="body2" color="textSecondary" gutterBottom>
+                            {lecture.topic || 'No topic specified'}
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                            Created: {new Date(lecture.createdOn).toLocaleDateString()}
+                          </Typography>
+                          
+                          <MaterialsList 
+                            materials={lectureMaterials[lecture.id] || []}
+                            showDelete={false}
+                          />
                         </Box>
-                        <Box style={{ marginTop: '16px' }}>
-                          <Typography variant="subtitle1">Homework Submissions:</Typography>
-                          {homeworkSubmissions
-                            .filter(sub => sub.lectureId === lecture.id)
-                            .map(sub => (
-                              <Typography key={sub.id} variant="body2" color="text.secondary">
-                                {sub.student.firstName} {sub.student.lastName} - {sub.submissionDate}
-                              </Typography>
-                            ))}
-                        </Box>
-                        <Box style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => {
-                              navigate(`/professor/lms/course/${courseId}/lecture/${lecture.id}/submissions`);
-                            }}
-                          >
-                            View Submissions
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
+                      </AccordionDetails>
+                    </Accordion>
                   ))
                 )}
               </Box>
@@ -435,7 +441,7 @@ export default function ProfessorCourseDetail() {
               <Box style={{ maxHeight: '300px', overflow: 'auto', marginTop: '8px' }}>
                 {students.map((student) => (
                   <Box key={student.id} style={{ marginBottom: '4px', width: '100%' }}>
-                    <Typography variant="body2" color="text.secondary" style={{ fontSize: '0.875rem' }}>
+                    <Typography variant="body2" color="textSecondary" style={{ fontSize: '0.875rem' }}>
                       {student.firstName} {student.lastName}
                     </Typography>
                     {lectures.map((lecture) => (
@@ -472,66 +478,40 @@ export default function ProfessorCourseDetail() {
             />
             <TextField
               fullWidth
-              label="Topic"
-              multiline
-              rows={4}
+              label="Lecture Description/Topic"
               value={lectureDescription}
               onChange={(e) => setLectureDescription(e.target.value)}
+              multiline
+              rows={3}
               margin="normal"
             />
-            <Box style={{ marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {lectureMaterials.map((material, index) => (
-                <Box key={index} style={{ width: '100%', marginBottom: '8px' }}>
-                  <TextField
-                    fullWidth
-                    label="Material Name"
-                    value={material.name}
-                    onChange={(e) => handleMaterialChange(index, 'name', e.target.value)}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Material URL"
-                    value={material.url}
-                    onChange={(e) => handleMaterialChange(index, 'url', e.target.value)}
-                    style={{ marginTop: '8px' }}
-                  />
-                </Box>
-              ))}
-              <input
-                type="file"
-                id="material-upload"
-                style={{ display: 'none' }}
-                onChange={handleFileSelect}
-              />
-              <label htmlFor="material-upload">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  style={{ marginTop: '8px' }}
-                >
-                  {selectedFile ? selectedFile.name : 'Upload Material'}
-                </Button>
-              </label>
-              {selectedFile && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUploadMaterial}
-                  style={{ marginTop: '8px' }}
-                >
-                  Upload
-                </Button>
-              )}
-            </Box>
+            
+            <FileUploadComponent
+              onFilesChange={handleFilesChange}
+              files={selectedFiles}
+            />
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenLectureDialog(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSaveLecture}>
-            Save
+          <Button
+            variant="contained"
+            onClick={handleSaveLecture}
+            disabled={loading || !lectureName.trim()}
+          >
+            {loading ? <CircularProgress size={20} /> : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={error}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      />
     </Box>
   );
 };

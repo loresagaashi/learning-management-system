@@ -24,42 +24,83 @@ public class MaterialController extends BasicMongoControllerOperations<MaterialS
     public MaterialController(MaterialService service) {
         super(service);
     }
+    
     @GetMapping("/all")
     public List<Material> findAll() {
-        return materialService.findAllWithLectureNames();
+        try {
+            System.out.println("MaterialController.findAll() called");
+            List<Material> materials = materialService.findAllWithLectureNames();
+            System.out.println("Found " + materials.size() + " materials");
+            return materials;
+        } catch (Exception e) {
+            System.err.println("Error in MaterialController.findAll(): " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch materials: " + e.getMessage());
+        }
     }
 
     @PostMapping("/save")
     public Material saveMaterialWithLecture(@RequestBody Material material) {
-        return materialService.saveMaterialWithLecture(material);
+        try {
+            System.out.println("MaterialController.saveMaterialWithLecture() called with material: " + material);
+            return materialService.saveMaterialWithLecture(material);
+        } catch (Exception e) {
+            System.err.println("Error in MaterialController.saveMaterialWithLecture(): " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save material: " + e.getMessage());
+        }
     }
+    
+    @GetMapping("/lecture/{lectureId}")
+    public List<Material> getMaterialsByLecture(@PathVariable Long lectureId) {
+        try {
+            System.out.println("MaterialController.getMaterialsByLecture() called with lectureId: " + lectureId);
+            return materialService.findByLectureId(lectureId);
+        } catch (Exception e) {
+            System.err.println("Error in MaterialController.getMaterialsByLecture(): " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch materials for lecture: " + e.getMessage());
+        }
+    }
+    
     @PostMapping("/upload")
-public ResponseEntity<?> uploadMaterial(@RequestParam("file") MultipartFile file,
-                                        @RequestParam("lectureId") Long lectureId,
-                                        @RequestParam(value = "description", required = false) String description) {
-                                            System.out.println("Received lectureId: " + lectureId);
-                                            try {
-        String uploadDir = "uploads/materials/";
-        Files.createDirectories(Paths.get(uploadDir));
-
-        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir + filename);
-        Files.write(filePath, file.getBytes());
-
-        Lecture lecture = materialService.getLectureById(lectureId);
-
-        Material material = new Material();
-        material.setFileUrl(filePath.toString());
-        material.setLectureId(lectureId);
-        material.setDescription(description);
-        material.setLecture(lecture);
-
-        materialService.save(material);
-
-        return ResponseEntity.ok(material); // ✅ return the saved Material
-    } catch (Exception e) {
-        return ResponseEntity.internalServerError().body("Upload failed: " + e.getMessage());
+    public ResponseEntity<?> uploadMaterial(@RequestParam("file") MultipartFile file,
+                                            @RequestParam("lectureId") Long lectureId,
+                                            @RequestParam(value = "description", required = false) String description) {
+        System.out.println("Received lectureId: " + lectureId);
+        try {
+            Material material = materialService.uploadMaterialForLecture(file, lectureId, description);
+            return ResponseEntity.ok(material);
+        } catch (Exception e) {
+            System.err.println("Error in MaterialController.uploadMaterial(): " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Upload failed: " + e.getMessage());
+        }
     }
-}
-
+    
+    @DeleteMapping("/{materialId}")
+    public ResponseEntity<?> deleteMaterial(@PathVariable String materialId) {
+        try {
+            System.out.println("MaterialController.deleteMaterial() called with materialId: " + materialId);
+            Material material = materialService.findById(materialId);
+            if (material == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Delete the physical file
+            if (material.getFileUrl() != null) {
+                Path filePath = Paths.get(material.getFileUrl().replace("/uploads/", "uploads/"));
+                Files.deleteIfExists(filePath);
+            }
+            
+            // Delete from database
+            materialService.deleteById(materialId);
+            
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.err.println("Error in MaterialController.deleteMaterial(): " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Delete failed: " + e.getMessage());
+        }
+    }
 }
