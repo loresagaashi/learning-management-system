@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
@@ -21,5 +22,6 @@ public class Professor extends UserAccount {
     private City city;
     
     @OneToMany(mappedBy = "professor")
+    @JsonIgnore
     private List<Course> courses;
 }
