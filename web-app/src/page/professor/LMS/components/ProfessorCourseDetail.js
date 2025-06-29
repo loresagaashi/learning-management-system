@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LectureSubmissions from './LectureSubmissions';
+import AssignmentGrading from './AssignmentGrading';
 import {
   Box,
   Typography, 
@@ -38,7 +39,7 @@ import UserContext from '../../../../context/UserContext';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../../service/QueryKeys';
 import CoursesSelect from './CoursesSelect';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon, ExpandMore as ExpandMoreIcon, Assignment as AssignmentIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon, ExpandMore as ExpandMoreIcon, Assignment as AssignmentIcon, CheckCircle as CheckCircleIcon, Grade as GradeIcon } from '@material-ui/icons';
 import FileUploadComponent from '../../../../component/FileUploadComponent';
 import MaterialsList from '../../../../component/MaterialsList';
 
@@ -147,7 +148,10 @@ export default function ProfessorCourseDetail() {
       // Fetch all submissions
       try {
         const submissionsResponse = await submissionService.findAll();
-        setSubmissions(submissionsResponse || []);
+        console.log('Submissions response:', submissionsResponse);
+        console.log('Submissions response type:', typeof submissionsResponse);
+        console.log('Is array:', Array.isArray(submissionsResponse));
+        setSubmissions(Array.isArray(submissionsResponse) ? submissionsResponse : []);
       } catch (error) {
         console.error('Error fetching submissions:', error);
         setSubmissions([]);
@@ -340,7 +344,15 @@ export default function ProfessorCourseDetail() {
     setOpenSubmissionsDialog(true);
   };
 
+  const handleGradeSubmissions = (assignment) => {
+    setSelectedAssignment(assignment);
+    setOpenSubmissionsDialog(true);
+  };
+
   const getSubmissionsForAssignment = (assignmentId) => {
+    if (!Array.isArray(submissions)) {
+      return [];
+    }
     return submissions.filter(submission => submission.assignment?.id === assignmentId);
   };
 
@@ -619,6 +631,17 @@ export default function ProfessorCourseDetail() {
                                     size="small"
                                     onClick={(e) => {
                                       e.stopPropagation();
+                                      handleGradeSubmissions(assignment);
+                                    }}
+                                    title="Grade Submissions"
+                                    color="primary"
+                                  >
+                                    <GradeIcon />
+                                  </IconButton>
+                                  <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
                                       handleEditAssignment(assignment);
                                     }}
                                   >
@@ -782,99 +805,24 @@ export default function ProfessorCourseDetail() {
       </Dialog>
 
       {/* Submissions Dialog */}
-      <Dialog open={openSubmissionsDialog} onClose={() => setOpenSubmissionsDialog(false)} maxWidth="md" fullWidth>
+      <Dialog open={openSubmissionsDialog} onClose={() => setOpenSubmissionsDialog(false)} maxWidth="lg" fullWidth>
         <DialogTitle>
-          Submissions for: {selectedAssignment?.title}
+          Grade Submissions for: {selectedAssignment?.title}
         </DialogTitle>
         <DialogContent>
           <Box style={{ marginTop: '16px' }}>
             {selectedAssignment && (
-              <Box>
-                <Typography variant="h6" gutterBottom>
-                  Assignment Details
-                </Typography>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {selectedAssignment.description || 'No description'}
-                </Typography>
-                <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
-                  Due Date: {new Date(selectedAssignment.dueDate).toLocaleDateString()}
-                </Typography>
-                
-                <Divider style={{ margin: '16px 0' }} />
-                
-                <Typography variant="h6" gutterBottom>
-                  Student Submissions
-                </Typography>
-                
-                {(() => {
-                  const assignmentSubmissions = getSubmissionsForAssignment(selectedAssignment.id);
-                  const submittedStudents = assignmentSubmissions.map(s => s.student?.id);
-                  const allStudents = students.filter(s => !submittedStudents.includes(s.id));
-                  
-                  return (
-                    <Box>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Submitted ({assignmentSubmissions.length}):
-                      </Typography>
-                      {assignmentSubmissions.length === 0 ? (
-                        <Typography variant="body2" color="textSecondary">
-                          No submissions yet.
-                        </Typography>
-                      ) : (
-                        assignmentSubmissions.map((submission) => (
-                          <Card key={submission.id} style={{ marginBottom: '8px' }}>
-                            <CardContent style={{ padding: '8px' }}>
-                              <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <Typography variant="body2">
-                                  {submission.student?.firstName} {submission.student?.lastName}
-                                </Typography>
-                                <Box display="flex" alignItems="center" gap={1}>
-                                  <Typography variant="caption" color="textSecondary">
-                                    {new Date(submission.submissionDate).toLocaleDateString()}
-                                  </Typography>
-                                  {submission.fileUrl && (
-                                    <Button
-                                      size="small"
-                                      variant="outlined"
-                                      onClick={() => window.open(submission.fileUrl, '_blank')}
-                                    >
-                                      Download
-                                    </Button>
-                                  )}
-                                </Box>
-                              </Box>
-                            </CardContent>
-                          </Card>
-                        ))
-                      )}
-                      
-                      <Typography variant="subtitle1" gutterBottom style={{ marginTop: '16px' }}>
-                        Not Submitted ({allStudents.length}):
-                      </Typography>
-                      {allStudents.length === 0 ? (
-                        <Typography variant="body2" color="textSecondary">
-                          All students have submitted.
-                        </Typography>
-                      ) : (
-                        allStudents.map((student) => (
-                          <Card key={student.id} style={{ marginBottom: '8px' }}>
-                            <CardContent style={{ padding: '8px' }}>
-                              <Typography variant="body2" color="textSecondary">
-                                {student.firstName} {student.lastName}
-                              </Typography>
-                            </CardContent>
-                          </Card>
-                        ))
-                      )}
-                    </Box>
-                  );
-                })()}
-              </Box>
+              <AssignmentGrading 
+                assignmentId={selectedAssignment.id}
+                assignmentTitle={selectedAssignment.title}
+              />
             )}
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenSubmissionsDialog(false)}>Close</Button>
+          <Button onClick={() => setOpenSubmissionsDialog(false)}>
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
 
