@@ -60,6 +60,7 @@ export default function StudentCourseDetail() {
   const [error, setError] = React.useState(null);
   const [lectureMaterials, setLectureMaterials] = React.useState({});
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [success, setSuccess] = React.useState(null);
   
   // New state for assignments and submissions
   const [assignments, setAssignments] = React.useState([]);
@@ -132,36 +133,6 @@ export default function StudentCourseDetail() {
         setAssignments([]);
       }
 
-      // Fetch student's submissions
-      try {
-        const submissionsResponse = await submissionService.findByStudentId(user?.user?.id);
-        setSubmissions(submissionsResponse || []);
-      } catch (error) {
-        console.error('Error fetching submissions:', error);
-        setSubmissions([]);
-      }
-
-      // Fetch grades for assignments
-      try {
-        const gradesMap = {};
-        const currentAssignments = await assignmentService.findByCourseId(courseId);
-        for (const assignment of currentAssignments || []) {
-          try {
-            const gradeResponse = await assignmentService.getStudentAssignmentGrade(assignment.id, user?.user?.id);
-            if (gradeResponse && gradeResponse.data) {
-              gradesMap[assignment.id] = gradeResponse.data.grade;
-            }
-          } catch (error) {
-            console.error(`Error fetching grade for assignment ${assignment.id}:`, error);
-            gradesMap[assignment.id] = null;
-          }
-        }
-        setAssignmentGrades(gradesMap);
-      } catch (error) {
-        console.error('Error fetching assignment grades:', error);
-        setAssignmentGrades({});
-      }
-
     } catch (error) {
       console.error('Error fetching course data:', error);
       console.error('Error details:', error.response?.data);
@@ -170,11 +141,52 @@ export default function StudentCourseDetail() {
     } finally {
       setLoading(false);
     }
-  }, [courseId, allCourses, navigate, user?.user?.id]);
+  }, [courseId, allCourses, navigate]);
 
   React.useEffect(() => {
     fetchCourseData();
   }, [fetchCourseData]);
+
+  // Refetch submissions and grades when user becomes available
+  React.useEffect(() => {
+    console.log('User context changed:', user);
+    console.log('User object structure:', JSON.stringify(user, null, 2));
+    
+    const userId = getUserId();
+    if (userId && courseId) {
+      console.log('User is available, fetching user-specific data for user ID:', userId);
+      // Only refetch user-specific data when user becomes available
+      const fetchUserData = async () => {
+        try {
+          // Fetch student's submissions
+          const submissionsResponse = await submissionService.findByStudentId(userId);
+          setSubmissions(Array.isArray(submissionsResponse) ? submissionsResponse : []);
+
+          // Fetch grades for assignments
+          const gradesMap = {};
+          const currentAssignments = await assignmentService.findByCourseId(courseId);
+          for (const assignment of currentAssignments || []) {
+            try {
+              const gradeResponse = await assignmentService.getStudentAssignmentGrade(assignment.id, userId);
+              if (gradeResponse && gradeResponse.data) {
+                gradesMap[assignment.id] = gradeResponse.data.grade;
+              }
+            } catch (error) {
+              console.error(`Error fetching grade for assignment ${assignment.id}:`, error);
+              gradesMap[assignment.id] = null;
+            }
+          }
+          setAssignmentGrades(gradesMap);
+        } catch (error) {
+          console.error('Error fetching user-specific data:', error);
+        }
+      };
+      
+      fetchUserData();
+    } else {
+      console.log('User not available or courseId missing:', { userId: !!userId, courseId: !!courseId });
+    }
+  }, [user, courseId]);
 
   const handleLogOut = () => {
     localStorage.removeItem('user');
@@ -183,6 +195,8 @@ export default function StudentCourseDetail() {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
+    setError(null);
+    setSuccess(null);
   };
 
   // New functions for assignment and submission management
@@ -190,6 +204,7 @@ export default function StudentCourseDetail() {
     setSelectedAssignment(assignment);
     setSelectedFiles([]);
     setError(null);
+    setSuccess(null);
     setOpenSubmissionDialog(true);
   };
 
@@ -198,34 +213,72 @@ export default function StudentCourseDetail() {
       setLoading(true);
       setError(null);
 
+      console.log('User data:', user);
+      console.log('Selected files:', selectedFiles);
+      console.log('Selected assignment:', selectedAssignment);
+
       if (!selectedFiles.length) {
         setError('Please select at least one file to submit');
         setSnackbarOpen(true);
         return;
       }
 
-      // Create submission data
-      const submissionData = {
-        assignment: selectedAssignment,
-        student: { id: user?.user?.id },
-        submissionDate: new Date().toISOString().split('T')[0]
-      };
+      const userId = getUserId();
+      if (!userId) {
+        setError('User not authenticated');
+        setSnackbarOpen(true);
+        return;
+      }
 
-      // For now, we'll create a basic submission
-      // In a real implementation, you'd upload files and get URLs
-      const submission = await submissionService.create(submissionData);
+      console.log('Uploading files for student ID:', userId);
+
+      // Upload each file
+      for (const fileItem of selectedFiles) {
+        const formData = new FormData();
+        formData.append('file', fileItem.file);
+        formData.append('assignmentId', selectedAssignment.id);
+        formData.append('studentId', userId);
+
+        console.log('Uploading file:', fileItem.file.name);
+        const result = await submissionService.uploadSubmission(formData);
+        console.log('Upload result:', result);
+      }
       
-      console.log('Submission created:', submission);
+      // Refetch user-specific data after successful submission
+      if (userId && courseId) {
+        try {
+          // Fetch updated submissions
+          const submissionsResponse = await submissionService.findByStudentId(userId);
+          setSubmissions(Array.isArray(submissionsResponse) ? submissionsResponse : []);
+
+          // Fetch updated grades
+          const gradesMap = {};
+          const currentAssignments = await assignmentService.findByCourseId(courseId);
+          for (const assignment of currentAssignments || []) {
+            try {
+              const gradeResponse = await assignmentService.getStudentAssignmentGrade(assignment.id, userId);
+              if (gradeResponse && gradeResponse.data) {
+                gradesMap[assignment.id] = gradeResponse.data.grade;
+              }
+            } catch (error) {
+              console.error(`Error fetching grade for assignment ${assignment.id}:`, error);
+              gradesMap[assignment.id] = null;
+            }
+          }
+          setAssignmentGrades(gradesMap);
+        } catch (error) {
+          console.error('Error refetching user-specific data:', error);
+        }
+      }
       
-      await fetchCourseData();
       setOpenSubmissionDialog(false);
       setSelectedFiles([]);
       
-      setError('Assignment submitted successfully!');
+      setSuccess('Assignment submitted successfully!');
       setSnackbarOpen(true);
     } catch (error) {
       console.error('Error submitting assignment:', error);
-      setError('Failed to submit assignment');
+      setError('Failed to submit assignment: ' + (error.response?.data || error.message));
       setSnackbarOpen(true);
     } finally {
       setLoading(false);
@@ -233,9 +286,20 @@ export default function StudentCourseDetail() {
   };
 
   const getStudentSubmission = (assignmentId) => {
+    if (!Array.isArray(submissions)) {
+      console.warn('Submissions is not an array:', submissions);
+      return null;
+    }
+    
+    const userId = getUserId();
+    if (!userId) {
+      console.warn('User ID not available');
+      return null;
+    }
+    
     return submissions.find(submission => 
       submission.assignment?.id === assignmentId && 
-      submission.student?.id === user?.user?.id
+      submission.student?.id === userId
     );
   };
 
@@ -245,6 +309,26 @@ export default function StudentCourseDetail() {
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
+  };
+
+  // Helper function to get user ID from context or localStorage
+  const getUserId = () => {
+    if (user?.user?.id) {
+      return user.user.id;
+    }
+    
+    // Fallback to localStorage
+    const userFromStorage = localStorage.getItem('user');
+    if (userFromStorage) {
+      try {
+        const parsedUser = JSON.parse(userFromStorage);
+        return parsedUser?.user?.id;
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+      }
+    }
+    
+    return null;
   };
 
   if (loading && !course) {
@@ -493,7 +577,7 @@ export default function StudentCourseDetail() {
                                   Due Date: {new Date(assignment.dueDate).toLocaleDateString()}
                                 </Typography>
                                 
-                                {isSubmitted && (
+                                {isSubmitted && studentSubmission && (
                                   <Box style={{ marginTop: '16px' }}>
                                     <Typography variant="subtitle2" gutterBottom>
                                       Your Submission:
@@ -502,14 +586,19 @@ export default function StudentCourseDetail() {
                                       Submitted on: {new Date(studentSubmission.submissionDate).toLocaleDateString()}
                                     </Typography>
                                     {studentSubmission.fileUrl && (
-                                      <Button
-                                        size="small"
-                                        variant="outlined"
-                                        onClick={() => window.open(studentSubmission.fileUrl, '_blank')}
-                                        style={{ marginTop: '8px' }}
-                                      >
-                                        View Submission
-                                      </Button>
+                                      <Box style={{ marginTop: '8px' }}>
+                                        <Typography variant="body2" color="primary">
+                                          Submitted Files:
+                                        </Typography>
+                                        <Button
+                                          size="small"
+                                          variant="outlined"
+                                          onClick={() => window.open(studentSubmission.fileUrl, '_blank')}
+                                          style={{ marginTop: '4px' }}
+                                        >
+                                          Download Submission
+                                        </Button>
+                                      </Box>
                                     )}
                                     
                                     {/* Display Grade */}
@@ -596,6 +685,8 @@ export default function StudentCourseDetail() {
                 <FileUploadComponent
                   onFilesChange={handleFilesChange}
                   files={selectedFiles}
+                  title="Assignment Files"
+                  buttonText="Upload Assignment Files"
                 />
               </Box>
             )}
@@ -614,13 +705,17 @@ export default function StudentCourseDetail() {
         </DialogActions>
       </Dialog>
 
-      {/* Error Snackbar */}
+      {/* Error/Success Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        message={error}
+        message={error || success}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        style={{
+          backgroundColor: error ? '#f44336' : '#4caf50',
+          color: 'white'
+        }}
       />
     </Box>
   );

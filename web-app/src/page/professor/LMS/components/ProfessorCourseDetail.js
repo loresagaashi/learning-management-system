@@ -741,6 +741,8 @@ export default function ProfessorCourseDetail() {
             <FileUploadComponent
               onFilesChange={handleFilesChange}
               files={selectedFiles}
+              title="Lecture Materials"
+              buttonText="Upload Materials"
             />
           </Box>
         </DialogContent>

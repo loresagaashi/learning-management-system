@@ -13,7 +13,12 @@ import {
 } from '@material-ui/core';
 import { Delete as DeleteIcon, CloudUpload as CloudUploadIcon } from '@material-ui/icons';
 
-const FileUploadComponent = ({ onFilesChange, files = [] }) => {
+const FileUploadComponent = ({ 
+  onFilesChange, 
+  files = [], 
+  title = "Files",
+  buttonText = "Upload Files"
+}) => {
   const [selectedFiles, setSelectedFiles] = useState(files);
 
   const handleFileSelect = (event) => {
@@ -53,7 +58,7 @@ const FileUploadComponent = ({ onFilesChange, files = [] }) => {
   return (
     <div>
       <Typography variant="h6" gutterBottom>
-        Materials
+        {title}
       </Typography>
       
       <input
@@ -71,7 +76,7 @@ const FileUploadComponent = ({ onFilesChange, files = [] }) => {
           startIcon={<CloudUploadIcon />}
           style={{ marginBottom: '16px' }}
         >
-          Upload Materials
+          {buttonText}
         </Button>
       </label>
 
