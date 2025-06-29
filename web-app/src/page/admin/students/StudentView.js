@@ -1,7 +1,7 @@
-import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
+import AdvancedWideTable from "../../../component/dashboard/AdvancedWideTable";
 import { useRef } from "react";
 import { useQuery } from "react-query";
-import { EnumSelectTableCell, NumberFieldTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
+import { EnumSelectTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
 import { QueryKeys } from "../../../service/QueryKeys";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -26,33 +26,38 @@ export default function StudentView({}) {
       title: "ID",
       field: "id",
       editable: "never",
+      width: 80,
     },
     {
       title: "Type",
       field: "type",
       editable: "never",
       defaultValue: "Student",
+      width: 100,
     },
     {
       title: "Student ID",
       field: "studentId",
       editComponent: (props) => <StudentIdComponent  {...props}/>,
-
+      width: 120,
     },
     {
       title: "First Name",
       field: "firstName",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+      width: 150,
     },
     {
       title: "Last Name",
       field: "lastName",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+      width: 150,
     },
     {
       title: "Email",
       field: "email",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+      width: 200,
     },
     {
       title: "Password",
@@ -63,7 +68,8 @@ export default function StudentView({}) {
           <span style={{ marginLeft: 5 }}>••••••••</span>
         </div>
       ),
-      editComponent: (props) => <PasswordEditComponent {...props} />,
+      editComponent: (props) => <PasswordEditComponent {...props} placeholder="Enter password" />,
+      width: 120,
     },     
     {
       title: "Birth Date",
@@ -77,9 +83,12 @@ export default function StudentView({}) {
             format="yyyy-MM-dd"
             inputVariant="outlined"
             fullWidth
+            placeholder="Select birth date"
+            label="Birth Date"
           />
         </MuiPickersUtilsProvider>
       ),
+      width: 130,
     },
     {
       title: "City",
@@ -92,11 +101,13 @@ export default function StudentView({}) {
           allCities?.map((x) => ({ value: x, label: x.name })) || [],
           "id",
       ),
+      width: 120,
     },  
     {
       title: "Phone Number",
       field: "phoneNumber",
       editComponent: (props) => TextFieldTableCell(props, errorRef),
+      width: 140,
     },
     {
       title: "Enrollment Date",
@@ -110,9 +121,12 @@ export default function StudentView({}) {
             format="yyyy-MM-dd"
             inputVariant="outlined"
             fullWidth
+            placeholder="Select enrollment date"
+            label="Enrollment Date"
           />
         </MuiPickersUtilsProvider>
       ),
+      width: 140,
     },
     {
       title: "Status",
@@ -123,6 +137,7 @@ export default function StudentView({}) {
           { value: "INACTIVE", label: "INACTIVE" },
           { value: "GRADUATED", label: "GRADUATED" },
         ]),
+      width: 120,
     },
     {
       title: "Gender",
@@ -132,28 +147,39 @@ export default function StudentView({}) {
           { value: "M", label: "M" },
           { value: "F", label: "F" },
         ]),
+      width: 80,
     },
     {
       title: "Created On",
       field: "createdOn",
       type: "date",
       editable: "never",
+      width: 130,
     },
     {
       title: "Updated On",
       field: "updatedOn",
       type: "date",
       editable: "never",
+      width: 130,
     },
   ];
 
+  const defaultVisibleColumns = [
+    "id", "studentId", "firstName", "lastName", "email", 
+    "status", "city", "phoneNumber", "enrollmentDate"
+  ];
+
   return (
-    <CustomMaterialTable
+    <AdvancedWideTable
       title="Manage Students"
       columns={columns}
       service={studentService}
       queryKey={QueryKeys.STUDENTS}
       errorRef={errorRef}
+      defaultVisibleColumns={defaultVisibleColumns}
+      enableColumnVisibility={true}
+      maxColumnsBeforeScroll={10}
     />
   );
 }

@@ -1,4 +1,4 @@
-import CustomMaterialTable from "../../../component/dashboard/CustomMaterialTable";
+import AdvancedWideTable from "../../../component/dashboard/AdvancedWideTable";
 import { useRef } from "react";
 import { useQuery } from "react-query";
 import { MultipleCheckboxTableCell, SelectTableCell, TextFieldTableCell } from "../../../component/TableCells";
@@ -61,7 +61,7 @@ export default function ProfessorView({}) {
           <span style={{ marginLeft: 5 }}>••••••••</span>
         </div>
       ),
-      editComponent: (props) => <PasswordEditComponent {...props} />,
+      editComponent: (props) => <PasswordEditComponent {...props} placeholder="Enter password" />,
     }, 
     {
       title: "Birth Date",
@@ -75,6 +75,8 @@ export default function ProfessorView({}) {
             format="yyyy-MM-dd"
             inputVariant="outlined"
             fullWidth
+            placeholder="Select birth date"
+            label="Birth Date"
           />
         </MuiPickersUtilsProvider>
       ),
@@ -120,14 +122,20 @@ export default function ProfessorView({}) {
     professorService.findAll()
   );
 
+  const defaultVisibleColumns = [
+    "id", "firstName", "lastName", "email", "department", 
+    "city", "phoneNumber", "status"
+  ];
+
   return (
-    <CustomMaterialTable
+    <AdvancedWideTable
       title="Manage Professors"
       columns={columns}
       service={professorService}
       queryKey={QueryKeys.PROFESSOR}
-      data={() => allProfessors || []}
-  errorRef={errorRef}
+      errorRef={errorRef}
+      defaultVisibleColumns={defaultVisibleColumns}
+      maxColumnsBeforeScroll={10}
     />
   );
 }
