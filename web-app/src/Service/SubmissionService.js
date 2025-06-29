@@ -6,6 +6,16 @@ export class SubmissionService extends BaseService {
   }
 
   async findByStudentId(studentId) {
-    return this.client.get(`${this.requestMapping}/student/${studentId}`);
+    const response = await this.client.get(`${this.requestMapping}/student/${studentId}`);
+    return response.data;
+  }
+
+  async uploadSubmission(formData) {
+    const response = await this.client.post(`${this.requestMapping}/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
   }
 }
