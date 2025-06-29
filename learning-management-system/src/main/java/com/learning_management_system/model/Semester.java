@@ -3,6 +3,8 @@ package com.learning_management_system.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,7 @@ public class Semester extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "generation_id")
+    @JsonBackReference("generation-semesters")
     private Generation generation;
 
     @Column(name = "active")
@@ -33,6 +36,6 @@ public class Semester extends BaseEntity {
 
 
     @OneToMany(mappedBy = "semester")
-    //@JsonManagedReference("semester-studentsemesters")
+    @JsonManagedReference("semester-students")
     private List<StudentSemester> studentSemesters;
 }

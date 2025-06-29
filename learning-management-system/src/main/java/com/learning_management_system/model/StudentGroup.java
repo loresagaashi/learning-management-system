@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,6 +19,7 @@ public class StudentGroup extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "generation_id")
+    @JsonBackReference("generation-groups")
     private Generation generation;
 
     @ManyToOne
@@ -25,5 +27,6 @@ public class StudentGroup extends BaseEntity {
     private Semester semester;
 
     @OneToMany(mappedBy = "group")
+    @JsonManagedReference("student-group")
     private List<Student> students;
 }
