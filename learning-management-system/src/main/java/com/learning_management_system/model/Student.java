@@ -48,12 +48,13 @@ public class Student extends UserAccount {
 
     @OneToMany(mappedBy = "student")
     private List<Grade> grades;
+    
     @ManyToMany
+    @JsonIgnore
     private List<Course> courses;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    // @JsonManagedReference
-    @JsonIgnore
+    @JsonManagedReference("student-semesters")
     private List<StudentSemester> studentSemesters;
 
     @Enumerated(EnumType.STRING)

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +16,7 @@ public class Lecture extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = true, foreignKey = @ForeignKey(name = "fk_lecture_course", foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE RESTRICT"))
+    @JsonIgnoreProperties({"lectures"})
     private Course course;
     private String name;
     private LocalDate lectureDate;

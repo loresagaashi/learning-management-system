@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -24,11 +25,13 @@ public abstract class BaseAuditEntity {
     @OneToOne(fetch = LAZY)
     @JoinColumn
     @LastModifiedBy
+    @JsonIgnore
     private Admin modifiedByUser;
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(updatable = false)
     @CreatedBy
+    @JsonIgnore
     private Admin createdByUser;
 
     @CreatedDate

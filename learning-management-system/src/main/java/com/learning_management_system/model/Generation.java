@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.learning_management_system.enums.DegreeType;
 
 @Data
@@ -30,8 +31,12 @@ public class Generation extends BaseEntity {
     private DegreeType degreeType;
 
     @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonManagedReference("generation-groups")
     private List<StudentGroup> groups;
+
+    @OneToMany(mappedBy = "generation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("generation-semesters")
+    private List<Semester> semesters;
 
     public Generation() {
         int currentYear = LocalDateTime.now().getYear();

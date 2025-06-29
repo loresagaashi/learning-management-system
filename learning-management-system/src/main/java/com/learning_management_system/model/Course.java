@@ -26,6 +26,7 @@ public class Course extends BaseEntity {
                     foreignKeyDefinition = "FOREIGN KEY (course_id) REFERENCES  Course(id) ON DELETE RESTRICT"),
             inverseForeignKey = @ForeignKey(name = "fk_course_professor_professor",
                     foreignKeyDefinition = "FOREIGN KEY (professor_id) REFERENCES Professor(id) ON DELETE RESTRICT"))
+    @JsonManagedReference("course-professors")
     private List<Professor> professor;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,7 +34,7 @@ public class Course extends BaseEntity {
     private Orientation orientation;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonManagedReference("course-lectures")
     private List<Lecture> lectures;
 
     @Column(name = "credits")
