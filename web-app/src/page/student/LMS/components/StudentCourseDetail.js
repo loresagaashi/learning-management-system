@@ -68,6 +68,7 @@ export default function StudentCourseDetail() {
   const [selectedAssignment, setSelectedAssignment] = React.useState(null);
   const [selectedFiles, setSelectedFiles] = React.useState([]);
   const [activeTab, setActiveTab] = React.useState(0);
+  const [assignmentGrades, setAssignmentGrades] = React.useState({});
 
   const { isLoading, isError, data: allCourses } = useQuery(
     QueryKeys.COURSE,
@@ -138,6 +139,27 @@ export default function StudentCourseDetail() {
       } catch (error) {
         console.error('Error fetching submissions:', error);
         setSubmissions([]);
+      }
+
+      // Fetch grades for assignments
+      try {
+        const gradesMap = {};
+        const currentAssignments = await assignmentService.findByCourseId(courseId);
+        for (const assignment of currentAssignments || []) {
+          try {
+            const gradeResponse = await assignmentService.getStudentAssignmentGrade(assignment.id, user?.user?.id);
+            if (gradeResponse && gradeResponse.data) {
+              gradesMap[assignment.id] = gradeResponse.data.grade;
+            }
+          } catch (error) {
+            console.error(`Error fetching grade for assignment ${assignment.id}:`, error);
+            gradesMap[assignment.id] = null;
+          }
+        }
+        setAssignmentGrades(gradesMap);
+      } catch (error) {
+        console.error('Error fetching assignment grades:', error);
+        setAssignmentGrades({});
       }
 
     } catch (error) {
@@ -488,6 +510,22 @@ export default function StudentCourseDetail() {
                                       >
                                         View Submission
                                       </Button>
+                                    )}
+                                    
+                                    {/* Display Grade */}
+                                    {assignmentGrades[assignment.id] !== undefined && assignmentGrades[assignment.id] !== null && (
+                                      <Box style={{ marginTop: '16px' }}>
+                                        <Typography variant="subtitle2" gutterBottom>
+                                          Your Grade:
+                                        </Typography>
+                                        <Typography 
+                                          variant="h6" 
+                                          color="primary"
+                                          style={{ fontWeight: 'bold' }}
+                                        >
+                                          {assignmentGrades[assignment.id]}/100
+                                        </Typography>
+                                      </Box>
                                     )}
                                   </Box>
                                 )}

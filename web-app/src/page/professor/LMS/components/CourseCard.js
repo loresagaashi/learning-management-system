@@ -1,5 +1,5 @@
+import { Card, CardContent, CardMedia, Typography, Box, styled } from '@material-ui/core';
 import React from 'react';
-import { Card, CardContent, CardMedia, Typography, Box, styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { CourseService } from '../../../../service/CourseService';
 
