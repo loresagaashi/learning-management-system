@@ -25,20 +25,27 @@ import {
   Snackbar,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  Chip,
+  Tabs,
+  Tab
 } from '@material-ui/core';
 import { CourseService } from '../../../../service/CourseService';
 import { LectureService } from '../../../../service/LectureService';
+import { AssignmentService } from '../../../../service/AssignmentService';
+import { SubmissionService } from '../../../../service/SubmissionService';
 import UserContext from '../../../../context/UserContext';
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../../service/QueryKeys';
 import CoursesSelect from './CoursesSelect';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon, ExpandMore as ExpandMoreIcon, Assignment as AssignmentIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 import FileUploadComponent from '../../../../component/FileUploadComponent';
 import MaterialsList from '../../../../component/MaterialsList';
 
 const courseService = new CourseService();
 const lectureService = new LectureService();
+const assignmentService = new AssignmentService();
+const submissionService = new SubmissionService();
 
 export default function ProfessorCourseDetail() {
   const { courseId } = useParams();
@@ -60,6 +67,17 @@ export default function ProfessorCourseDetail() {
   const [error, setError] = React.useState(null);
   const [lectureMaterials, setLectureMaterials] = React.useState({});
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  
+  // New state for assignments and submissions
+  const [assignments, setAssignments] = React.useState([]);
+  const [submissions, setSubmissions] = React.useState([]);
+  const [openAssignmentDialog, setOpenAssignmentDialog] = React.useState(false);
+  const [openSubmissionsDialog, setOpenSubmissionsDialog] = React.useState(false);
+  const [selectedAssignment, setSelectedAssignment] = React.useState(null);
+  const [assignmentTitle, setAssignmentTitle] = React.useState('');
+  const [assignmentDescription, setAssignmentDescription] = React.useState('');
+  const [assignmentDueDate, setAssignmentDueDate] = React.useState('');
+  const [activeTab, setActiveTab] = React.useState(0);
 
   const combinedLectures = [...lectures];
 
@@ -108,7 +126,33 @@ export default function ProfessorCourseDetail() {
       }
       setLectureMaterials(materialsMap);
 
-      // Optionally fetch students, submissions...
+      // Fetch students
+      try {
+        const studentsResponse = await courseService.getStudentsByCourse(courseId);
+        setStudents(studentsResponse || []);
+      } catch (error) {
+        console.error('Error fetching students for course:', error);
+        setStudents([]);
+      }
+
+      // Fetch assignments for this course
+      try {
+        const assignmentsResponse = await assignmentService.findByCourseId(courseId);
+        setAssignments(assignmentsResponse || []);
+      } catch (error) {
+        console.error('Error fetching assignments:', error);
+        setAssignments([]);
+      }
+
+      // Fetch all submissions
+      try {
+        const submissionsResponse = await submissionService.findAll();
+        setSubmissions(submissionsResponse || []);
+      } catch (error) {
+        console.error('Error fetching submissions:', error);
+        setSubmissions([]);
+      }
+
     } catch (error) {
       console.error('Error fetching course data:', error);
       console.error('Error details:', error.response?.data); // Debug log
@@ -198,30 +242,27 @@ export default function ProfessorCourseDetail() {
           formData.append('name', lectureName);
           formData.append('topic', lectureDescription);
           formData.append('courseId', courseId);
-
-          // Add files and descriptions
-          selectedFiles.forEach((fileItem, index) => {
+          
+          for (const fileItem of selectedFiles) {
             formData.append('files', fileItem.file);
             formData.append('descriptions', fileItem.description || '');
-          });
-
+          }
+          
           await lectureService.createLectureWithMaterials(formData);
-          console.log('Lecture created with materials successfully');
         } else {
           // Create lecture without materials
           const lectureData = {
             name: lectureName,
             topic: lectureDescription,
-            course: course // Send the full course object
+            course: course
           };
-
           await lectureService.create(lectureData);
-          console.log('Lecture created successfully');
         }
       }
 
       await fetchCourseData();
       setOpenLectureDialog(false);
+      setSelectedFiles([]);
     } catch (error) {
       console.error('Error saving lecture:', error);
       setError('Failed to save lecture');
@@ -229,6 +270,78 @@ export default function ProfessorCourseDetail() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // New functions for assignment management
+  const handleAddAssignment = () => {
+    setSelectedAssignment(null);
+    setAssignmentTitle('');
+    setAssignmentDescription('');
+    setAssignmentDueDate('');
+    setError(null);
+    setOpenAssignmentDialog(true);
+  };
+
+  const handleEditAssignment = (assignment) => {
+    setSelectedAssignment(assignment);
+    setAssignmentTitle(assignment.title || '');
+    setAssignmentDescription(assignment.description || '');
+    setAssignmentDueDate(assignment.dueDate ? assignment.dueDate.split('T')[0] : '');
+    setError(null);
+    setOpenAssignmentDialog(true);
+  };
+
+  const handleDeleteAssignment = async (assignmentId) => {
+    try {
+      setLoading(true);
+      await assignmentService.delete(assignmentId);
+      await fetchCourseData();
+    } catch (error) {
+      console.error('Error deleting assignment:', error);
+      setError('Failed to delete assignment');
+      setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveAssignment = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const assignmentData = {
+        title: assignmentTitle,
+        description: assignmentDescription,
+        dueDate: assignmentDueDate,
+        course: course
+      };
+
+      if (selectedAssignment) {
+        assignmentData.id = selectedAssignment.id;
+        await assignmentService.update(assignmentData);
+      } else {
+        await assignmentService.create(assignmentData);
+      }
+
+      await fetchCourseData();
+      setOpenAssignmentDialog(false);
+    } catch (error) {
+      console.error('Error saving assignment:', error);
+      setError('Failed to save assignment');
+      setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewSubmissions = (assignment) => {
+    setSelectedAssignment(assignment);
+    setOpenSubmissionsDialog(true);
+  };
+
+  const getSubmissionsForAssignment = (assignmentId) => {
+    return submissions.filter(submission => submission.assignment?.id === assignmentId);
   };
 
   const handleUploadHomework = async (studentId, lectureId) => {
@@ -243,7 +356,9 @@ export default function ProfessorCourseDetail() {
         formData.append('lectureId', lectureId);
         formData.append('courseId', courseId);
 
-        await courseService.uploadHomework(formData);
+        // Note: This would need to be implemented in the backend
+        // await courseService.uploadHomework(formData);
+        console.log('Homework upload functionality needs backend implementation');
         await fetchCourseData();
       };
       fileInput.click();
@@ -258,6 +373,10 @@ export default function ProfessorCourseDetail() {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
   };
 
   if (loading && !course) {
@@ -361,73 +480,183 @@ export default function ProfessorCourseDetail() {
         <Box style={{ flex: 1 }}>
           <Card>
             <CardContent>
-              <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <Typography variant="h6" gutterBottom>
-                  Lectures
-                </Typography>
-                <Button
-                  variant="contained"
-                  onClick={handleAddLecture}
-                >
-                  Add Lecture
-                </Button>
-              </Box>
-              <Box>
-                {console.log('Rendering lectures, combinedLectures:', combinedLectures)} {/* Debug log */}
-                {combinedLectures.length === 0 ? (
-                  <Typography variant="body1" color="textSecondary" style={{ textAlign: 'center', padding: '20px' }}>
-                    No lectures found. Click "Add Lecture" to create your first lecture.
-                  </Typography>
-                ) : (
-                  combinedLectures.map((lecture) => (
-                    <Accordion key={lecture.id} style={{ marginBottom: '8px' }}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-                          <Typography variant="h6">
-                            {lecture.name}
-                          </Typography>
-                          <Box>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditLecture(lecture);
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteLecture(lecture.id);
-                              }}
-                              color="secondary"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Box width="100%">
-                          <Typography variant="body2" color="textSecondary" gutterBottom>
-                            {lecture.topic || 'No topic specified'}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
-                            Created: {new Date(lecture.createdOn).toLocaleDateString()}
-                          </Typography>
-                          
-                          <MaterialsList 
-                            materials={lectureMaterials[lecture.id] || []}
-                            showDelete={false}
-                          />
-                        </Box>
-                      </AccordionDetails>
-                    </Accordion>
-                  ))
-                )}
-              </Box>
+              <Tabs value={activeTab} onChange={handleTabChange} indicatorColor="primary" textColor="primary">
+                <Tab label="Lectures" />
+                <Tab label="Assignments" />
+              </Tabs>
+              
+              {activeTab === 0 && (
+                <Box>
+                  <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', marginTop: '16px' }}>
+                    <Typography variant="h6" gutterBottom>
+                      Lectures
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      onClick={handleAddLecture}
+                    >
+                      Add Lecture
+                    </Button>
+                  </Box>
+                  <Box>
+                    {console.log('Rendering lectures, combinedLectures:', combinedLectures)}
+                    {combinedLectures.length === 0 ? (
+                      <Typography variant="body1" color="textSecondary" style={{ textAlign: 'center', padding: '20px' }}>
+                        No lectures found. Click "Add Lecture" to create your first lecture.
+                      </Typography>
+                    ) : (
+                      combinedLectures.map((lecture) => (
+                        <Accordion key={lecture.id} style={{ marginBottom: '8px' }}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                              <Typography variant="h6">
+                                {lecture.name}
+                              </Typography>
+                              <Box>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditLecture(lecture);
+                                  }}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteLecture(lecture.id);
+                                  }}
+                                  color="secondary"
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Box>
+                            </Box>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Box width="100%">
+                              <Typography variant="body2" color="textSecondary" gutterBottom>
+                                {lecture.topic || 'No topic specified'}
+                              </Typography>
+                              <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                                Created: {new Date(lecture.createdOn).toLocaleDateString()}
+                              </Typography>
+                              
+                              <MaterialsList 
+                                materials={lectureMaterials[lecture.id] || []}
+                                showDelete={false}
+                              />
+                            </Box>
+                          </AccordionDetails>
+                        </Accordion>
+                      ))
+                    )}
+                  </Box>
+                </Box>
+              )}
+
+              {activeTab === 1 && (
+                <Box>
+                  <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', marginTop: '16px' }}>
+                    <Typography variant="h6" gutterBottom>
+                      Assignments
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      onClick={handleAddAssignment}
+                      startIcon={<AssignmentIcon />}
+                    >
+                      Add Assignment
+                    </Button>
+                  </Box>
+                  <Box>
+                    {assignments.length === 0 ? (
+                      <Typography variant="body1" color="textSecondary" style={{ textAlign: 'center', padding: '20px' }}>
+                        No assignments found. Click "Add Assignment" to create your first assignment.
+                      </Typography>
+                    ) : (
+                      assignments.map((assignment) => {
+                        const assignmentSubmissions = getSubmissionsForAssignment(assignment.id);
+                        const submissionCount = assignmentSubmissions.length;
+                        const isOverdue = new Date(assignment.dueDate) < new Date();
+                        
+                        return (
+                          <Accordion key={assignment.id} style={{ marginBottom: '8px' }}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                              <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                                <Box display="flex" alignItems="center" gap={1}>
+                                  <Typography variant="h6">
+                                    {assignment.title}
+                                  </Typography>
+                                  <Chip 
+                                    label={`${submissionCount} submissions`}
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                  />
+                                  {isOverdue && (
+                                    <Chip 
+                                      label="Overdue"
+                                      size="small"
+                                      color="error"
+                                    />
+                                  )}
+                                </Box>
+                                <Box>
+                                  <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleViewSubmissions(assignment);
+                                    }}
+                                    title="View Submissions"
+                                  >
+                                    <CheckCircleIcon />
+                                  </IconButton>
+                                  <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditAssignment(assignment);
+                                    }}
+                                  >
+                                    <EditIcon />
+                                  </IconButton>
+                                  <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteAssignment(assignment.id);
+                                    }}
+                                    color="secondary"
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Box>
+                              </Box>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Box width="100%">
+                                <Typography variant="body2" color="textSecondary" gutterBottom>
+                                  {assignment.description || 'No description specified'}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                                  Due Date: {new Date(assignment.dueDate).toLocaleDateString()}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                                  Submissions: {submissionCount} / {students.length} students
+                                </Typography>
+                              </Box>
+                            </AccordionDetails>
+                          </Accordion>
+                        );
+                      })
+                    )}
+                  </Box>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Box>
@@ -501,6 +730,151 @@ export default function ProfessorCourseDetail() {
           >
             {loading ? <CircularProgress size={20} /> : 'Save'}
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Assignment Dialog */}
+      <Dialog open={openAssignmentDialog} onClose={() => setOpenAssignmentDialog(false)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          {selectedAssignment ? 'Edit Assignment' : 'Add New Assignment'}
+        </DialogTitle>
+        <DialogContent>
+          <Box style={{ marginTop: '16px' }}>
+            <TextField
+              fullWidth
+              label="Assignment Title"
+              value={assignmentTitle}
+              onChange={(e) => setAssignmentTitle(e.target.value)}
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Assignment Description"
+              value={assignmentDescription}
+              onChange={(e) => setAssignmentDescription(e.target.value)}
+              multiline
+              rows={3}
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Due Date"
+              type="date"
+              value={assignmentDueDate}
+              onChange={(e) => setAssignmentDueDate(e.target.value)}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAssignmentDialog(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={handleSaveAssignment}
+            disabled={loading || !assignmentTitle.trim() || !assignmentDueDate}
+          >
+            {loading ? <CircularProgress size={20} /> : 'Save'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Submissions Dialog */}
+      <Dialog open={openSubmissionsDialog} onClose={() => setOpenSubmissionsDialog(false)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          Submissions for: {selectedAssignment?.title}
+        </DialogTitle>
+        <DialogContent>
+          <Box style={{ marginTop: '16px' }}>
+            {selectedAssignment && (
+              <Box>
+                <Typography variant="h6" gutterBottom>
+                  Assignment Details
+                </Typography>
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                  {selectedAssignment.description || 'No description'}
+                </Typography>
+                <Typography variant="caption" color="textSecondary" display="block" gutterBottom>
+                  Due Date: {new Date(selectedAssignment.dueDate).toLocaleDateString()}
+                </Typography>
+                
+                <Divider style={{ margin: '16px 0' }} />
+                
+                <Typography variant="h6" gutterBottom>
+                  Student Submissions
+                </Typography>
+                
+                {(() => {
+                  const assignmentSubmissions = getSubmissionsForAssignment(selectedAssignment.id);
+                  const submittedStudents = assignmentSubmissions.map(s => s.student?.id);
+                  const allStudents = students.filter(s => !submittedStudents.includes(s.id));
+                  
+                  return (
+                    <Box>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Submitted ({assignmentSubmissions.length}):
+                      </Typography>
+                      {assignmentSubmissions.length === 0 ? (
+                        <Typography variant="body2" color="textSecondary">
+                          No submissions yet.
+                        </Typography>
+                      ) : (
+                        assignmentSubmissions.map((submission) => (
+                          <Card key={submission.id} style={{ marginBottom: '8px' }}>
+                            <CardContent style={{ padding: '8px' }}>
+                              <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Typography variant="body2">
+                                  {submission.student?.firstName} {submission.student?.lastName}
+                                </Typography>
+                                <Box display="flex" alignItems="center" gap={1}>
+                                  <Typography variant="caption" color="textSecondary">
+                                    {new Date(submission.submissionDate).toLocaleDateString()}
+                                  </Typography>
+                                  {submission.fileUrl && (
+                                    <Button
+                                      size="small"
+                                      variant="outlined"
+                                      onClick={() => window.open(submission.fileUrl, '_blank')}
+                                    >
+                                      Download
+                                    </Button>
+                                  )}
+                                </Box>
+                              </Box>
+                            </CardContent>
+                          </Card>
+                        ))
+                      )}
+                      
+                      <Typography variant="subtitle1" gutterBottom style={{ marginTop: '16px' }}>
+                        Not Submitted ({allStudents.length}):
+                      </Typography>
+                      {allStudents.length === 0 ? (
+                        <Typography variant="body2" color="textSecondary">
+                          All students have submitted.
+                        </Typography>
+                      ) : (
+                        allStudents.map((student) => (
+                          <Card key={student.id} style={{ marginBottom: '8px' }}>
+                            <CardContent style={{ padding: '8px' }}>
+                              <Typography variant="body2" color="textSecondary">
+                                {student.firstName} {student.lastName}
+                              </Typography>
+                            </CardContent>
+                          </Card>
+                        ))
+                      )}
+                    </Box>
+                  );
+                })()}
+              </Box>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenSubmissionsDialog(false)}>Close</Button>
         </DialogActions>
       </Dialog>
 
