@@ -24,6 +24,6 @@ public class Professor extends UserAccount {
     private City city;
     
     @ManyToMany(mappedBy = "professor")
-    @JsonBackReference("course-professors")
+    @JsonIgnore
     private List<Course> courses;
 }
