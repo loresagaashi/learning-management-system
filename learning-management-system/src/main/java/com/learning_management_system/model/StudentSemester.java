@@ -17,13 +17,12 @@ public class StudentSemester extends BaseEntity {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "student_id")
-  //  @JsonIgnoreProperties({"studentSemesters"})
-   // @JsonIgnore
+    @JsonBackReference("student-semesters")
     private Student student;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "semester_id")
-    //@JsonIgnoreProperties({"studentSemesters"})
+    @JsonBackReference("semester-students")
     private Semester semester;
 
     private LocalDateTime registrationDate;

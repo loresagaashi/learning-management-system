@@ -7,11 +7,15 @@ import com.learning_management_system.model.Professor;
 import com.learning_management_system.model.Semester;
 import com.learning_management_system.model.Student;
 import com.learning_management_system.repository.StudentRepository;
+import com.learning_management_system.repository.ProfessorRepository;
+import com.learning_management_system.repository.OrientationRepository;
+import com.learning_management_system.repository.SemesterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning_management_system.model.Course;
 import com.learning_management_system.model.Generation;
+import com.learning_management_system.model.Orientation;
 import com.learning_management_system.repository.CourseRepository;
 
 import java.util.ArrayList;
@@ -25,9 +29,70 @@ public class CourseService extends BasicServiceOperations<CourseRepository, Cour
     private CourseRepository courseRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
+    @Autowired
+    private OrientationRepository orientationRepository;
+    @Autowired
+    private SemesterRepository semesterRepository;
 
     public CourseService(CourseRepository repository){
         super(repository);
+    }
+
+    @Override
+    public Course save(Course entity) {
+        System.out.println("[CourseService] save - saving course: " + entity.getName());
+        System.out.println("[CourseService] save - initial professors: " + (entity.getProfessor() != null ? entity.getProfessor().size() : "null"));
+        System.out.println("[CourseService] save - initial orientation: " + (entity.getOrientation() != null ? entity.getOrientation().getName() : "null"));
+        System.out.println("[CourseService] save - initial semester: " + (entity.getSemester() != null ? entity.getSemester().getName() : "null"));
+        
+        // Handle relationships properly
+        if (entity.getProfessor() != null && !entity.getProfessor().isEmpty()) {
+            // Ensure professors are properly loaded from database
+            List<Professor> professors = new ArrayList<>();
+            for (Professor prof : entity.getProfessor()) {
+                if (prof.getId() != null) {
+                    Professor foundProf = professorRepository.findById(prof.getId()).orElse(null);
+                    if (foundProf != null) {
+                        professors.add(foundProf);
+                    }
+                }
+            }
+            entity.setProfessor(professors);
+            System.out.println("[CourseService] save - processed professors: " + professors.size());
+        }
+
+        // Handle orientation relationship
+        if (entity.getOrientation() != null && entity.getOrientation().getId() != null) {
+            Orientation foundOrientation = orientationRepository.findById(entity.getOrientation().getId()).orElse(null);
+            entity.setOrientation(foundOrientation);
+            System.out.println("[CourseService] save - processed orientation: " + (foundOrientation != null ? foundOrientation.getName() : "null"));
+        }
+
+        // Handle semester relationship
+        if (entity.getSemester() != null && entity.getSemester().getId() != null) {
+            Semester foundSemester = semesterRepository.findById(entity.getSemester().getId()).orElse(null);
+            entity.setSemester(foundSemester);
+            System.out.println("[CourseService] save - processed semester: " + (foundSemester != null ? foundSemester.getName() : "null"));
+        }
+
+        Course savedCourse = super.save(entity);
+        System.out.println("[CourseService] save - saved course with ID: " + savedCourse.getId());
+        return savedCourse;
+    }
+
+    @Override
+    public List<Course> findAll() {
+        List<Course> courses = courseRepository.findAllWithRelationships();
+        System.out.println("[CourseService] findAll - found " + courses.size() + " courses");
+        for (Course course : courses) {
+            System.out.println("[CourseService] Course: " + course.getName() + 
+                             ", Professors: " + (course.getProfessor() != null ? course.getProfessor().size() : "null") +
+                             ", Orientation: " + (course.getOrientation() != null ? course.getOrientation().getName() : "null") +
+                             ", Semester: " + (course.getSemester() != null ? course.getSemester().getName() : "null"));
+        }
+        return courses;
     }
 
     public Course getCourseWithLectures(Long courseId) {

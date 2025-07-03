@@ -1,6 +1,7 @@
-import { Box, Button, Grid, Stack, MenuItem, Select, TextField, Typography, Alert, FormControl, InputLabel } from "@mui/material";
+import { Box, Button, Grid, MenuItem, Select, TextField, Typography, Alert, FormControl, InputLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AdminScheduleCreate = () => {
   const [generations, setGenerations] = useState([]);
@@ -21,20 +22,87 @@ const AdminScheduleCreate = () => {
   ]);
   const [existingSchedule, setExistingSchedule] = useState([]);
   const [hasExistingSchedule, setHasExistingSchedule] = useState(false);
+  const [groupError, setGroupError] = useState(false);
+  const navigate = useNavigate();
 
   const semesterId = 2;
 
   useEffect(() => {
-    axios.get("http://localhost:8080/generations/all").then((res) => setGenerations(res.data));
-    axios.get("http://localhost:8080/courses/all").then((res) => setCourses(res.data));
-    axios.get("http://localhost:8080/professors/all").then((res) => setProfessors(res.data));
+    axios.get("http://localhost:8080/generations/all")
+      .then((res) => setGenerations(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setGenerations([]));
+      
+    axios.get("http://localhost:8080/courses/all")
+      .then((res) => {
+        console.log('AdminScheduleCreate - courses response:', res.data);
+        console.log('AdminScheduleCreate - courses type:', typeof res.data);
+        console.log('AdminScheduleCreate - courses isArray:', Array.isArray(res.data));
+        
+        // Handle the same JSON parsing issue as CustomMaterialTable
+        let coursesData = res.data;
+        if (typeof res.data === 'string') {
+          try {
+            coursesData = JSON.parse(res.data);
+          } catch (parseError) {
+            console.error('AdminScheduleCreate - failed to parse courses JSON:', parseError);
+            // Try regex extraction like in CustomMaterialTable
+            try {
+              const coursePattern = /"id":(\d+),"name":"([^"]+)","description":"([^"]+)"/g;
+              const courses = [];
+              let match;
+              
+              while ((match = coursePattern.exec(res.data)) !== null) {
+                const course = {
+                  id: parseInt(match[1]),
+                  name: match[2],
+                  description: match[3],
+                  createdOn: new Date().toISOString(),
+                  updatedOn: new Date().toISOString(),
+                  professor: [],
+                  orientation: { name: '' },
+                  semester: { name: '' }
+                };
+                courses.push(course);
+              }
+              
+              if (courses.length > 0) {
+                console.log('AdminScheduleCreate - successfully extracted courses via regex:', courses.length);
+                coursesData = courses;
+              } else {
+                coursesData = [];
+              }
+            } catch (fallbackError) {
+              console.error('AdminScheduleCreate - regex extraction also failed:', fallbackError);
+              coursesData = [];
+            }
+          }
+        }
+        
+        setCourses(Array.isArray(coursesData) ? coursesData : []);
+      })
+      .catch(() => setCourses([]));
+      
+    axios.get("http://localhost:8080/professors/all")
+      .then((res) => setProfessors(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setProfessors([]));
   }, []);
 
   useEffect(() => {
     if (selectedGeneration) {
       axios
         .get(`http://localhost:8080/student-groups/by-generation?generationName=${selectedGeneration}`)
-        .then((res) => setGroups(res.data));
+        .then((res) => {
+          setGroups(res.data);
+          setGroupError(res.data.length === 0);
+          console.log("GROUPS DATA:", res.data);
+        })
+        .catch(() => {
+          setGroups([]);
+          setGroupError(true);
+        });
+    } else {
+      setGroups([]);
+      setGroupError(false);
     }
   }, [selectedGeneration]);
 
@@ -73,6 +141,10 @@ const AdminScheduleCreate = () => {
     updatedEntries[index][field] = value;
     setScheduleEntries(updatedEntries);
   };
+  const handleRemoveEntry = (indexToRemove) => {
+    const updatedEntries = scheduleEntries.filter((_, index) => index !== indexToRemove);
+    setScheduleEntries(updatedEntries);
+  };
 
   const handleSubmit = () => {
     axios
@@ -81,7 +153,10 @@ const AdminScheduleCreate = () => {
         semesterId: semesterId,
         scheduleEntries,
       })
-      .then(() => alert("Schedule registered successfully!"))
+      .then(() => {
+        alert("Schedule registered successfully!");
+        navigate("/admin/view-schedule");
+      })
       .catch(() => alert("Error while registering schedule."));
   };
 
@@ -99,13 +174,19 @@ const AdminScheduleCreate = () => {
           label="Select Generation"
         >
           <MenuItem value="">Select Generation</MenuItem>
-          {generations.map((g) => (
+          {Array.isArray(generations) && generations.map((g) => (
             <MenuItem key={g.id} value={g.name}>
               {g.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
+
+      {groupError && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          No groups found for the selected generation.
+        </Alert>
+      )}
 
       {groups.length > 0 && (
         <FormControl fullWidth margin="normal">
@@ -116,7 +197,7 @@ const AdminScheduleCreate = () => {
             label="Select Group"
           >
             <MenuItem value="">Select Group</MenuItem>
-            {groups.map((group) => (
+            {Array.isArray(groups) && groups.map((group) => (
               <MenuItem key={group.id} value={group.id}>
                 {group.name}
               </MenuItem>
@@ -131,7 +212,7 @@ const AdminScheduleCreate = () => {
             This group already has a registered schedule:
           </Typography>
           <ul>
-            {existingSchedule.map((entry, idx) => (
+            {Array.isArray(existingSchedule) && existingSchedule.map((entry, idx) => (
               <li key={idx}>
                 {entry.dayOfWeek}, {entry.startTime} - {entry.endTime} (
                 {entry.courseName}, {entry.professorName}, Room: {entry.room})
@@ -187,7 +268,7 @@ const AdminScheduleCreate = () => {
                 displayEmpty
               >
                 <MenuItem value="">Course</MenuItem>
-                {courses.map((course) => (
+                {Array.isArray(courses) && courses.map((course) => (
                   <MenuItem key={course.id} value={course.id}>
                     {course.name}
                   </MenuItem>
@@ -203,7 +284,7 @@ const AdminScheduleCreate = () => {
                 displayEmpty
               >
                 <MenuItem value="">Professor</MenuItem>
-                {professors.map((prof) => (
+                {Array.isArray(professors) && professors.map((prof) => (
                   <MenuItem key={prof.id} value={prof.id}>
                     {prof.firstName} {prof.lastName}
                   </MenuItem>
@@ -218,6 +299,17 @@ const AdminScheduleCreate = () => {
               onChange={(e) => handleChangeEntry(index, "room", e.target.value)}
               fullWidth
             />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => handleRemoveEntry(index)}
+              disabled={scheduleEntries.length === 1}
+              fullWidth
+            >
+              Remove
+            </Button>
           </Grid>
         </Grid>
       ))}

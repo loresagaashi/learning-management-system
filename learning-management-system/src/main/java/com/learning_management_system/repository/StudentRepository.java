@@ -61,6 +61,7 @@ public interface StudentRepository extends JpaRepository<Student,Long>{
         List<StudentDTO> findAllByGenerationId(@Param("generationId") Long generationId);
 
 
-    List<Student> findByCoursesId(Long courseId);
+    @Query("SELECT s FROM Student s JOIN s.courses c WHERE c.id = :courseId")
+    List<Student> findByCoursesId(@Param("courseId") Long courseId);
 
 }

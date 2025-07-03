@@ -35,7 +35,17 @@ const GroupRegister = () => {
   const generationNameFromStudentId = (id) => {
     const idStr = String(id);
     if (!idStr || idStr.length < 4) return null;
-    return `${idStr.substring(0, 2)}/${idStr.substring(2, 4)}`;
+    
+    // Extract the year from student ID (first 4 digits)
+    const yearPrefix = idStr.substring(0, 4);
+    const firstYear = parseInt(yearPrefix.substring(0, 2));
+    const secondYear = parseInt(yearPrefix.substring(2, 4));
+    
+    // Convert to full year format (e.g., 25 -> 2025, 26 -> 2026)
+    const fullFirstYear = 2000 + firstYear;
+    const fullSecondYear = 2000 + secondYear;
+    
+    return `${fullFirstYear}/${fullSecondYear}`;
   };
 
   const generationName = generationNameFromStudentId(studentId);

@@ -135,7 +135,7 @@ export default function SemesterView() {
         open={!!errorMessage}
         autoHideDuration={6000}
         onClose={() => setErrorMessage(null)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert onClose={() => setErrorMessage(null)} severity="error" variant="filled">
           {errorMessage}

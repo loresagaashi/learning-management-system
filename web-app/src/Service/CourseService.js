@@ -12,4 +12,8 @@ export class CourseService extends BaseService {
   async getProfessorsByCourse(courseId) {
     return this.findById(`${courseId}/professors`);
   }
+
+  async getStudentsByCourse(courseId) {
+    return this.client.get(`${this.requestMapping}/${courseId}/students`);
+  }
 }

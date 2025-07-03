@@ -1,7 +1,7 @@
 import { Navigate, Route } from "react-router-dom";
 import AdminSignIn from "../page/admin/AdminSignIn";
 // import ClientSignIn from "../page/client/ClientSignIn";
-// import AdminLayout from "../page/admin/AdminLayout";
+// import AdminLayout from "../page/client/ClientLayout";
 // import ClientLayout from "../page/client/ClientLayout";
 // import ClientSignUp from "../page/client/ClientSignUp";
 import PrivateRoute from "../component/PrivateRoute";
@@ -19,7 +19,6 @@ import SMISPageProfessor from "../page/professor/SMIS/SMISPageProfessor";
 import ProfessorLayout from "../page/professor/ProfessorLayout";
 import StudentLayout from "../page/student/StudentLayout";
 import StudentLMSLayout from "../page/student/LMS/StudentLMSLayout";
-import CourseDetail from "../page/student/LMS/components/CourseDetail";
 import ProfessorLMSLayout from "../page/professor/LMS/ProfessorLMSLayout";
 // import CoursesView from "../page/professor/SMIS/CoursesView";
 // import ClientProfile from "../page/client/ClientProfile";

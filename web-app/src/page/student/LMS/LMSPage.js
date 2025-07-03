@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import LectureSelect from "./components/LectureSelect";
 import DegreeLevelSelect from "./components/DegreeLevelSelect";
 import GenerationSelect from "./components/GenerationSelect";
@@ -6,26 +6,12 @@ import SemesterSelect from "./components/SemesterSelect";
 import CoursesSelect from "./components/CoursesSelect";
 import CourseCard from './components/CourseCard';
 import CourseDetail from './components/CourseDetail';
-import {
-  Breadcrumbs,
-  Typography,
-  Link,
-  Grid,
-  Box,
-  Paper,
-  useTheme,
-  useMediaQuery,
-  styled,
-  Button
-} from "@mui/material";
-import {
-  makeStyles,
-} from "@material-ui/core";
+import { Breadcrumbs, Typography, Link, Box, Button, useTheme, useMediaQuery, styled, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import { useQuery } from 'react-query';
 import { QueryKeys } from '../../../service/QueryKeys';
 import { CourseService } from '../../../service/CourseService';
-
-import useUser from "../../../hooks/useUser"; // if you have user context
+import useUser from "../../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -108,9 +94,9 @@ const LMSPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [step, setStep] = useState(1);
-    const { setUser } = useUser(); // if using context
-      const classes = useStyles();
-      const navigate = useNavigate();
+  const { setUser } = useUser();
+  const classes = useStyles();
+  const navigate = useNavigate();
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDegreeLevel, setSelectedDegreeLevel] = useState("");
@@ -128,7 +114,7 @@ const LMSPage = () => {
 
   const handleLogOut = () => {
     localStorage.removeItem("user");
-    setUser?.(null); // clear context if available
+    setUser?.(null);
     navigate("/choice/sign-in");
   };
 
@@ -201,7 +187,7 @@ const LMSPage = () => {
     ];
     const handleLogOut = () => {
       localStorage.removeItem("user");
-      setUser?.(null); // clear context if available
+      setUser?.(null);
       navigate("/choice/sign-in");
     };
   
@@ -249,13 +235,13 @@ const LMSPage = () => {
 
   return (
     <StyledContainer>
-           <Button
-                  color="inherit"
-                  onClick={handleLogOut}
-                  className={classes.logoutButton}
-                >
-                  Log Out
-                </Button>
+      <Button
+        color="inherit"
+        onClick={handleLogOut}
+        className={classes.logoutButton}
+      >
+        Log Out
+      </Button>
       <Box sx={{ mb: 4 }}>
         {renderBreadcrumbs()}
       </Box>

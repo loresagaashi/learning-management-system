@@ -42,30 +42,45 @@ export default function StudentGroups() {
       editComponent: (props) => TextFieldTableCell(props, errorRef),
     },
     {
-      title: "Generation",
-      field: "generationId",
-      render: (rowData) => rowData.generationName || "N/A",
-      editComponent: (props) =>
-        SelectTableCell(
-          props,
-          errorRef,
-          allGenerations?.data?.map((g) => ({ value: g.id, label: g.name })) || [],
-          "id"
-        ),
-    },
-    {
-      title: "Semester",
-      field: "semesterId",
-      render: (rowData) => rowData.semesterName || "N/A",
-      editComponent: (props) =>
-        SelectTableCell(
-          props,
-          errorRef,
-          allSemesters?.data?.map((s) => ({ value: s.id, label: s.name })) || [],
-          "id"
-        ),
-    },
+  title: "Generation",
+  field: "generation",
+  render: (rowData) => rowData.generation?.name || '',
+  editComponent: (props) =>
+    SelectTableCell(
+      {
+        ...props,
+        value: allGenerations?.find(
+          (g) =>
+            g.id === props.rowData.generation?.id ||
+            g.id === props.rowData.generationId
+        )
+      },
+      errorRef,
+      allGenerations?.map((g) => ({ value: g, label: g.name })) || [],
+      "id"
+    ),
+},
+{
+  title: "Semester",
+  field: "semester",
+  render: (rowData) => rowData.semester?.name || '',
+  editComponent: (props) =>
+    SelectTableCell(
+      {
+        ...props,
+        value: allSemesters?.find(
+          (s) =>
+            s.id === props.rowData.semester?.id ||
+            s.id === props.rowData.semesterId
+        )
+      },
+      errorRef,
+      allSemesters?.map((s) => ({ value: s, label: s.name })) || [],
+      "id"
+    ),
+},
 
+    
   ];
 
   return (
