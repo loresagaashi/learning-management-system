@@ -12,10 +12,12 @@ import com.learning_management_system.repository.ExamApplicationRepository;
 import com.learning_management_system.repository.ExamRepository;
 import com.learning_management_system.repository.ScheduleRepository;
 import com.learning_management_system.repository.StudentRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -28,6 +30,8 @@ public class ExamApplicationService {
     private final ExamRepository examRepository;
 
     private final StudentRepository studentRepository;
+
+    private final EmailService emailService;
 
 
     public ExamApplication registerStudentToExam(Long examId, Long studentId) {
@@ -63,12 +67,18 @@ public class ExamApplicationService {
         return examApplicationRepository.save(application);
     }
 
-    public ExamApplication gradeStudent(Long examId, Long studentId, Double grade) {
+    public ExamApplication gradeStudent(Long examId, Long studentId, Double grade) throws MessagingException, IOException {
         ExamApplication application = examApplicationRepository.findByExamIdAndStudentId(examId, studentId)
                 .orElseThrow(() -> new NotFoundException("Exam application not found"));
 
         application.setGrade(grade);
         application.setStatus(grade > 5.0 ? ExamStatus.PASSED : ExamStatus.FAILED);
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new NotFoundException("Exam not found with id: " + examId));
+
+
+        emailService.sendGradeExamEmailToStudent(studentId, exam, grade);
+
 
         return examApplicationRepository.save(application);
     }

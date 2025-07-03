@@ -34,7 +34,8 @@ List<Object[]> findCourseWithProfessors(@Param("courseId") Long courseId);
            "c.name, " +
            "c.description, " +
            "e.id, " +
-           "e.professor.firstName) " +
+            "e.dateTime, " +
+            "e.professor.firstName) " +
            "FROM Student s " +
            "JOIN Schedule sc ON sc.groupSemester.group.id = s.group.id " +
            "JOIN Course c ON sc.course = c " +

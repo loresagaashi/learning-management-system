@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Njoftim për Vendosjen e Notës</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        p {
+            margin: 15px 0;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+        .grade-box {
+            font-size: 1.4em;
+            font-weight: bold;
+            background-color: #eaf2f8;
+            border: 2px solid #3498db;
+            padding: 10px;
+            width: fit-content;
+            border-radius: 5px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Përshëndetje <span>#studentFirstName# #studentLastName#</span>,</h1>
+
+    <p>Ju njoftojmë se nota për lëndën e mëposhtme është regjistruar në sistemin akademik.</p>
+
+    <h3>Të dhënat e studentit:</h3>
+    <ul>
+        <li><strong>ID i studentit:</strong> <span>#studentId#</span></li>
+        <li><strong>Email:</strong> <span>#studentEmail#</span></li>
+    </ul>
+
+    <h3>Detajet e lëndës:</h3>
+    <ul>
+        <li><strong>Emri i lëndës:</strong> <span>#courseName#</span></li>
+<!--        <li><strong>Kodi i lëndës:</strong> <span>#subjectCode#</span></li>-->
+    </ul>
+
+    <h3>Profesori përgjegjës:</h3>
+    <ul>
+        <li><strong>Emri:</strong> <span>#professorFirstName# #professorLastName#</span></li>
+        <li><strong>Email:</strong> <span>#professorEmail#</span></li>
+    </ul>
+
+    <h3>Nota juaj:</h3>
+    <div class="grade-box">
+        #grade#
+    </div>
+
+    <p>Ju lutemi kontrolloni sistemin SMIS për më shumë informacione ose për të parë rezultatet e tjera.</p>
+
+    <p>Ju urojmë suksese të mëtejshme në studimet tuaja!</p>
+
+    <p>Me respekt,<br/>Zyra Studentore e Fakultetit</p>
+
+    <div class="footer">
+        <p>Për çdo pyetje apo paqartësi, na kontaktoni në <a href="mailto:support@university.com">support@university.com</a>.</p>
+    </div>
+</div>
+</body>
+</html>

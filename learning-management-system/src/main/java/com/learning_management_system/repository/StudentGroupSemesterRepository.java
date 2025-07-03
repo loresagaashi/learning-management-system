@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface StudentGroupSemesterRepository extends JpaRepository<StudentGroupSemester, Long> {
@@ -16,5 +17,7 @@ public interface StudentGroupSemesterRepository extends JpaRepository<StudentGro
     @Query("SELECT sgs FROM StudentGroupSemester sgs WHERE sgs.group = :group ORDER BY sgs.semester.startDate DESC")
     Optional<StudentGroupSemester> findTopByGroupOrderBySemester_RegistrationDateDesc(@Param("group") StudentGroup group);
 
+    @Query("SELECT sgs FROM StudentGroupSemester sgs WHERE sgs.group = :group ORDER BY sgs.semester.startDate DESC")
+    List<StudentGroupSemester> findLatestByGroup(@Param("group") StudentGroup group);
 
 }

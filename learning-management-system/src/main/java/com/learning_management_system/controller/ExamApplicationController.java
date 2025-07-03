@@ -6,11 +6,13 @@ import com.learning_management_system.data.exam.UnmarkedExamDTO;
 import com.learning_management_system.model.ExamApplication;
 import com.learning_management_system.repository.ExamApplicationRepository;
 import com.learning_management_system.service.ExamApplicationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,7 +31,7 @@ public class ExamApplicationController {
     }
 
     @PostMapping("/grade")
-    public ResponseEntity<ExamApplication> gradeStudent(@RequestParam Long examId, @RequestParam Long studentId, @RequestParam Double grade) {
+    public ResponseEntity<ExamApplication> gradeStudent(@RequestParam Long examId, @RequestParam Long studentId, @RequestParam Double grade) throws MessagingException, IOException {
         ExamApplication application = examApplicationService.gradeStudent(examId, studentId, grade);
         return ResponseEntity.ok(application);
     }

@@ -40,6 +40,10 @@ public abstract class TemplateWildcards {
     public final static String USER_ID = "userId";
     public static final String REQUEST_TIME = "#requestTime#";
     public static final String TOKEN = "#token#";
+    public static final String GRADE = "#grade#";
+    public static final String COURSE_NAME = "#courseName#";
+
+
 
     //TODO add other
 

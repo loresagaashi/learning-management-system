@@ -84,10 +84,10 @@ public class ScheduleService extends BasicServiceOperations<ScheduleRepository, 
 
         StudentGroup group = student.getGroup();
 
-        StudentGroupSemester groupSemester = studentGroupSemesterRepository
-                .findTopByGroupOrderBySemester_RegistrationDateDesc(group)
-                .orElseThrow(() -> new EntityNotFoundException("No semester found for this group"));
-        Semester semester = groupSemester.getSemester();
+        List<StudentGroupSemester> groupSemesters = studentGroupSemesterRepository
+                .findLatestByGroup(group);
+
+        Semester semester = groupSemesters.get(0).getSemester();
         if (group == null) {
             throw new IllegalStateException("Student is not assigned to any group");
         }
@@ -99,12 +99,14 @@ public class ScheduleService extends BasicServiceOperations<ScheduleRepository, 
         StudentGroup group = studentGroupRepository.findById(groupId)
                 .orElseThrow(() -> new EntityNotFoundException("Group not found"));
 
+        List<StudentGroupSemester> groupSemesters = studentGroupSemesterRepository
+                .findLatestByGroup(group);
 
-        StudentGroupSemester groupSemester = studentGroupSemesterRepository
-                .findTopByGroupOrderBySemester_RegistrationDateDesc(group)
-                .orElseThrow(() -> new EntityNotFoundException("No semester found for this group"));
+        if (groupSemesters.isEmpty()) {
+            throw new EntityNotFoundException("No semester found for this group");
+        }
 
-        Semester semester = groupSemester.getSemester();
+        Semester semester = groupSemesters.get(0).getSemester();
 
         return scheduleRepository.findScheduleForGroupAndSemester(groupId, semester.getId());
     }

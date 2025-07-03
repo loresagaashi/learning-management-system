@@ -2,6 +2,8 @@ package com.learning_management_system.service;
 
 import com.learning_management_system.data.email.ReplacedWildCardsDTO;
 import com.learning_management_system.data.email.SendEmailDTO;
+import com.learning_management_system.model.Course;
+import com.learning_management_system.model.Exam;
 import com.learning_management_system.model.Professor;
 import com.learning_management_system.model.Student;
 import com.learning_management_system.repository.ProfessorRepository;
@@ -80,7 +82,9 @@ public class EmailService {
         variables.put(TemplateWildcards.STUDENT_LAST_NAME, student.getFirstName());
         variables.put(TemplateWildcards.STUDENT_EMAIL, student.getEmail());
         variables.put(TemplateWildcards.STUDENT_ID, student.getStudentId().toString());
-        variables.put(TemplateWildcards.GROUP_NAME,student.getGroup().getName());
+        if(student.getGroup()!=null) {
+            variables.put(TemplateWildcards.GROUP_NAME, student.getGroup().getName());
+        }
         if(student.getBirthDate()!=null){
             variables.put(TemplateWildcards.STUDENT_BIRTH_DATE, student.getBirthDate().toString());
 
@@ -179,6 +183,61 @@ public class EmailService {
     }
 
 
+
+    public void sendGradeExamEmailToStudent(Long studentId, Exam exam, Double grade) throws MessagingException, IOException {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new NotFoundException("Student not found with this id: " + studentId));
+
+        Map<String, String> variables = replaceGradeExamFields(student, exam, grade);
+
+        String subjectTemplate = "Vendosja e notës";
+        String bodyTemplatePath = "src/main/resources/templates/gradeStudentTemplate.html";
+        String bodyTemplate = new String(Files.readAllBytes(Paths.get(bodyTemplatePath)), StandardCharsets.UTF_8);
+
+        ReplacedWildCardsDTO replacedWildCardsDTO = templateUtil.getReplacedWildCards(variables, subjectTemplate, bodyTemplate);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(student.getEmail());
+        helper.setSubject(replacedWildCardsDTO.getSubject());
+        helper.setText(replacedWildCardsDTO.getBody(), true);
+
+        mailSender.send(message);
+    }
+
+    private static Map<String, String> replaceGradeExamFields(Student student, Exam exam, Double grade) {
+        Map<String, String> variables = new HashMap<>();
+
+        // Student
+        variables.put(TemplateWildcards.STUDENT_FIRST_NAME, student.getFirstName());
+        variables.put(TemplateWildcards.STUDENT_LAST_NAME, student.getLastName());
+        variables.put(TemplateWildcards.STUDENT_EMAIL, student.getEmail());
+        variables.put(TemplateWildcards.STUDENT_ID, student.getStudentId().toString());
+        variables.put(TemplateWildcards.STUDENT_PHONE_NUMBER, student.getPhoneNumber());
+        if (student.getGroup() != null) {
+            variables.put(TemplateWildcards.GROUP_NAME, student.getGroup().getName());
+        }
+
+        // Professor
+        Professor professor = exam.getProfessor(); // ose exam.getCourse().getProfessor() varësisht strukturës
+        if (professor != null) {
+            variables.put(TemplateWildcards.PROFESSOR_FIRST_NAME, professor.getFirstName());
+            variables.put(TemplateWildcards.PROFESSOR_LAST_NAME, professor.getLastName());
+            variables.put(TemplateWildcards.PROFESSOR_EMAIL, professor.getEmail());
+        }
+
+        // Course
+        Course course = exam.getCourse();
+        if (course != null) {
+            variables.put(TemplateWildcards.COURSE_NAME, course.getName());
+            //variables.put(TemplateWildcards.COURSE_CODE, course.getCode());
+        }
+
+        // Grade
+        variables.put(TemplateWildcards.GRADE, String.valueOf(grade));
+
+        return variables;
+    }
 
 
 }
