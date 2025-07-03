@@ -1,8 +1,54 @@
+import {
+  Box,
+  CircularProgress,
+  Container,
+  makeStyles,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@material-ui/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useUser from "../../../hooks/useUser";
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    padding: theme.spacing(4),
+  },
+  tableContainer: {
+    marginTop: theme.spacing(3),
+    overflowX: "auto",
+  },
+  table: {
+    minWidth: 400,
+  },
+  paper: {
+    padding: theme.spacing(3),
+    marginTop: theme.spacing(3),
+  },
+  averageText: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.primary.main,
+    fontWeight: 600,
+  },
+  emptyText: {
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    marginTop: theme.spacing(4),
+  },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: theme.spacing(6),
+  },
+}));
+
 const StudentGrades = () => {
+  const classes = useStyles();
   const [examGrades, setExamGrades] = useState([]);
   const [averageGrade, setAverageGrade] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,8 +58,9 @@ const StudentGrades = () => {
   useEffect(() => {
     if (!userId) return;
 
-    axios
-      .get(`http://localhost:8080/exam-applications/passed/${userId}`)
+    
+axios
+  .get(`http://localhost:8080/exam-applications/passed/${userId}`)
       .then((response) => {
         const data = response.data;
         if (Array.isArray(data.passedExams)) {
@@ -31,40 +78,54 @@ const StudentGrades = () => {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  if (loading) return <p className="text-center">Loading exams...</p>;
+  if (loading) {
+    return (
+      <Box className={classes.loadingContainer}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-2">Exam Grades</h2>
+    <Container className={classes.container} maxWidth="md">
+      <Typography variant="h4" gutterBottom>
+        Exam Grades
+      </Typography>
+
       {averageGrade !== null && (
-        <p className="text-lg font-medium mb-4 text-gray-700">
-          Average Grade: <span className="font-bold text-blue-600">{averageGrade}</span>
-        </p>
+        <Typography variant="h6" className={classes.averageText}>
+          Average Grade: {averageGrade}
+        </Typography>
       )}
+
       {examGrades.length === 0 ? (
-        <p className="text-center text-gray-500">No exams attended yet.</p>
+        <Typography variant="body1" className={classes.emptyText}>
+          No exams attended yet.
+        </Typography>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-            <thead className="bg-gray-100 text-gray-700">
-              <tr>
-                <th className="px-4 py-2 text-left">Course Name</th>
-                <th className="px-4 py-2 text-left">Grade</th>
-              </tr>
-            </thead>
-            <tbody>
-              {examGrades.map((examGrade, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-2">{examGrade.courseName}</td>
-                  <td className="px-4 py-2">{examGrade.grade}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Paper className={classes.paper} elevation={3}>
+          <div className={classes.tableContainer}>
+            <Table className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Course Name</TableCell>
+                  <TableCell>Grade</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {examGrades.map((examGrade, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{examGrade.courseName}</TableCell>
+                    <TableCell>{examGrade.grade}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </Paper>
       )}
-    </div>
+    </Container>
   );
 };
 
-export default StudentGrades;
+export default StudentGrades;

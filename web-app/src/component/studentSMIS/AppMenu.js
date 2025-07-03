@@ -6,9 +6,10 @@ import {
   useTheme,
 } from "@material-ui/core";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import BallotIcon from '@material-ui/icons/Ballot';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import GradeIcon from '@material-ui/icons/Grade';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import MenuBookIcon from "@material-ui/icons/MenuBook";
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import SchoolIcon from '@material-ui/icons/School';
@@ -17,8 +18,6 @@ import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import useUser from "../../hooks/useUser";
 import AppMenuItem from "../dashboard/AppMenuItem";
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import MenuBookIcon from "@material-ui/icons/MenuBook";
 
 const appMenuItems = [
     {
@@ -36,11 +35,11 @@ const appMenuItems = [
       Icon: LibraryBooksIcon,
       link: "/student/registred-exam",
     },
-    {
-      name: "Submitted exams",
-      Icon: BallotIcon,
-      link: "/student/exams",
-    },
+    // {
+    //   name: "Submitted exams",
+    //   Icon: BallotIcon,
+    //   link: "/student/exams",
+    // },
     // {
     //   name: "Chat",
     //   Icon: TextsmsIcon,
@@ -62,7 +61,7 @@ const appMenuItems = [
       link: "/student/schedules",
     },
     {
-      name: "Transkripta",
+      name: "Submitted exams",
       Icon: GradeIcon,
       link: "/student/grades",
     },
